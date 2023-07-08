@@ -1,6 +1,7 @@
 {
   "name": "pic-pages",
   "version": "0.1.0",
+  "homepage": "https://workata.github.io/pic-pages",
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
