@@ -4,6 +4,7 @@ import {
   Typography,
   Button
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 
 export default function Home() {
@@ -11,7 +12,7 @@ export default function Home() {
   return (
     <>
       <Box>
-        Dupa
+        <Link to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`}>Album</Link>
       </Box>
     </>
   );

@@ -6,14 +6,17 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 // * pages
 import Home from "./pages/Home";
+import Album from "./pages/Album";
 
 function App() {
   return (
-    // verify basename and homepage after deploy
+    // TODO verify basename and homepage setting after deploy
     <Router basename="/pic-pages">  
 
       <Routes>
         <Route path="/" element={<Home />} />
+        {/* <Route path="/album" element={<Album />} /> */}
+        <Route path="/album/:folderId" element={<Album />} />
 
       
       </Routes>
