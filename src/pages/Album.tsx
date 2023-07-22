@@ -13,6 +13,8 @@ import { Folder } from '../models/Folder';
 import { Image } from '../models/Image';
 import { ImageList, ImageListItem } from '@mui/material';
 
+// * components
+import ClickableFolder from "../components/ClickableFolder"
 
 export default function Album() {
 
@@ -42,9 +44,7 @@ export default function Album() {
   return (
     <>
       <Box>
-        Album <br/>
-        Images <br/>
-        {images && images.map(o => <div key={o.name}>{o.name}</div>)}
+        {folders && folders.map(folder => <ClickableFolder key={folder.id} id={folder.id} name={folder.name}/>)}
 
         {images &&
           <ImageList sx={{ width: 500, height: 450 , borderStyle: 'solid'}} cols={3} rowHeight={164}>
@@ -52,7 +52,6 @@ export default function Album() {
               <ImageListItem key={item.thumbnailUrl}>
                 <img
                   src={`${item.thumbnailUrl}`}
-                  // srcSet={`${item.thumbnailUrl}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                   alt={item.thumbnailUrl}
                   loading="lazy"
                 />
@@ -61,8 +60,7 @@ export default function Album() {
           </ImageList>
         }
 
-        Folders <br/>
-        {folders && folders.map(o => <div key={o.name}>{o.name}</div>)}
+
       </Box>
     </>
   );

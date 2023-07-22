@@ -169,7 +169,7 @@ export default function AppWrapper(props: any) {
               <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem key='HomeIcon' disablePadding sx={{ display: 'block' }}>
+          <ListItem key='PhotoLibraryIcon' disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
