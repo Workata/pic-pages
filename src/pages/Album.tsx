@@ -14,7 +14,14 @@ import { Image } from '../models/Image';
 import { ImageList, ImageListItem } from '@mui/material';
 
 // * components
-import ClickableFolder from "../components/ClickableFolder"
+import ClickableFolder from "../components/ClickableFolder";
+import ImageViewer from 'awesome-image-viewer';
+
+declare type imageToView = {
+  mainUrl: string;
+  thumbnailUrl?: string;
+  description?: string;
+};
 
 export default function Album() {
 
@@ -41,26 +48,71 @@ export default function Album() {
     if (folderId) fetchFolderContent(folderId);
   }, [folderId]);
 
+  // open image viewer
+  const viewImage = () => {
+    if(!images) return;
+    console.log("XD");
+    let data: imageToView[] = images.map(
+      (img) => ({"mainUrl": img.imageUrl, "thumbnailUrl": img.thumbnailUrl})
+    );
+    console.log(data);
+    new ImageViewer({
+      images: data
+    })
+  }
+
   return (
     <>
-      <Box>
-        {folders && folders.map(folder => <ClickableFolder key={folder.id} id={folder.id} name={folder.name}/>)}
+      <Box
+        sx={{
+          width: "100%",
+          // borderColor: 'blue',
+          // borderStyle: 'solid'
+        }}
+      >
+        {/* Folders container */}
+        <Box sx={{display: 'flex', columnGap: '20px'}}> 
+          {folders && folders.map(folder => <ClickableFolder key={folder.id} id={folder.id} name={folder.name}/>)}
+        </Box>
 
-        {images &&
-          <ImageList sx={{ width: 500, height: 450 , borderStyle: 'solid'}} cols={3} rowHeight={164}>
+        {/* Images container */}
+        <Box
+          sx={{
+            width: "100%",
+            // borderColor: 'green',
+            // borderStyle: 'solid'
+          }}
+        >
+
+        {
+          images &&
+          <ImageList
+            // ? https://mui.com/material-ui/react-image-list/
+            variant="masonry"
+            cols={11} // number of columns reflects images (thumbnails) size
+            gap={12}
+          >
             {images.map((item) => (
-              <ImageListItem key={item.thumbnailUrl}>
+              <ImageListItem key={item.thumbnailUrl} sx={{
+                  cursor: "pointer",
+                  // TODO fix scroll bar on hover
+                  // transition: 'transform .2s',
+                  // '&:hover': {
+                  //   transform: 'scale(1.1)'
+                  // }
+                }}
+              >
                 <img
                   src={`${item.thumbnailUrl}`}
                   alt={item.thumbnailUrl}
                   loading="lazy"
+                  onClick={viewImage}
                 />
               </ImageListItem>
             ))}
           </ImageList>
         }
-
-
+        </Box>
       </Box>
     </>
   );
