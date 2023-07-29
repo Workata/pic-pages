@@ -49,15 +49,20 @@ export default function Album() {
   }, [folderId]);
 
   // open image viewer
-  const viewImage = () => {
+  const viewImage = (idx: number) => {
     if(!images) return;
-    console.log("XD");
+
     let data: imageToView[] = images.map(
-      (img) => ({"mainUrl": img.imageUrl, "thumbnailUrl": img.thumbnailUrl})
+      (img) => ({
+        "mainUrl": img.imageUrl,
+        "thumbnailUrl": img.thumbnailUrl,
+        "description": `${img.name} \n XDD`
+      })
     );
-    console.log(data);
+
     new ImageViewer({
-      images: data
+      images: data,
+      currentSelected: idx
     })
   }
 
@@ -92,7 +97,7 @@ export default function Album() {
             cols={11} // number of columns reflects images (thumbnails) size
             gap={12}
           >
-            {images.map((item) => (
+            {images.map((item, idx: number) => (
               <ImageListItem key={item.thumbnailUrl} sx={{
                   cursor: "pointer",
                   // TODO fix scroll bar on hover
@@ -103,10 +108,10 @@ export default function Album() {
                 }}
               >
                 <img
-                  src={`${item.thumbnailUrl}`}
-                  alt={item.thumbnailUrl}
+                  src={item.thumbnailUrl}
+                  alt={item.name}
                   loading="lazy"
-                  onClick={viewImage}
+                  onClick={() => viewImage(idx)}
                 />
               </ImageListItem>
             ))}
