@@ -56,7 +56,7 @@ export default function Album() {
       (img) => ({
         "mainUrl": img.imageUrl,
         "thumbnailUrl": img.thumbnailUrl,
-        "description": `${img.name} \n XDD`
+        "description": `${img.name}`
       })
     );
 
@@ -77,7 +77,7 @@ export default function Album() {
       >
         {/* Folders container */}
         <Box sx={{display: 'flex', columnGap: '20px'}}> 
-          {folders && folders.map(folder => <ClickableFolder key={folder.id} id={folder.id} name={folder.name}/>)}
+          {folders && folders.map(folder => <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`}/>)}
         </Box>
 
         {/* Images container */}
@@ -112,6 +112,7 @@ export default function Album() {
                   alt={item.name}
                   loading="lazy"
                   onClick={() => viewImage(idx)}
+                  // style={{boxShadow: "2px 2px 5px #ccc"}}
                 />
               </ImageListItem>
             ))}

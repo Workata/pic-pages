@@ -18,6 +18,8 @@ import { Link, useNavigate } from "react-router-dom";
 import MuiDrawer from '@mui/material/Drawer';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+
+// * Icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -26,6 +28,7 @@ import MapIcon from '@mui/icons-material/Map';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import HomeIcon from '@mui/icons-material/Home';
 import WestIcon from '@mui/icons-material/West';
+import CategoryIcon from '@mui/icons-material/Category';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 
@@ -248,6 +251,29 @@ export default function AppWrapper(props: any) {
                 <ListItemText primary='Map' sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
           </ListItem>
+
+          <ListItem key='CategoryIcon' disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+                component={Link}
+                to={`/categories`}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary='Categories' sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+          </ListItem>
         </List>
 
         <Divider />
@@ -261,7 +287,7 @@ export default function AppWrapper(props: any) {
                   px: 2.5,
                 }}
                 component={Link}
-                to={`/map`}
+                to={`/login`}
               >
                 <ListItemIcon
                   sx={{

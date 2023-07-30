@@ -19,7 +19,7 @@ export default function ClickableFolder(props: any) {
       <Button
         variant="contained"
         component={Link}
-        to={`/album/${props.id}`}
+        to={props.link} 
       >
         <FolderIcon sx={{marginRight: '15px'}}/>  {props.name} 
       </Button>
