@@ -124,7 +124,6 @@ export default function AppWrapper(props: any) {
   };
 
   return (
-    <>
     <Box sx={{ display: 'flex'}}>
       {/* <CssBaseline /> */}
       <AppBar position="fixed" open={open}>
@@ -306,12 +305,12 @@ export default function AppWrapper(props: any) {
         </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      {/* p - padding     */}
+      <Box component="main" sx={{ flexGrow: 1, p: 2}}> 
         <DrawerHeader />
         { props.children }
       </Box>
 
     </Box>
-    </>
   );
 }

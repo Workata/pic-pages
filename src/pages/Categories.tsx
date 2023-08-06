@@ -1,12 +1,24 @@
 import React, {useState, useEffect, useContext} from "react";
 import {
   Box,
-    Typography
+  Typography,
+  Menu,
+  MenuItem
 
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { getCategories } from "../services/categories";
+import { getCategories, createCategory } from "../services/categories";
 import { Category } from "../models/Category";
+
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+
 
 // * components
 import ClickableFolder from "../components/ClickableFolder";
@@ -14,7 +26,40 @@ import ClickableFolder from "../components/ClickableFolder";
 
 export default function Categories() {
 
+  const [contextMenu, setContextMenu] = React.useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
   const [categories, setCategories] = useState<Category[]>();
+  const [newCategory, setNewCategory] = useState<string>("");
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpenDialogWindow = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialogWindow = () => {
+    setOpen(false);
+  };
+
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX + 2,
+            mouseY: event.clientY - 6,
+          }
+        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+          // Other native context menus might behave different.
+          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+          null,
+    );
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
 
   const fetchCategories = () => {
     getCategories((res: any) => {
@@ -27,17 +72,71 @@ export default function Categories() {
     });
   }
 
+  const createNewCategory = () => {
+    console.log(newCategory);
+    createCategory({"name": newCategory}, (res: any) => {
+      console.log(res);
+      handleCloseDialogWindow();
+      fetchCategories();
+    }, (err: any) => {
+      console.log(err);
+    });
+  }
+
   useEffect(() => {
     fetchCategories();
   }, []);
 
   return (
-    <>
+    <div onContextMenu={handleContextMenu} style={{
+       cursor: 'context-menu',
+      //  borderStyle: 'solid',
+      //  borderColor: 'red',
+       height: '85vh'
+    }}>
       <Box sx={{display: 'flex', columnGap: '20px'}}> 
         {categories && categories.map(
           (category) => <ClickableFolder key={category.name} link={`/categories/${category.name}`} name={category.name}/>
         )}
       </Box>
-    </>
+
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleCloseContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={() => {
+          handleCloseContextMenu();
+          handleOpenDialogWindow();
+          }
+        }>Add category</MenuItem>
+      </Menu>
+
+      <Dialog open={open} onClose={handleCloseDialogWindow}>
+        <DialogTitle>Add category</DialogTitle>
+        <DialogContent sx={{width: '400px'}}>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Category name"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(event) => setNewCategory(event.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialogWindow}>Cancel</Button>
+          <Button onClick={createNewCategory}>Add</Button>
+        </DialogActions>
+      </Dialog>
+
+    </div>
   );
 }
