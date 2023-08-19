@@ -17,6 +17,9 @@ import { ImageList, ImageListItem } from '@mui/material';
 import ClickableFolder from "../components/ClickableFolder";
 import ImageViewer from 'awesome-image-viewer';
 
+import categoryIcon from '../icons/theatre-svgrepo-com.svg';
+// import { ReactComponent as categoryIcon } from '../icons/theatre-svgrepo-com.svg';
+
 declare type imageToView = {
   mainUrl: string;
   thumbnailUrl?: string;
@@ -62,7 +65,15 @@ export default function Album() {
 
     new ImageViewer({
       images: data,
-      currentSelected: idx
+      currentSelected: idx,
+      buttons: [
+        {
+          name: 'Categorize',
+          iconSrc: categoryIcon,
+          iconSize: '18px',
+          onSelect: () => alert("XDD")
+        }
+      ]
     })
   }
 

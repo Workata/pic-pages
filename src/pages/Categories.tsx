@@ -17,6 +17,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
 
 
 
@@ -24,22 +28,39 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ClickableFolder from "../components/ClickableFolder";
 
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+
 export default function Categories() {
 
-  const [contextMenu, setContextMenu] = React.useState<{
+  const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
   } | null>(null);
   const [categories, setCategories] = useState<Category[]>();
   const [newCategory, setNewCategory] = useState<string>("");
-  const [open, setOpen] = React.useState(false);
+  const [openDialogWindow, setOpenDialogWindow] = useState(false);
+  const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
 
   const handleOpenDialogWindow = () => {
-    setOpen(true);
+    setOpenDialogWindow(true);
   };
 
   const handleCloseDialogWindow = () => {
-    setOpen(false);
+    setOpenDialogWindow(false);
+  };
+
+  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSuccessMsg(false);
   };
 
   const handleContextMenu = (event: React.MouseEvent) => {
@@ -78,6 +99,7 @@ export default function Categories() {
       console.log(res);
       handleCloseDialogWindow();
       fetchCategories();
+      setOpenSuccessMsg(true);
     }, (err: any) => {
       console.log(err);
     });
@@ -117,7 +139,7 @@ export default function Categories() {
         }>Add category</MenuItem>
       </Menu>
 
-      <Dialog open={open} onClose={handleCloseDialogWindow}>
+      <Dialog open={openDialogWindow} onClose={handleCloseDialogWindow}>
         <DialogTitle>Add category</DialogTitle>
         <DialogContent sx={{width: '400px'}}>
           <TextField
@@ -136,6 +158,12 @@ export default function Categories() {
           <Button onClick={createNewCategory}>Add</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={openSuccessMsg} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          New category has been created!
+        </Alert>
+      </Snackbar>
 
     </div>
   );
