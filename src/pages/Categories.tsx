@@ -10,19 +10,15 @@ import { Link } from "react-router-dom";
 import { getCategories, createCategory } from "../services/categories";
 import { Category } from "../models/Category";
 
+// * mui
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-
-
-
 
 // * components
 import ClickableFolder from "../components/ClickableFolder";
