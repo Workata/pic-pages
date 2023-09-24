@@ -23,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/album/:folderId" element={<Album />} />
+          <Route path="/album/:folderId/:imgId" element={<Album />} />
           <Route path="/map" element={<ImgMap />} />
         </Routes>
     
