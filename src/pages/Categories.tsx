@@ -80,8 +80,8 @@ export default function Categories() {
 
   const fetchCategories = () => {
     getCategories((res: any) => {
-      let categories = res.data.categories.map(
-        (o: any) => new Category({name: o})
+      let categories = res.data.map(
+        (o: any) => new Category({name: o.name})
       )
       setCategories(categories);
     }, (err: any) => {

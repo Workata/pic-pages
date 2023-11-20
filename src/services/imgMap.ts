@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 export const getMarkers = async (callback: any, errorcallback: any) => {
-  axios.get("/api/map/marker").then( res => {
+  axios.get("/api/v1/map/marker").then( res => {
     if(callback != null){
       callback(res);
     }
@@ -15,7 +15,7 @@ export const getMarkers = async (callback: any, errorcallback: any) => {
 }
 
 export const createMarker = async (body: any, callback: any, errorcallback: any) => {
-  axios.post(`/api/map/marker`, body).then( res => {
+  axios.post("/api/v1/map/marker", body).then( res => {
     if(callback != null){
       callback(res);
     }

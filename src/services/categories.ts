@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 export const getCategories = async (callback: any, errorcallback: any) => {
-  axios.get(`/api/categories`).then( res => {
+  axios.get("/api/v1/categories").then( res => {
     if(callback != null){
       callback(res);
     }
@@ -16,7 +16,7 @@ export const getCategories = async (callback: any, errorcallback: any) => {
 
 
 export const createCategory = async (body: any, callback: any, errorcallback: any) => {
-  axios.post(`/api/categories`, body).then( res => {
+  axios.post("/api/v1/categories", body).then( res => {
     if(callback != null){
       callback(res);
     }
