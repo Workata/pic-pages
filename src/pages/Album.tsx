@@ -1,4 +1,5 @@
 // TODO switch URL img ID dynamically when viewing images
+// TODO change img index for image id
 
 import React, {useState, useEffect} from "react";
 
@@ -10,6 +11,7 @@ import { useParams} from 'react-router-dom';
 import { Folder } from '../models/Folder';
 import { Image } from '../models/Image';
 import { ImageList, ImageListItem } from '@mui/material';
+import SelectCategoryModal from "../components/modals/SelectCategory";
 
 // * components
 import ClickableFolder from "../components/ClickableFolder";
@@ -32,8 +34,20 @@ export default function Album() {
   const [folders, setFolders] = useState<Folder[]>();
   const [images, setImages] = useState<Image[]>();
   const [viewer, setViewer] = useState<ImageViewer>();
+  const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const navigate = useNavigate();
 
+  const myElement: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
+  if(myElement){
+  
+    myElement.onclick = () => {
+    console.log("ON CLICK")
+    console.log(viewer?.currentSelected)
+    if (viewer?.currentSelected){
+      insertImgIdToUrl(Number(viewer.currentSelected))
+    }
+  };
+}
   const fetchFolderContent = (folderId: any) => {
     console.log("Fetch folder content...")
     getFolderContent(folderId, (res: any) => {
@@ -50,9 +64,8 @@ export default function Album() {
     });
   }
 
-  const viewerIsOpened = () => {
-    // probably not needed but will leave it here just in case
-    return document.getElementsByClassName('imageViewer visible').length !== 0;
+  const viewerIsClosed = () => {
+    return document.getElementsByClassName('imageViewer visible').length === 0;
   }
 
   const insertImgIdToUrl = (idx: number) => {
@@ -80,18 +93,22 @@ export default function Album() {
           name: 'Categorize',
           iconSrc: categoryIcon,
           iconSize: '18px',
-          onSelect: () => alert(`smth`)
+          onSelect: () => setOpenDialogWindow(true)
         }
       ]
     }))
   }
 
   useEffect(() => {
+    console.log(`Current selected: ${viewer?.currentSelected}`)
+  }, [viewer?.currentSelected]);
+
+  useEffect(() => {
     if (folderId) fetchFolderContent(folderId);
   }, [folderId]);
 
   useEffect(() => {
-    if (imgId && images) {
+    if (imgId && images && viewerIsClosed()) {
       console.log(`Currently selected img ID ${imgId}`);
       viewImage(Number(imgId));
     }
@@ -142,7 +159,14 @@ export default function Album() {
                   src={item.thumbnailUrl}
                   alt={item.name}
                   loading="lazy"
-                  onClick={() => insertImgIdToUrl(idx)}
+                  onClick={() => {
+                    if (imgId && Number(imgId) === idx && viewerIsClosed()) {
+                      viewImage(Number(imgId));
+                      return
+                    }
+                    insertImgIdToUrl(idx)
+                  }
+                }
                   // style={{boxShadow: "2px 2px 5px #ccc"}}
                 />
               </ImageListItem>
@@ -151,6 +175,11 @@ export default function Album() {
         }
         </Box>
       </Box>
+
+      <SelectCategoryModal
+        openDialogWindow={openDialogWindow}
+        setOpenDialogWindow={setOpenDialogWindow}
+      />
     </>
   );
 }
