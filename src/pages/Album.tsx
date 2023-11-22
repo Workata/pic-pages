@@ -1,5 +1,4 @@
-// TODO switch URL img ID dynamically when viewing images
-// TODO change img index for image id
+// TODO update URL based on current pic variable
 
 import React, {useState, useEffect} from "react";
 
@@ -30,27 +29,43 @@ declare type imageToView = {
 
 export default function Album() {
 
-  const { folderId, imgId } = useParams();
+  const { currentFolderId, currentImgId } = useParams();
   const [folders, setFolders] = useState<Folder[]>();
   const [images, setImages] = useState<Image[]>();
   const [viewer, setViewer] = useState<ImageViewer>();
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const navigate = useNavigate();
 
-  const myElement: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
-  if(myElement){
-  
-    myElement.onclick = () => {
-    console.log("ON CLICK")
-    console.log(viewer?.currentSelected)
-    if (viewer?.currentSelected){
-      insertImgIdToUrl(Number(viewer.currentSelected))
-    }
+  // const gallery = new Viewer(document.getElementById('images')!);
+
+  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
+  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
+  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
+
+  if(rightImgButton){
+    let idxPrev = Number(viewer?.currentSelected);
+    rightImgButton.onclick = () => {
+      if (idxPrev>=images!.length-1) return;
+      if (viewer?.currentSelected) insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
+    };
   };
-}
-  const fetchFolderContent = (folderId: any) => {
+
+  if(leftImgButton){
+    let idxPrev = Number(viewer?.currentSelected);
+    leftImgButton.onclick = () => {
+      if (idxPrev<=0) return;
+      insertImgIdToUrl(getImgIdFromIdx(idxPrev-1));
+    };
+  };
+
+  if(closeImgButton){
+    closeImgButton.onclick = () => {clearUrlFromImg();};
+  };
+
+  const fetchFolderContent = (currentFolderId: any) => {
     console.log("Fetch folder content...")
-    getFolderContent(folderId, (res: any) => {
+    getFolderContent(currentFolderId, (res: any) => {
+      console.log(res)
       let imagesList: Image[] = res.data.images.map(
         (o: any) => new Image(o)
       );
@@ -68,8 +83,19 @@ export default function Album() {
     return document.getElementsByClassName('imageViewer visible').length === 0;
   }
 
-  const insertImgIdToUrl = (idx: number) => {
-    if(!imgId || Number(imgId) != idx) navigate(`../album/${folderId}/${idx}`, { replace: true });
+  const insertImgIdToUrl = (imgId: string) => {
+    if(!currentImgId || currentImgId !== imgId) navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+  }
+
+  const getImgIdFromIdx = (idx: number): string => {
+    if(images) {
+      return images[idx].id
+    }
+    return ""
+  }
+
+  const clearUrlFromImg = () => {
+    navigate(`../album/${currentFolderId}`, { replace: true });
   }
 
   // * open image viewer
@@ -80,14 +106,21 @@ export default function Album() {
       (img) => ({
         "mainUrl": img.imageUrl,
         "thumbnailUrl": img.thumbnailUrl,
-        "description": `${img.name}`
+        "description": img.name
       })
     );
+
       
-    console.log("Image Viewer is opening...")
+    console.log("Image Viewer is opening...");
+    console.log("Data for image viewer:")
+    console.log(data);
+    console.log("Current selected idx in img viewer:")
+    console.log(idx)
+    // indexes should start from 0
     setViewer(new ImageViewer({
       images: data,
       currentSelected: idx,
+      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed 
       buttons: [
         {
           name: 'Categorize',
@@ -100,19 +133,17 @@ export default function Album() {
   }
 
   useEffect(() => {
-    console.log(`Current selected: ${viewer?.currentSelected}`)
-  }, [viewer?.currentSelected]);
+    if (currentFolderId) fetchFolderContent(currentFolderId);
+  }, [currentFolderId]);
 
   useEffect(() => {
-    if (folderId) fetchFolderContent(folderId);
-  }, [folderId]);
-
-  useEffect(() => {
-    if (imgId && images && viewerIsClosed()) {
-      console.log(`Currently selected img ID ${imgId}`);
-      viewImage(Number(imgId));
+    if (currentImgId && images && viewerIsClosed()) {
+      console.log(`Currently selected img ID ${currentImgId}`);
+      viewImage(
+        images.findIndex(el => el.id === currentImgId)
+      );
     }
-  }, [images, imgId]);
+  }, [images, currentImgId]);
 
   return (
     <>
@@ -144,9 +175,10 @@ export default function Album() {
             variant="masonry"
             cols={11} // number of columns reflects images (thumbnails) size
             gap={12}
+            id="images"
           >
-            {images.map((item, idx: number) => (
-              <ImageListItem key={item.thumbnailUrl} sx={{
+            {images.map((img: Image) => (
+              <ImageListItem key={img.id} sx={{
                   cursor: "pointer",
                   // TODO fix scroll bar on hover
                   // transition: 'transform .2s',
@@ -156,17 +188,12 @@ export default function Album() {
                 }}
               >
                 <img
-                  src={item.thumbnailUrl}
-                  alt={item.name}
+                  src={img.thumbnailUrl}
+                  alt={img.name}
                   loading="lazy"
                   onClick={() => {
-                    if (imgId && Number(imgId) === idx && viewerIsClosed()) {
-                      viewImage(Number(imgId));
-                      return
-                    }
-                    insertImgIdToUrl(idx)
-                  }
-                }
+                    insertImgIdToUrl(img.id);
+                  }}
                   // style={{boxShadow: "2px 2px 5px #ccc"}}
                 />
               </ImageListItem>

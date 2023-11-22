@@ -43,7 +43,13 @@ export default function SelectCategoryModal(props: any) {
 
   return (
     <>
-      <Dialog open={props.openDialogWindow} onClose={props.handleCloseDialogWindow}>
+      <Dialog
+        open={props.openDialogWindow}
+        onClose={props.handleCloseDialogWindow}
+        sx={{
+          zIndex: 999999994   // image viewer has 999999993
+        }}
+      >
         <DialogTitle>Select Category</DialogTitle>
         <DialogContent sx={{width: '400px'}}>
         <TextField

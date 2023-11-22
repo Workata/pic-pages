@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 
 // * navigation
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
@@ -22,8 +21,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/album/:folderId" element={<Album />} />
-          <Route path="/album/:folderId/:imgId" element={<Album />} />
+          <Route path="/album/:currentFolderId" element={<Album />} />
+          <Route path="/album/:currentFolderId/:currentImgId" element={<Album />} />
           <Route path="/map" element={<ImgMap />} />
         </Routes>
     
