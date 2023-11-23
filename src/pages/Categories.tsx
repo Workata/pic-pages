@@ -23,6 +23,8 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 // * components
 import ClickableFolder from "../components/ClickableFolder";
 
+import { fetchCategories } from "../clients/fetchCategories";
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -78,23 +80,12 @@ export default function Categories() {
     setContextMenu(null);
   };
 
-  const fetchCategories = () => {
-    getCategories((res: any) => {
-      let categories = res.data.map(
-        (o: any) => new Category({name: o.name})
-      )
-      setCategories(categories);
-    }, (err: any) => {
-      console.log(err);
-    });
-  }
-
   const createNewCategory = () => {
     console.log(newCategory);
     createCategory({"name": newCategory}, (res: any) => {
       console.log(res);
       handleCloseDialogWindow();
-      fetchCategories();
+      fetchCategories(setCategories);
       setOpenSuccessMsg(true);
     }, (err: any) => {
       console.log(err);
@@ -102,7 +93,7 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    fetchCategories();
+    fetchCategories(setCategories);
   }, []);
 
   return (

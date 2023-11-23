@@ -150,8 +150,6 @@ export default function Album() {
       <Box
         sx={{
           width: "100%",
-          // borderColor: 'blue',
-          // borderStyle: 'solid'
         }}
       >
         {/* Folders container */}
@@ -163,11 +161,8 @@ export default function Album() {
         <Box
           sx={{
             width: "100%",
-            // borderColor: 'green',
-            // borderStyle: 'solid'
           }}
         >
-
         {
           images &&
           <ImageList
@@ -206,6 +201,7 @@ export default function Album() {
       <SelectCategoryModal
         openDialogWindow={openDialogWindow}
         setOpenDialogWindow={setOpenDialogWindow}
+        imgId={currentImgId}
       />
     </>
   );
