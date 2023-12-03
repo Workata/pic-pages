@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect, useContext} from "react";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,39 +7,67 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { createMarker } from "../../services/imgMap";
+import { Category } from "../../models/Category";
+import { ImageData } from "../../models/ImageData";
+
+import { fetchCategories } from "../../clients/fetchCategories";
+
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { getImageData, postImageData, patchImageCategories } from "../../services/images";
+import { fetchImageData } from "../../clients/fetchImageData";
 
 
 export default function SelectCategoryModal(props: any) {
-  const [longitude, setLongitude] = useState(props.coords?.longitude);
-  const [latitude, setLatitude] = useState(props.coords?.latitude);
-  const [url, setUrl] = useState('');
+  const [categories, setCategories] = useState<Category[]>();
+  const [imageData, setImageData] = useState<ImageData | null | undefined>(undefined);
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
+    setImageData(undefined);
+    // setCategories([]);
   };
 
-  const createNewMarker = () => {
-    let lat = latitude;
-    let lon = longitude;
-    if (lat === undefined) lat = props.coords?.latitude;
-    if (lon === undefined) lon = props.coords?.longitude;
+  const updateCategories = (categoryName: string) => {
+    console.log("Update category")
+    let updatedImageData = imageData;
+    let updatedCategories = imageData!.categories.map((category) => category.name);
+    if (updatedCategories?.includes(categoryName)) {
+      // * uncheck category
+      const index = updatedCategories.indexOf(categoryName);
+      updatedCategories.splice(index, 1); // 2nd parameter means remove one item only
+      updatedImageData!.categories = imageData!.categories.filter((category) => category.name !== categoryName);
+      setImageData(updatedImageData);
+    } else {
+      // * check category
+      updatedCategories.push(categoryName);
+      updatedImageData!.categories = imageData!.categories.concat([new Category({'name': categoryName})]);
+      setImageData(updatedImageData);
+    }
+    patchImageCategories(props.imgId, updatedCategories,
+      (res: any) => {console.log(res)}, (err: any) => {console.log(err)}
+    )
+    // fetchImageData(props.imgId, setImageData);
+  }
 
-    createMarker({
-      "latitude": Number(lat),
-      "longitude": Number(lon),
-      "url": url
-    }, (res: any) => {
-      handleCloseDialogWindow();
 
-      // props.fetchMarkers();
-      // setOpenSuccessMsg(true);
-    }, (err: any) => {
-      console.log(err);
-    });
+  useEffect(() => {
+    if(props.openDialogWindow === true && props.imgId) {
+      fetchImageData(props.imgId, setImageData);
+      fetchCategories(setCategories);
+    }
+  }, [props.openDialogWindow, props.imgId]);
 
-  };
-
+  useEffect(() => {
+    if(imageData === null) {
+      postImageData({"id": props.imgId, "categories": []}, () => {}, () => {})
+      fetchImageData(props.imgId, setImageData);
+    }
+    // if(imageData instanceof ImageData)
+    console.log("Image data")
+    console.log(imageData);
+  }, [imageData]);
 
   return (
     <>
@@ -50,42 +78,22 @@ export default function SelectCategoryModal(props: any) {
           zIndex: 999999994   // image viewer has 999999993
         }}
       >
-        <DialogTitle>Select Category</DialogTitle>
+        <DialogTitle>Select Category {imageData?.id}</DialogTitle>
         <DialogContent sx={{width: '400px'}}>
-        <TextField
-            margin="dense"
-            id="name"
-            label="Longitude"
-            type="text"
-            fullWidth
-            variant="standard"
-            defaultValue={props.coords?.longitude}
-            onChange={(event) => setLongitude(event.target.value)}
-          />
-        <TextField
-            margin="dense"
-            id="name"
-            label="Latitude"
-            type="text"
-            fullWidth
-            variant="standard"
-            defaultValue={props.coords?.latitude}
-            onChange={(event) => setLatitude(event.target.value)}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Image URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={(event) => setUrl(event.target.value)}
-          />
+          {/* <Checkbox defaultChecked /> */}
+        <FormGroup>
+          {imageData && categories && categories.map(
+           (category) => <FormControlLabel 
+            control={imageData?.categories.find(e => e.name === category.name)? <Checkbox defaultChecked/> : <Checkbox/>} 
+            label={category.name} 
+            key={category.name}
+            onChange={() => updateCategories(category.name)}
+           />
+          )}
+        </FormGroup>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialogWindow}>Cancel</Button>
-          <Button onClick={createNewMarker}>Add</Button>
+          <Button onClick={handleCloseDialogWindow}>Close</Button>
         </DialogActions>
       </Dialog>
     </>
