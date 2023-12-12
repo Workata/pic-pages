@@ -57,3 +57,15 @@ export const patchImageComment = async (img_id: number, data: any, callback: any
   })
 }
 
+export const getCategoryContent = async (categoryName: string, callback: any, errorcallback: any) => {
+  axios.get(`/api/v1/images/category/${categoryName}`).then( res => {
+    if(callback != null){
+      callback(res);
+    }
+  }
+  ).catch( err => {
+    if(errorcallback != null){
+      errorcallback(err);
+   }
+  })
+}

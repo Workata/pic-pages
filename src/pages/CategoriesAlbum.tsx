@@ -5,7 +5,7 @@ import React, {useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 
 // * services
-import { getFolderContent } from "../services/folderContent";
+import { getCategoryContent } from "../services/images";
 import { useParams} from 'react-router-dom';
 import { Folder } from '../models/Folder';
 import { Image } from '../models/Image';
@@ -31,9 +31,10 @@ declare type imageToView = {
   description?: string;
 };
 
-export default function Album() {
+export default function CategoriesAlbum() {
 
-  const { currentFolderId, currentImgId } = useParams();
+
+  const { currentCategory, currentImgId } = useParams();
   const [folders, setFolders] = useState<Folder[]>();
   const [images, setImages] = useState<Image[]>();
   const [viewer, setViewer] = useState<ImageViewer>();
@@ -67,18 +68,13 @@ export default function Album() {
     closeImgButton.onclick = () => {clearUrlFromImg();};
   };
 
-  const fetchFolderContent = (currentFolderId: any) => {
-    console.log("Fetch folder content...")
-    getFolderContent(currentFolderId, (res: any) => {
+  const fetchCategoryContent = (categoryName: string) => {
+    getCategoryContent(categoryName, (res: any) => {
       console.log(res)
-      let imagesList: Image[] = res.data.images.map(
+      let imagesList: Image[] = res.data.map(
         (o: any) => new Image(o)
       );
       setImages(imagesList);
-      let folderList: Folder[] = res.data.folders.map(
-        (o: any) => new Folder(o)
-      );
-      setFolders(folderList);
     }, (err: any) => {
       console.log(err);
     });
@@ -89,7 +85,7 @@ export default function Album() {
   }
 
   const insertImgIdToUrl = (imgId: string) => {
-    if(!currentImgId || currentImgId !== imgId) navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+    if(!currentImgId || currentImgId !== imgId) navigate(`../categories/${currentCategory}/${imgId}`, { replace: true });
   }
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -100,7 +96,7 @@ export default function Album() {
   }
 
   const clearUrlFromImg = () => {
-    navigate(`../album/${currentFolderId}`, { replace: true });
+    navigate(`../categories/${currentCategory}`, { replace: true });
   }
 
   // * open image viewer
@@ -144,8 +140,9 @@ export default function Album() {
   }
 
   useEffect(() => {
-    if (currentFolderId) fetchFolderContent(currentFolderId);
-  }, [currentFolderId]);
+
+    if (currentCategory) fetchCategoryContent(currentCategory);
+  }, [currentCategory]);
 
   useEffect(() => {
     if (currentImgId && images && viewerIsClosed()) {
@@ -165,7 +162,7 @@ export default function Album() {
       >
         {/* Folders container */}
         <Box sx={{display: 'flex', columnGap: '20px'}}> 
-          {folders && folders.map(folder => <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`}/>)}
+          {folders && folders.map(folder => <ClickableFolder key={folder.id} name={folder.name} link={`/categories/${folder.id}`}/>)}
         </Box>
 
         {/* Images container */}
@@ -214,14 +211,12 @@ export default function Album() {
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
-        imgName={images?.find(e => e.id === currentImgId)?.name}
       />
 
       <AddCommentModal
         openDialogWindow={openCommentDialogWindow}
         setOpenDialogWindow={setOpenCommentDialogWindow}
         imgId={currentImgId}
-        imgName={images?.find(e => e.id === currentImgId)?.name}
       />
 
     </>
