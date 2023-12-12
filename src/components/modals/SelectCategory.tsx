@@ -62,7 +62,7 @@ export default function SelectCategoryModal(props: any) {
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one
     if(imageData === null) {
-      postImageData({"id": props.imgId, "categories": []}, () => {}, () => {})
+      postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
       fetchImageData(props.imgId, setImageData);
     }
   }, [imageData]);

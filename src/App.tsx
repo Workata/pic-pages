@@ -1,5 +1,3 @@
-import React from 'react';
-
 // * navigation
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
@@ -8,6 +6,7 @@ import Home from "./pages/Home";
 import Album from "./pages/Album";
 import ImgMap from "./pages/ImgMap";
 import Categories from "./pages/Categories";
+import CategoriesAlbum from "./pages/CategoriesAlbum";
 
 import AppWrapper from "./wrappers/AppWrapper";
 
@@ -20,9 +19,14 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
+    
           <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/:currentCategory" element={<CategoriesAlbum />} />
+          <Route path="/categories/:currentCategory/:currentImgId" element={<CategoriesAlbum />} />
+  
           <Route path="/album/:currentFolderId" element={<Album />} />
           <Route path="/album/:currentFolderId/:currentImgId" element={<Album />} />
+    
           <Route path="/map" element={<ImgMap />} />
         </Routes>
     

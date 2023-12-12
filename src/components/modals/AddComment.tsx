@@ -44,7 +44,7 @@ export default function AddCommentModal(props: any) {
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one and fetch image data again
     if(imageData === null) {
-      postImageData({"id": props.imgId, "categories": []}, () => {}, () => {})
+      postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
       fetchImageData(props.imgId, setImageData);
     }
     // if(imageData && imageData.comment !== comment) setComment(imageData.comment);

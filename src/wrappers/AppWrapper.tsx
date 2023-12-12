@@ -142,7 +142,7 @@ export default function AppWrapper(props: any) {
           </IconButton>
           <Box component={Link} to="/" sx={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h6" noWrap component="div">
-              Pic Pages
+              TomTol
             </Typography>
           </Box>
         </Toolbar>
@@ -226,7 +226,7 @@ export default function AppWrapper(props: any) {
               >
                 <PhotoLibraryIcon />
               </ListItemIcon>
-              <ListItemText primary='Photos' sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary='Album' sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
 
