@@ -10,7 +10,7 @@ import { useParams} from 'react-router-dom';
 import { Folder } from '../models/Folder';
 import { Image } from '../models/Image';
 import { ImageList, ImageListItem } from '@mui/material';
-import SelectCategoryModal from "../components/modals/SelectCategory";
+
 
 // * components
 import ClickableFolder from "../components/ClickableFolder";
@@ -18,8 +18,12 @@ import ImageViewer from 'awesome-image-viewer';
 import {
   Box
 } from "@mui/material";
+import SelectCategoryModal from "../components/modals/SelectCategory";
+import AddCommentModal from "../components/modals/AddComment";
 
 import categoryIcon from '../icons/theatre-svgrepo-com.svg';
+import commentIcon from '../icons/comment.svg';
+// import CommentIcon from '@mui/icons-material/Comment';
 
 declare type imageToView = {
   mainUrl: string;
@@ -33,7 +37,8 @@ export default function Album() {
   const [folders, setFolders] = useState<Folder[]>();
   const [images, setImages] = useState<Image[]>();
   const [viewer, setViewer] = useState<ImageViewer>();
-  const [openDialogWindow, setOpenDialogWindow] = useState(false);
+  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
+  const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const navigate = useNavigate();
 
   // const gallery = new Viewer(document.getElementById('images')!);
@@ -126,7 +131,13 @@ export default function Album() {
           name: 'Categorize',
           iconSrc: categoryIcon,
           iconSize: '18px',
-          onSelect: () => setOpenDialogWindow(true)
+          onSelect: () => setOpenCategoriesDialogWindow(true)
+        },
+        {
+          name: 'Comment',
+          iconSrc: commentIcon,
+          iconSize: '18px',
+          onSelect: () => setOpenCommentDialogWindow(true)
         }
       ]
     }))
@@ -198,11 +209,19 @@ export default function Album() {
         </Box>
       </Box>
 
+      {/* MODALS */}
       <SelectCategoryModal
-        openDialogWindow={openDialogWindow}
-        setOpenDialogWindow={setOpenDialogWindow}
+        openDialogWindow={openCategoriesDialogWindow}
+        setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
       />
+
+      <AddCommentModal
+        openDialogWindow={openCommentDialogWindow}
+        setOpenDialogWindow={setOpenCommentDialogWindow}
+        imgId={currentImgId}
+      />
+
     </>
   );
 }

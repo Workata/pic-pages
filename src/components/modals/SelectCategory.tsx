@@ -60,13 +60,11 @@ export default function SelectCategoryModal(props: any) {
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
+    // * if image data was set for null (non existing on backend site) we have to create one
     if(imageData === null) {
       postImageData({"id": props.imgId, "categories": []}, () => {}, () => {})
       fetchImageData(props.imgId, setImageData);
     }
-    // if(imageData instanceof ImageData)
-    console.log("Image data")
-    console.log(imageData);
   }, [imageData]);
 
   return (
@@ -75,10 +73,10 @@ export default function SelectCategoryModal(props: any) {
         open={props.openDialogWindow}
         onClose={props.handleCloseDialogWindow}
         sx={{
-          zIndex: 999999994   // image viewer has 999999993
+          zIndex: 999999994   // ! image viewer has 999999993
         }}
       >
-        <DialogTitle>Select Category {imageData?.id}</DialogTitle>
+        <DialogTitle>Select Category</DialogTitle>
         <DialogContent sx={{width: '400px'}}>
           {/* <Checkbox defaultChecked /> */}
         <FormGroup>
