@@ -2,6 +2,8 @@
 
 notes.txt
 
+.vscode/*
+
 .env
 
 # dependencies

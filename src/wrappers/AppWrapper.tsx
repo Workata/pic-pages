@@ -2,18 +2,11 @@ import React from 'react';
 import {
   Box,
   Typography,
-  Button,
   Toolbar,
-  List,
-  CssBaseline,
   Divider,
   IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import MuiDrawer from '@mui/material/Drawer';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
@@ -23,14 +16,8 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItemText from '@mui/material/ListItemText';
-import MapIcon from '@mui/icons-material/Map';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import HomeIcon from '@mui/icons-material/Home';
-import WestIcon from '@mui/icons-material/West';
-import CategoryIcon from '@mui/icons-material/Category';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
+import SideBarMenu from "../components/SideBarMenu";
 
 const drawerWidth = 240;
 
@@ -105,6 +92,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 export default function AppWrapper(props: any) {
+  // aggregates App Bar and Side Menu (Drawer)
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -115,12 +103,6 @@ export default function AppWrapper(props: any) {
 
   const handleDrawerClose = () => {
     setOpen(false);
-  };
-
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    navigate(-1);
   };
 
   return (
@@ -157,152 +139,9 @@ export default function AppWrapper(props: any) {
 
         <Divider />
 
-        <List>
+        <SideBarMenu open={open}/>
 
-          <ListItem key='WestIcon' disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-              onClick={goBack}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <WestIcon />
-              </ListItemIcon>
-              <ListItemText primary='Go back' sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Divider />
 
-        <List>
-          <ListItem key='HomeIcon' disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-              component={Link}
-              to={`/`}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key='PhotoLibraryIcon' disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-              component={Link}
-              to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <PhotoLibraryIcon />
-              </ListItemIcon>
-              <ListItemText primary='Album' sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key='MapIcon' disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                component={Link}
-                to={`/map`}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <MapIcon />
-                </ListItemIcon>
-                <ListItemText primary='Map' sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-          </ListItem>
-
-          <ListItem key='CategoryIcon' disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                component={Link}
-                to={`/categories`}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <CategoryIcon />
-                </ListItemIcon>
-                <ListItemText primary='Categories' sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-          </ListItem>
-        </List>
-
-        <Divider />
-
-        <List>
-          <ListItem key='AdminPanelSettingsIcon' disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                component={Link}
-                to={`/login`}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <AdminPanelSettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary='Admin' sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-        </List>
       </Drawer>
 
       {/* p - padding     */}
