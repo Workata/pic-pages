@@ -111,7 +111,7 @@ export default function Album() {
       (img) => ({
         "mainUrl": img.imageUrl,
         "thumbnailUrl": img.thumbnailUrl,
-        "description": img.name
+        "description": img.comment === '' ? img.name : `${img.name} - ${img.comment}`
       })
     );
 

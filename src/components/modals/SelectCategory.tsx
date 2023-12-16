@@ -5,12 +5,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 
 import { Category } from "../../models/Category";
 import { ImageData } from "../../models/ImageData";
-
-import { fetchCategories } from "../../clients/fetchCategories";
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -18,15 +15,16 @@ import Checkbox from '@mui/material/Checkbox';
 import { getImageData, postImageData, patchImageCategories } from "../../services/images";
 import { fetchImageData } from "../../clients/fetchImageData";
 
+import {useGetCategories} from "../../hooks/useGetCategories";
+
 
 export default function SelectCategoryModal(props: any) {
-  const [categories, setCategories] = useState<Category[]>();
   const [imageData, setImageData] = useState<ImageData | null | undefined>(undefined);
+  const {getCategories, categories, errorMsg, loading} = useGetCategories();
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
     setImageData(undefined);
-    // setCategories([]);
   };
 
   const updateCategories = (categoryName: string) => {
@@ -55,7 +53,7 @@ export default function SelectCategoryModal(props: any) {
   useEffect(() => {
     if(props.openDialogWindow === true && props.imgId) {
       fetchImageData(props.imgId, setImageData);
-      fetchCategories(setCategories);
+      getCategories();
     }
   }, [props.openDialogWindow, props.imgId]);
 

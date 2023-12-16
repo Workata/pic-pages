@@ -1,14 +1,11 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Box,
-  Typography,
   Menu,
   MenuItem
 
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { getCategories, createCategory } from "../services/categories";
-import { Category } from "../models/Category";
+import { createCategory } from "../services/categories";
 
 // * mui
 import Button from '@mui/material/Button';
@@ -23,7 +20,8 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 // * components
 import ClickableFolder from "../components/ClickableFolder";
 
-import { fetchCategories } from "../clients/fetchCategories";
+
+import {useGetCategories} from "../hooks/useGetCategories";
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -34,16 +32,18 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 
+
+
 export default function Categories() {
 
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
   } | null>(null);
-  const [categories, setCategories] = useState<Category[]>();
   const [newCategory, setNewCategory] = useState<string>("");
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
+  const {getCategories, categories, errorMsg, loading} = useGetCategories();
 
   const handleOpenDialogWindow = () => {
     setOpenDialogWindow(true);
@@ -85,7 +85,7 @@ export default function Categories() {
     createCategory({"name": newCategory}, (res: any) => {
       console.log(res);
       handleCloseDialogWindow();
-      fetchCategories(setCategories);
+      getCategories();
       setOpenSuccessMsg(true);
     }, (err: any) => {
       console.log(err);
@@ -93,7 +93,7 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    fetchCategories(setCategories);
+    getCategories();
   }, []);
 
   return (
