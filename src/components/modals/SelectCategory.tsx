@@ -7,19 +7,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 
 import { Category } from "../../models/Category";
-import { ImageData } from "../../models/ImageData";
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { getImageData, postImageData, patchImageCategories } from "../../services/images";
-import { fetchImageData } from "../../clients/fetchImageData";
+import {postImageData, patchImageCategories} from "../../services/images";
 
 import {useGetCategories} from "../../hooks/useGetCategories";
+import { useGetImageData } from "../../hooks/useGetImageData";
 
 
 export default function SelectCategoryModal(props: any) {
-  const [imageData, setImageData] = useState<ImageData | null | undefined>(undefined);
+  const {getImageData, setImageData, imageData} = useGetImageData();     // undefined by default, null if resources not found on backend side
   const {getCategories, categories, errorMsg, loading} = useGetCategories();
 
   const handleCloseDialogWindow = () => {
@@ -46,13 +45,12 @@ export default function SelectCategoryModal(props: any) {
     patchImageCategories(props.imgId, updatedCategories,
       (res: any) => {console.log(res)}, (err: any) => {console.log(err)}
     )
-    // fetchImageData(props.imgId, setImageData);
   }
 
 
   useEffect(() => {
     if(props.openDialogWindow === true && props.imgId) {
-      fetchImageData(props.imgId, setImageData);
+      getImageData(props.imgId);
       getCategories();
     }
   }, [props.openDialogWindow, props.imgId]);
@@ -61,7 +59,7 @@ export default function SelectCategoryModal(props: any) {
     // * if image data was set for null (non existing on backend site) we have to create one
     if(imageData === null) {
       postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
-      fetchImageData(props.imgId, setImageData);
+      getImageData(props.imgId);
     }
   }, [imageData]);
 

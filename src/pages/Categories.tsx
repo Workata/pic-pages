@@ -5,7 +5,6 @@ import {
   MenuItem
 
 } from "@mui/material";
-import { createCategory } from "../services/categories";
 
 // * mui
 import Button from '@mui/material/Button';
@@ -20,8 +19,9 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 // * components
 import ClickableFolder from "../components/ClickableFolder";
 
-
+// * hooks
 import {useGetCategories} from "../hooks/useGetCategories";
+import { useCreateCategory } from "../hooks/useCreateCategory";
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -30,8 +30,6 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-
-
 
 
 export default function Categories() {
@@ -44,6 +42,7 @@ export default function Categories() {
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
   const {getCategories, categories, errorMsg, loading} = useGetCategories();
+  const {createCategory} = useCreateCategory();
 
   const handleOpenDialogWindow = () => {
     setOpenDialogWindow(true);
@@ -80,16 +79,12 @@ export default function Categories() {
     setContextMenu(null);
   };
 
-  const createNewCategory = () => {
-    console.log(newCategory);
-    createCategory({"name": newCategory}, (res: any) => {
-      console.log(res);
-      handleCloseDialogWindow();
-      getCategories();
-      setOpenSuccessMsg(true);
-    }, (err: any) => {
-      console.log(err);
-    });
+  const handleCreateCategoryButton = async () => {
+    // TODO handle error message
+    createCategory(newCategory);
+    handleCloseDialogWindow();
+    getCategories();
+    setOpenSuccessMsg(true);
   }
 
   useEffect(() => {
@@ -142,7 +137,7 @@ export default function Categories() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogWindow}>Cancel</Button>
-          <Button onClick={createNewCategory}>Add</Button>
+          <Button onClick={handleCreateCategoryButton}>Create</Button>
         </DialogActions>
       </Dialog>
 
