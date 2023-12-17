@@ -41,7 +41,7 @@ export default function Categories() {
   const [newCategory, setNewCategory] = useState<string>("");
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
-  const {getCategories, categories, errorMsg, loading} = useGetCategories();
+  const {getCategories, categories} = useGetCategories();
   const {createCategory} = useCreateCategory();
 
   const handleOpenDialogWindow = () => {
@@ -94,11 +94,9 @@ export default function Categories() {
   return (
     <div onContextMenu={handleContextMenu} style={{
        cursor: 'context-menu',
-      //  borderStyle: 'solid',
-      //  borderColor: 'red',
        height: '85vh'
     }}>
-      <Box sx={{display: 'flex', columnGap: '20px'}}> 
+      <Box sx={{display: 'flex', columnGap: '20px', flexWrap: 'wrap', rowGap: '20px'}}> 
         {categories && categories.map(
           (category) => <ClickableFolder key={category.name} link={`/categories/${category.name}`} name={category.name}/>
         )}

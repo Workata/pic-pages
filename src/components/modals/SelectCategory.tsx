@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import {useEffect} from "react";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,15 +11,17 @@ import { Category } from "../../models/Category";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import {postImageData, patchImageCategories} from "../../services/images";
+import {postImageData} from "../../services/images";
 
-import {useGetCategories} from "../../hooks/useGetCategories";
+import { useGetCategories } from "../../hooks/useGetCategories";
+import { useUpdateImageCategories } from "../../hooks/useUpdateImageCategories";
 import { useGetImageData } from "../../hooks/useGetImageData";
 
 
 export default function SelectCategoryModal(props: any) {
-  const {getImageData, setImageData, imageData} = useGetImageData();     // undefined by default, null if resources not found on backend side
-  const {getCategories, categories, errorMsg, loading} = useGetCategories();
+  const {getImageData, setImageData, imageData} = useGetImageData();  // undefined by default, null if resources not found on backend side
+  const {getCategories, categories} = useGetCategories();
+  const {updateImageCategories} = useUpdateImageCategories();
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
@@ -27,9 +29,8 @@ export default function SelectCategoryModal(props: any) {
   };
 
   const updateCategories = (categoryName: string) => {
-    console.log("Update category")
     let updatedImageData = imageData;
-    let updatedCategories = imageData!.categories.map((category) => category.name);
+    let updatedCategories: string[] = imageData!.categories.map((category) => category.name);
     if (updatedCategories?.includes(categoryName)) {
       // * uncheck category
       const index = updatedCategories.indexOf(categoryName);
@@ -42,9 +43,7 @@ export default function SelectCategoryModal(props: any) {
       updatedImageData!.categories = imageData!.categories.concat([new Category({'name': categoryName})]);
       setImageData(updatedImageData);
     }
-    patchImageCategories(props.imgId, updatedCategories,
-      (res: any) => {console.log(res)}, (err: any) => {console.log(err)}
-    )
+    updateImageCategories(props.imgId, updatedCategories);
   }
 
 

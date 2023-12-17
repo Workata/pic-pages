@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 import { useLogin } from "../hooks/useLogin";
-  
+
   
 export default function Login () {
   const [username, setUsername] = useState<string>('');
@@ -27,9 +27,6 @@ export default function Login () {
   return (
     <Box
       sx={{
-        // backgroundImage: `url(${backgroundImage})`,
-        // borderRadius: '5%',
-        // borderStyle: 'solid',
         width: '400px',
         height: '315px',
         borderColor: 'white',

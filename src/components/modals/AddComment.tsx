@@ -14,7 +14,7 @@ import { useGetImageData } from "../../hooks/useGetImageData";
 
 export default function AddCommentModal(props: any) {
   const [commentFormInput, setCommentFormInput] = useState<string>('');
-  const {getImageData, imageData, errorMsg, loading} = useGetImageData();     // undefined by default, null if resources not found on backend side
+  const {getImageData, imageData} = useGetImageData();     // undefined by default, null if resources not found on backend side
 
   const handleCloseButton = () => {
     props.setOpenDialogWindow(false);

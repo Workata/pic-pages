@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,44 +7,34 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { createMarker } from "../../services/imgMap";
 import { useNavigate } from "react-router-dom";
+import { useCreateMarker } from "../../hooks/useCreateMarker";
 
 
 export default function AddMarkerModal(props: any) {
   const navigate = useNavigate();
   const [longitude, setLongitude] = useState(props.coords?.longitude);
   const [latitude, setLatitude] = useState(props.coords?.latitude);
-  const [url, setUrl] = useState('');
+  const {createMarker} = useCreateMarker();
+  const [url, setUrl] = useState<string>('');
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
   };
 
-  const createNewMarker = () => {
+  const handleCreateMarkerButton = () => {
     let lat = latitude;
     let lon = longitude;
+    // ? tf is this?
     if (lat === undefined) lat = props.coords?.latitude;
     if (lon === undefined) lon = props.coords?.longitude;
 
-    createMarker({
-      "latitude": Number(lat),
-      "longitude": Number(lon),
-      "url": url
-    }, (res: any) => {
-      handleCloseDialogWindow();
-
-      // ? This is a workaround to refetch markers without creating a new (second) map
-      // TODO find a way refetch markers and refresh a related (cluster) layer
-      navigate(0);
-      // props.fetchMarkers();
-      // setOpenSuccessMsg(true);
-    }, (err: any) => {
-      console.log(err);
-    });
-
+    createMarker(Number(lat), Number(lon), url);
+    handleCloseDialogWindow();
+    // ? This is a workaround to refetch markers without creating a new (second) map
+    // TODO find a way refetch markers and refresh a related (cluster) layer
+    navigate(0);
   };
-
 
   return (
     <>
@@ -84,7 +74,7 @@ export default function AddMarkerModal(props: any) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogWindow}>Cancel</Button>
-          <Button onClick={createNewMarker}>Add</Button>
+          <Button onClick={handleCreateMarkerButton}>Create</Button>
         </DialogActions>
       </Dialog>
     </>

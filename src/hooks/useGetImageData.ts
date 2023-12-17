@@ -10,10 +10,10 @@ export const useGetImageData = () => {
 
   const getImageData = async (imgId: number): Promise<any> => {
     axios.get(`/api/v1/images/${imgId}`
-    ).then( (res) => {  // 200
+    ).then( (res) => {
       setImageData(new ImageData(res.data));
-      setErrorMsg('');  // clear error message on correct response
-    }).catch( err => {  // 401
+      setErrorMsg('');
+    }).catch( err => {
       if(err.response) {
         if(err.response.status === 404) setImageData(null);
       }

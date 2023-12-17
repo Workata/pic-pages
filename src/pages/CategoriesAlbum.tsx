@@ -32,8 +32,6 @@ declare type imageToView = {
 };
 
 export default function CategoriesAlbum() {
-
-
   const { currentCategory, currentImgId } = useParams();
   const [folders, setFolders] = useState<Folder[]>();
   const [images, setImages] = useState<Image[]>();

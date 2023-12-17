@@ -2,19 +2,13 @@ import axios from 'axios';
 import { useState } from 'react';
 
 
-export const useLogin = () => {
+export const useUpdateImageCategories = () => {
   const [response, setResponse] = useState<any>();
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const login = async (username: string, password: string) => {
-    let data = {
-      username: username,
-      password: password
-    }
-    let headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    axios.post(
-      "/api/v1/auth/login", data, {headers: headers}
+  const updateImageCategories = async (imgId: string, categories: string[]) => {
+    axios.patch(`/api/v1/images/${imgId}/categories`, categories
     ).then( res => {
       setResponse(res);
       setErrorMsg('');
@@ -26,7 +20,7 @@ export const useLogin = () => {
   }
 
   return {
-    login,
+    updateImageCategories,
     response,
     errorMsg,
     loading

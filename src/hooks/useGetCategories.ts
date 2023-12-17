@@ -11,13 +11,13 @@ export const useGetCategories = () => {
   const getCategories = async () => {
     axios.get(
       "/api/v1/categories"
-    ).then( (res) => {  // 200
+    ).then( (res) => {
       let categories = res.data.map(
         (obj: any) => new Category(obj)
       )
       setCategories(categories);
-      setErrorMsg('');  // clear error message on correct response
-    }).catch( err => {  // 401
+      setErrorMsg('');
+    }).catch( err => {
       setErrorMsg(err.response.data.detail);
     }).finally( () => {
       setLoading(false);

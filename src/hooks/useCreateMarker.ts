@@ -2,19 +2,19 @@ import axios from 'axios';
 import { useState } from 'react';
 
 
-export const useLogin = () => {
+export const useCreateMarker = () => {
   const [response, setResponse] = useState<any>();
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const login = async (username: string, password: string) => {
+  const createMarker = async (lat: number, lon: number, url: string) => {
     let data = {
-      username: username,
-      password: password
+      latitude: lat,
+      longitude: lon,
+      url: url
     }
-    let headers = {"Content-Type": "application/x-www-form-urlencoded"}
     axios.post(
-      "/api/v1/auth/login", data, {headers: headers}
+      "/api/v1/map/marker", data
     ).then( res => {
       setResponse(res);
       setErrorMsg('');
@@ -26,7 +26,7 @@ export const useLogin = () => {
   }
 
   return {
-    login,
+    createMarker,
     response,
     errorMsg,
     loading

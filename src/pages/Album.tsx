@@ -1,29 +1,25 @@
 // TODO update URL based on current pic variable
+import {useState, useEffect} from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 
-import React, {useState, useEffect} from "react";
-
-import { useNavigate } from 'react-router-dom';
-
-// * services
-import { getFolderContent } from "../services/folderContent";
-import { useParams} from 'react-router-dom';
+// * models
 import { Folder } from '../models/Folder';
 import { Image } from '../models/Image';
-import { ImageList, ImageListItem } from '@mui/material';
 
+// * mui
+import { ImageList, ImageListItem, Box } from '@mui/material';
 
 // * components
 import ClickableFolder from "../components/ClickableFolder";
-import ImageViewer from 'awesome-image-viewer';
-import {
-  Box
-} from "@mui/material";
 import SelectCategoryModal from "../components/modals/SelectCategory";
 import AddCommentModal from "../components/modals/AddComment";
+import ImageViewer from 'awesome-image-viewer';
 
 import categoryIcon from '../icons/theatre-svgrepo-com.svg';
 import commentIcon from '../icons/comment.svg';
-// import CommentIcon from '@mui/icons-material/Comment';
+
+// * hooks
+import {useGetFolderContent} from "../hooks/useGetFolderContent";
 
 declare type imageToView = {
   mainUrl: string;
@@ -32,16 +28,12 @@ declare type imageToView = {
 };
 
 export default function Album() {
-
   const { currentFolderId, currentImgId } = useParams();
-  const [folders, setFolders] = useState<Folder[]>();
-  const [images, setImages] = useState<Image[]>();
   const [viewer, setViewer] = useState<ImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
+  const {getFolderContent, images, folders} = useGetFolderContent()
   const navigate = useNavigate();
-
-  // const gallery = new Viewer(document.getElementById('images')!);
 
   const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
@@ -68,20 +60,7 @@ export default function Album() {
   };
 
   const fetchFolderContent = (currentFolderId: any) => {
-    console.log("Fetch folder content...")
-    getFolderContent(currentFolderId, (res: any) => {
-      console.log(res)
-      let imagesList: Image[] = res.data.images.map(
-        (o: any) => new Image(o)
-      );
-      setImages(imagesList);
-      let folderList: Folder[] = res.data.folders.map(
-        (o: any) => new Folder(o)
-      );
-      setFolders(folderList);
-    }, (err: any) => {
-      console.log(err);
-    });
+    getFolderContent(currentFolderId);
   }
 
   const viewerIsClosed = () => {
@@ -115,13 +94,6 @@ export default function Album() {
       })
     );
 
-      
-    console.log("Image Viewer is opening...");
-    console.log("Data for image viewer:")
-    console.log(data);
-    console.log("Current selected idx in img viewer:")
-    console.log(idx)
-    // indexes should start from 0
     setViewer(new ImageViewer({
       images: data,
       currentSelected: idx,
@@ -165,7 +137,7 @@ export default function Album() {
       >
         {/* Folders container */}
         <Box sx={{display: 'flex', columnGap: '20px'}}> 
-          {folders && folders.map(folder => <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`}/>)}
+          {folders && folders.map((folder: Folder) => <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`}/>)}
         </Box>
 
         {/* Images container */}
