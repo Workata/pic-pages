@@ -6,22 +6,23 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 
-import { Category } from "../../models/Category";
+import { Category } from "models/Category";
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import {postImageData} from "../../services/images";
 
-import { useGetCategories } from "../../hooks/useGetCategories";
-import { useUpdateImageCategories } from "../../hooks/useUpdateImageCategories";
-import { useGetImageData } from "../../hooks/useGetImageData";
+import { useCreateImageData } from "hooks/api/images/useCreateImageData";
+import { useGetCategories } from "hooks/api/categories/useGetCategories";
+import { useUpdateImageCategories } from "hooks/api/images/useUpdateImageCategories";
+import { useGetImageData } from "hooks/api/images/useGetImageData";
 
 
 export default function SelectCategoryModal(props: any) {
   const {getImageData, setImageData, imageData} = useGetImageData();  // undefined by default, null if resources not found on backend side
   const {getCategories, categories} = useGetCategories();
   const {updateImageCategories} = useUpdateImageCategories();
+  const {createImageData} = useCreateImageData();
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
@@ -46,7 +47,6 @@ export default function SelectCategoryModal(props: any) {
     updateImageCategories(props.imgId, updatedCategories);
   }
 
-
   useEffect(() => {
     if(props.openDialogWindow === true && props.imgId) {
       getImageData(props.imgId);
@@ -57,7 +57,7 @@ export default function SelectCategoryModal(props: any) {
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one
     if(imageData === null) {
-      postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
+      createImageData(props.imgId, props.name);
       getImageData(props.imgId);
     }
   }, [imageData]);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Category } from "../models/Category";
+import { Category } from "../../../models/Category";
 
 
 export const useGetCategories = () => {

@@ -29,7 +29,7 @@ import {
   Text,
 } from 'ol/style.js';
 
-import { useGetMarkers } from "../hooks/useGetMarkers";
+import { useGetMarkers } from "../hooks/api/markers/useGetMarkers";
 
 
 export default function ImgMap() {

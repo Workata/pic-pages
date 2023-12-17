@@ -3,23 +3,23 @@ import {useState, useEffect} from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
 // * models
-import { Folder } from '../models/Folder';
-import { Image } from '../models/Image';
+import { Folder } from 'models/Folder';
+import { Image } from 'models/Image';
 
 // * mui
 import { ImageList, ImageListItem, Box } from '@mui/material';
 
 // * components
-import ClickableFolder from "../components/ClickableFolder";
-import SelectCategoryModal from "../components/modals/SelectCategory";
-import AddCommentModal from "../components/modals/AddComment";
+import ClickableFolder from "components/ClickableFolder";
+import SelectCategoryModal from "components/modals/SelectCategory";
+import AddCommentModal from "components/modals/AddComment";
 import ImageViewer from 'awesome-image-viewer';
 
 import categoryIcon from '../icons/theatre-svgrepo-com.svg';
 import commentIcon from '../icons/comment.svg';
 
 // * hooks
-import {useGetFolderContent} from "../hooks/useGetFolderContent";
+import {useGetFolderContent} from "../hooks/api/images/useGetFolderContent";
 
 declare type imageToView = {
   mainUrl: string;

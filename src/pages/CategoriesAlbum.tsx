@@ -1,19 +1,13 @@
 // TODO update URL based on current pic variable
-
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 
 import { useNavigate } from 'react-router-dom';
-
-// * services
-import { getCategoryContent } from "../services/images";
 import { useParams} from 'react-router-dom';
-import { Folder } from '../models/Folder';
 import { Image } from '../models/Image';
 import { ImageList, ImageListItem } from '@mui/material';
 
 
 // * components
-import ClickableFolder from "../components/ClickableFolder";
 import ImageViewer from 'awesome-image-viewer';
 import {
   Box
@@ -23,7 +17,7 @@ import AddCommentModal from "../components/modals/AddComment";
 
 import categoryIcon from '../icons/theatre-svgrepo-com.svg';
 import commentIcon from '../icons/comment.svg';
-// import CommentIcon from '@mui/icons-material/Comment';
+import { useGetCategoryContent } from "../hooks/api/categories/useGetCategoryContent";
 
 declare type imageToView = {
   mainUrl: string;
@@ -33,14 +27,11 @@ declare type imageToView = {
 
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
-  const [folders, setFolders] = useState<Folder[]>();
-  const [images, setImages] = useState<Image[]>();
   const [viewer, setViewer] = useState<ImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
+  const {getCategoryContent, images} = useGetCategoryContent();
   const navigate = useNavigate();
-
-  // const gallery = new Viewer(document.getElementById('images')!);
 
   const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
@@ -65,18 +56,6 @@ export default function CategoriesAlbum() {
   if(closeImgButton){
     closeImgButton.onclick = () => {clearUrlFromImg();};
   };
-
-  const fetchCategoryContent = (categoryName: string) => {
-    getCategoryContent(categoryName, (res: any) => {
-      console.log(res)
-      let imagesList: Image[] = res.data.map(
-        (o: any) => new Image(o)
-      );
-      setImages(imagesList);
-    }, (err: any) => {
-      console.log(err);
-    });
-  }
 
   const viewerIsClosed = () => {
     return document.getElementsByClassName('imageViewer visible').length === 0;
@@ -109,12 +88,6 @@ export default function CategoriesAlbum() {
       })
     );
 
-      
-    console.log("Image Viewer is opening...");
-    console.log("Data for image viewer:")
-    console.log(data);
-    console.log("Current selected idx in img viewer:")
-    console.log(idx)
     // indexes should start from 0
     setViewer(new ImageViewer({
       images: data,
@@ -138,8 +111,7 @@ export default function CategoriesAlbum() {
   }
 
   useEffect(() => {
-
-    if (currentCategory) fetchCategoryContent(currentCategory);
+    if (currentCategory) getCategoryContent(currentCategory);
   }, [currentCategory]);
 
   useEffect(() => {
@@ -153,17 +125,12 @@ export default function CategoriesAlbum() {
 
   return (
     <>
+    {/* Assumption is that categories should contain only images (without folders) */}
       <Box
         sx={{
           width: "100%",
         }}
       >
-        {/* Folders container */}
-        <Box sx={{display: 'flex', columnGap: '20px'}}> 
-          {folders && folders.map(folder => <ClickableFolder key={folder.id} name={folder.name} link={`/categories/${folder.id}`}/>)}
-        </Box>
-
-        {/* Images container */}
         <Box
           sx={{
             width: "100%",
@@ -195,7 +162,6 @@ export default function CategoriesAlbum() {
                   onClick={() => {
                     insertImgIdToUrl(img.id);
                   }}
-                  // style={{boxShadow: "2px 2px 5px #ccc"}}
                 />
               </ImageListItem>
             ))}

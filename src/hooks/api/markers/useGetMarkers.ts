@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Coords } from "../models/Coords";
-import { Marker } from "../models/Marker";
+import { Coords } from "../../../models/Coords";
+import { Marker } from "../../../models/Marker";
 
 
 export const useGetMarkers = () => {

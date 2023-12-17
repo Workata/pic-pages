@@ -20,8 +20,8 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import ClickableFolder from "../components/ClickableFolder";
 
 // * hooks
-import {useGetCategories} from "../hooks/useGetCategories";
-import { useCreateCategory } from "../hooks/useCreateCategory";
+import {useGetCategories} from "../hooks/api/categories/useGetCategories";
+import { useCreateCategory } from "../hooks/api/categories/useCreateCategory";
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(

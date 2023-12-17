@@ -11,13 +11,13 @@ import {
   TextField
 } from '@mui/material';
 
-import { useLogin } from "../hooks/useLogin";
+import { useLogin } from "../hooks/api/auth/useLogin";
 
   
 export default function Login () {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const {login, response, errorMsg, loading} = useLogin();
+  const {login, errorMsg} = useLogin();
 
   const handleLoginButton = async () => {
     if(username === '' || password === '') return;

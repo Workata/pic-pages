@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-import { Folder } from '../models/Folder';
-import { Image } from '../models/Image';
+import { Folder } from 'models/Folder';
+import { Image } from 'models/Image';
 
 
 export const useGetFolderContent = () => {
@@ -20,13 +20,11 @@ export const useGetFolderContent = () => {
           (o: any) => new Image(o)
         )
       );
-
       setFolders(
         res.data.folders.map(
           (o: any) => new Folder(o)
         )
       );
-
       setErrorMsg('');
     }).catch( err => {
       setErrorMsg(err.response.data.detail);

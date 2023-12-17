@@ -7,14 +7,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { postImageData, patchImageComment } from "../../services/images";
-
-import { useGetImageData } from "../../hooks/useGetImageData";
+import { useCreateImageData } from "hooks/api/images/useCreateImageData";
+import { useGetImageData } from "hooks/api/images/useGetImageData";
+import { useUpdateImageComment } from "hooks/api/images/useUpdateImageComment";
 
 
 export default function AddCommentModal(props: any) {
   const [commentFormInput, setCommentFormInput] = useState<string>('');
   const {getImageData, imageData} = useGetImageData();     // undefined by default, null if resources not found on backend side
+  const {updateImageComment} = useUpdateImageComment();
+  const {createImageData} = useCreateImageData();
 
   const handleCloseButton = () => {
     props.setOpenDialogWindow(false);
@@ -22,10 +24,9 @@ export default function AddCommentModal(props: any) {
   };
 
   const handleSaveButton = () => {
-    patchImageComment(props.imgId, {'comment': commentFormInput},
-    (res: any) => {console.log(res)}, (err: any) => {console.log(err)});
+    updateImageComment(props.imgId, commentFormInput);
+    props.setOpenDialogWindow(false);
   }
-
 
   useEffect(() => {
     if(props.openDialogWindow === true && props.imgId) {
@@ -36,7 +37,7 @@ export default function AddCommentModal(props: any) {
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one and fetch image data again
     if(imageData === null) {
-      postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
+      createImageData(props.imgId, props.name);
       getImageData(props.imgId);
     }
     if(imageData !== null && imageData !== undefined && imageData.comment !== '') setCommentFormInput(imageData.comment);
