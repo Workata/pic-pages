@@ -1,38 +1,37 @@
-import React, {useState, useEffect, useContext} from "react";
+import {useEffect} from "react";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 
-import { Category } from "../../models/Category";
-import { ImageData } from "../../models/ImageData";
-
-import { fetchCategories } from "../../clients/fetchCategories";
+import { Category } from "models/Category";
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { getImageData, postImageData, patchImageCategories } from "../../services/images";
-import { fetchImageData } from "../../clients/fetchImageData";
+
+import { useCreateImageData } from "hooks/api/images/useCreateImageData";
+import { useGetCategories } from "hooks/api/categories/useGetCategories";
+import { useUpdateImageCategories } from "hooks/api/images/useUpdateImageCategories";
+import { useGetImageData } from "hooks/api/images/useGetImageData";
 
 
 export default function SelectCategoryModal(props: any) {
-  const [categories, setCategories] = useState<Category[]>();
-  const [imageData, setImageData] = useState<ImageData | null | undefined>(undefined);
+  const {getImageData, setImageData, imageData} = useGetImageData();  // undefined by default, null if resources not found on backend side
+  const {getCategories, categories} = useGetCategories();
+  const {updateImageCategories} = useUpdateImageCategories();
+  const {createImageData} = useCreateImageData();
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
     setImageData(undefined);
-    // setCategories([]);
   };
 
   const updateCategories = (categoryName: string) => {
-    console.log("Update category")
     let updatedImageData = imageData;
-    let updatedCategories = imageData!.categories.map((category) => category.name);
+    let updatedCategories: string[] = imageData!.categories.map((category) => category.name);
     if (updatedCategories?.includes(categoryName)) {
       // * uncheck category
       const index = updatedCategories.indexOf(categoryName);
@@ -45,25 +44,21 @@ export default function SelectCategoryModal(props: any) {
       updatedImageData!.categories = imageData!.categories.concat([new Category({'name': categoryName})]);
       setImageData(updatedImageData);
     }
-    patchImageCategories(props.imgId, updatedCategories,
-      (res: any) => {console.log(res)}, (err: any) => {console.log(err)}
-    )
-    // fetchImageData(props.imgId, setImageData);
+    updateImageCategories(props.imgId, updatedCategories);
   }
-
 
   useEffect(() => {
     if(props.openDialogWindow === true && props.imgId) {
-      fetchImageData(props.imgId, setImageData);
-      fetchCategories(setCategories);
+      getImageData(props.imgId);
+      getCategories();
     }
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one
     if(imageData === null) {
-      postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
-      fetchImageData(props.imgId, setImageData);
+      createImageData(props.imgId, props.name);
+      getImageData(props.imgId);
     }
   }, [imageData]);
 

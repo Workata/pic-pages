@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import {useState, useEffect} from "react";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,47 +7,39 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { Category } from "../../models/Category";
-import { ImageData } from "../../models/ImageData";
-
-import { fetchCategories } from "../../clients/fetchCategories";
-
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { postImageData, patchImageComment } from "../../services/images";
-import { fetchImageData } from "../../clients/fetchImageData";
+import { useCreateImageData } from "hooks/api/images/useCreateImageData";
+import { useGetImageData } from "hooks/api/images/useGetImageData";
+import { useUpdateImageComment } from "hooks/api/images/useUpdateImageComment";
 
 
 export default function AddCommentModal(props: any) {
-  // undefined by default, null if resources not found on backend side
-  const [imageData, setImageData] = useState<ImageData | null | undefined>(undefined);
   const [commentFormInput, setCommentFormInput] = useState<string>('');
+  const {getImageData, imageData} = useGetImageData();     // undefined by default, null if resources not found on backend side
+  const {updateImageComment} = useUpdateImageComment();
+  const {createImageData} = useCreateImageData();
 
-  const handleCloseDialogWindow = () => {
+  const handleCloseButton = () => {
     props.setOpenDialogWindow(false);
     setCommentFormInput('');
   };
 
-  const updateComment = () => {
-    patchImageComment(props.imgId, {'comment': commentFormInput},
-    (res: any) => {console.log(res)}, (err: any) => {console.log(err)});
+  const handleSaveButton = () => {
+    updateImageComment(props.imgId, commentFormInput);
+    props.setOpenDialogWindow(false);
   }
-
 
   useEffect(() => {
     if(props.openDialogWindow === true && props.imgId) {
-      fetchImageData(props.imgId, setImageData);
+      getImageData(props.imgId);
     }
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one and fetch image data again
     if(imageData === null) {
-      postImageData({"id": props.imgId, "name": props.imgName, "categories": []}, () => {}, () => {})
-      fetchImageData(props.imgId, setImageData);
+      createImageData(props.imgId, props.name);
+      getImageData(props.imgId);
     }
-    // if(imageData && imageData.comment !== comment) setComment(imageData.comment);
     if(imageData !== null && imageData !== undefined && imageData.comment !== '') setCommentFormInput(imageData.comment);
   }, [imageData]);
 
@@ -74,8 +66,8 @@ export default function AddCommentModal(props: any) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialogWindow}>Close</Button>
-          <Button onClick={updateComment}>Save</Button>
+          <Button onClick={handleCloseButton}>Close</Button>
+          <Button onClick={handleSaveButton}>Save</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -15,10 +15,10 @@ export const useLogin = () => {
     let headers = {"Content-Type": "application/x-www-form-urlencoded"}
     axios.post(
       "/api/v1/auth/login", data, {headers: headers}
-    ).then( res => {  // 200
+    ).then( res => {
       setResponse(res);
-      setErrorMsg('');  // clear error message on correct response
-    }).catch( err => {  // 401
+      setErrorMsg('');
+    }).catch( err => {
       setErrorMsg(err.response.data.detail);
     }).finally( () => {
       setLoading(false);

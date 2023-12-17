@@ -1,14 +1,9 @@
 // * react
-import React, { useEffect, useState} from 'react'
+import { useEffect, useState} from 'react'
 import { Box } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-
-// * services
-import { getMarkers } from "../services/imgMap";
 
 // * models
 import { Coords } from "../models/Coords";
-import { Marker } from "../models/Marker";
 
 // * components
 import AddMarkerModal from "../components/modals/AddMarker";
@@ -34,6 +29,8 @@ import {
   Text,
 } from 'ol/style.js';
 
+import { useGetMarkers } from "../hooks/api/markers/useGetMarkers";
+
 
 export default function ImgMap() {
 
@@ -43,10 +40,10 @@ export default function ImgMap() {
   // ? https://en.wikipedia.org/wiki/Decimal_degrees
   const COORDS_DECIMAL_PRECISION = 6;   
 
-  const [markers, setMarkers] = useState<Marker[] | undefined>(undefined);
+  // const [markers, setMarkers] = useState<Marker[] | undefined>(undefined);
   const [newMarkerCoords, setNewMarkerCoords] = useState<Coords>();
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
-  const navigate = useNavigate();
+  const {getMarkers, markers} = useGetMarkers()
 
 
   const mapping: any = {};
@@ -142,13 +139,11 @@ export default function ImgMap() {
     // https://stackoverflow.com/questions/17546953/cant-access-object-property-even-though-it-shows-up-in-a-console-log
     // https://stackoverflow.com/questions/26967638/convert-point-to-lat-lon
     mainMap.on('click', function (event) {
-
       mainMap.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
         let loc = JSON.parse(JSON.stringify(feature.getGeometry())).flatCoordinates
-        let loc_plus = transform(loc, 'EPSG:3857', 'EPSG:4326');  // works ok 
+        let loc_plus = transform(loc, 'EPSG:3857', 'EPSG:4326');
         let url =  getUrlFromMapping(loc_plus)
-        console.log(url);
-        navigate(url);
+        window.location.href = url;   // navigate user to the specific page (full url)
       })
 
     })
@@ -170,28 +165,13 @@ export default function ImgMap() {
     })
   }
 
-  const fetchMarkers = () => {
-    console.log("Fetching markers")
-    getMarkers((res: any) => {
-      let markers = res.data.map(
-        (o: any) => new Marker(
-          {coords: new Coords({longitude: o.longitude, latitude: o.latitude}), url: o.url}
-        )
-      )
-      setMarkers(markers);
-      console.log(markers);
-    }, (err: any) => {
-      console.log(err);
-    });
-  };
-
   const handleOpenDialogWindow = () => {
     setOpenDialogWindow(true);
   };
 
   useEffect(() => {
-    fetchMarkers();
-    }, [])
+    getMarkers();
+  }, []);
 
   useEffect(() => {
     if(markers) setupMap();
@@ -213,7 +193,6 @@ export default function ImgMap() {
         openDialogWindow={openDialogWindow}
         setOpenDialogWindow={setOpenDialogWindow}
         coords={newMarkerCoords}
-        fetchMarkers={fetchMarkers}
       />
     </>
   );

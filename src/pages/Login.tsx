@@ -11,13 +11,13 @@ import {
   TextField
 } from '@mui/material';
 
-import { useLogin } from "../hooks/useLogin";
-  
+import { useLogin } from "../hooks/api/auth/useLogin";
+
   
 export default function Login () {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const {login, response, errorMsg, loading} = useLogin();
+  const {login, errorMsg} = useLogin();
 
   const handleLoginButton = async () => {
     if(username === '' || password === '') return;
@@ -27,9 +27,6 @@ export default function Login () {
   return (
     <Box
       sx={{
-        // backgroundImage: `url(${backgroundImage})`,
-        // borderRadius: '5%',
-        // borderStyle: 'solid',
         width: '400px',
         height: '315px',
         borderColor: 'white',

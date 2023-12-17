@@ -1,14 +1,10 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Box,
-  Typography,
   Menu,
   MenuItem
 
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { getCategories, createCategory } from "../services/categories";
-import { Category } from "../models/Category";
 
 // * mui
 import Button from '@mui/material/Button';
@@ -23,7 +19,9 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 // * components
 import ClickableFolder from "../components/ClickableFolder";
 
-import { fetchCategories } from "../clients/fetchCategories";
+// * hooks
+import {useGetCategories} from "../hooks/api/categories/useGetCategories";
+import { useCreateCategory } from "../hooks/api/categories/useCreateCategory";
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -40,10 +38,11 @@ export default function Categories() {
     mouseX: number;
     mouseY: number;
   } | null>(null);
-  const [categories, setCategories] = useState<Category[]>();
   const [newCategory, setNewCategory] = useState<string>("");
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
+  const {getCategories, categories} = useGetCategories();
+  const {createCategory} = useCreateCategory();
 
   const handleOpenDialogWindow = () => {
     setOpenDialogWindow(true);
@@ -80,30 +79,24 @@ export default function Categories() {
     setContextMenu(null);
   };
 
-  const createNewCategory = () => {
-    console.log(newCategory);
-    createCategory({"name": newCategory}, (res: any) => {
-      console.log(res);
-      handleCloseDialogWindow();
-      fetchCategories(setCategories);
-      setOpenSuccessMsg(true);
-    }, (err: any) => {
-      console.log(err);
-    });
+  const handleCreateCategoryButton = async () => {
+    // TODO handle error message
+    createCategory(newCategory);
+    handleCloseDialogWindow();
+    getCategories();
+    setOpenSuccessMsg(true);
   }
 
   useEffect(() => {
-    fetchCategories(setCategories);
+    getCategories();
   }, []);
 
   return (
     <div onContextMenu={handleContextMenu} style={{
        cursor: 'context-menu',
-      //  borderStyle: 'solid',
-      //  borderColor: 'red',
        height: '85vh'
     }}>
-      <Box sx={{display: 'flex', columnGap: '20px'}}> 
+      <Box sx={{display: 'flex', columnGap: '20px', flexWrap: 'wrap', rowGap: '20px'}}> 
         {categories && categories.map(
           (category) => <ClickableFolder key={category.name} link={`/categories/${category.name}`} name={category.name}/>
         )}
@@ -142,7 +135,7 @@ export default function Categories() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogWindow}>Cancel</Button>
-          <Button onClick={createNewCategory}>Add</Button>
+          <Button onClick={handleCreateCategoryButton}>Create</Button>
         </DialogActions>
       </Dialog>
 
