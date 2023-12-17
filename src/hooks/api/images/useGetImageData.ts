@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { ImageData } from "../../../models/ImageData";
+import { ImageData } from "models/ImageData";
 
 
 export const useGetImageData = () => {

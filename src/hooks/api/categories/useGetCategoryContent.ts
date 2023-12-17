@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Image } from "../../../models/Image";
+import { Image } from "models/Image";
 
 
 export const useGetCategoryContent = () => {

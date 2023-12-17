@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 import { useNavigate } from "react-router-dom";
-import { useCreateMarker } from "../../hooks/api/markers/useCreateMarker";
+import { useCreateMarker } from "hooks/api/markers/useCreateMarker";
 
 
 export default function AddMarkerModal(props: any) {

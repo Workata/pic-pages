@@ -3,7 +3,7 @@ import {useState, useEffect} from "react";
 
 import { useNavigate } from 'react-router-dom';
 import { useParams} from 'react-router-dom';
-import { Image } from '../models/Image';
+import { Image } from 'models/Image';
 import { ImageList, ImageListItem } from '@mui/material';
 
 
@@ -12,12 +12,12 @@ import ImageViewer from 'awesome-image-viewer';
 import {
   Box
 } from "@mui/material";
-import SelectCategoryModal from "../components/modals/SelectCategory";
-import AddCommentModal from "../components/modals/AddComment";
+import SelectCategoryModal from "components/modals/SelectCategory";
+import AddCommentModal from "components/modals/AddComment";
 
-import categoryIcon from '../icons/theatre-svgrepo-com.svg';
-import commentIcon from '../icons/comment.svg';
-import { useGetCategoryContent } from "../hooks/api/categories/useGetCategoryContent";
+import categoryIcon from 'icons/theatre-svgrepo-com.svg';
+import commentIcon from 'icons/comment.svg';
+import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 
 declare type imageToView = {
   mainUrl: string;
