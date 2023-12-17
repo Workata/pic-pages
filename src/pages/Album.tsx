@@ -15,11 +15,11 @@ import SelectCategoryModal from "components/modals/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 import ImageViewer from 'awesome-image-viewer';
 
-import categoryIcon from '../icons/theatre-svgrepo-com.svg';
-import commentIcon from '../icons/comment.svg';
+import categoryIcon from 'icons/theatre-svgrepo-com.svg';
+import commentIcon from 'icons/comment.svg';
 
 // * hooks
-import {useGetFolderContent} from "../hooks/api/images/useGetFolderContent";
+import {useGetFolderContent} from "hooks/api/images/useGetFolderContent";
 
 declare type imageToView = {
   mainUrl: string;
@@ -58,10 +58,6 @@ export default function Album() {
   if(closeImgButton){
     closeImgButton.onclick = () => {clearUrlFromImg();};
   };
-
-  const fetchFolderContent = (currentFolderId: any) => {
-    getFolderContent(currentFolderId);
-  }
 
   const viewerIsClosed = () => {
     return document.getElementsByClassName('imageViewer visible').length === 0;
@@ -116,7 +112,7 @@ export default function Album() {
   }
 
   useEffect(() => {
-    if (currentFolderId) fetchFolderContent(currentFolderId);
+    if (currentFolderId) getFolderContent(currentFolderId);
   }, [currentFolderId]);
 
   useEffect(() => {

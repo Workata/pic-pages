@@ -3,10 +3,10 @@ import { useEffect, useState} from 'react'
 import { Box } from "@mui/material";
 
 // * models
-import { Coords } from "../models/Coords";
+import { Coords } from "models/Coords";
 
 // * components
-import AddMarkerModal from "../components/modals/AddMarker";
+import AddMarkerModal from "components/modals/AddMarker";
 
 // * map related
 import Feature from 'ol/Feature.js';
@@ -29,7 +29,7 @@ import {
   Text,
 } from 'ol/style.js';
 
-import { useGetMarkers } from "../hooks/api/markers/useGetMarkers";
+import { useGetMarkers } from "hooks/api/markers/useGetMarkers";
 
 
 export default function ImgMap() {

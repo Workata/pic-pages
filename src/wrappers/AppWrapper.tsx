@@ -1,23 +1,26 @@
+// * react
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Toolbar,
-  Divider,
-  IconButton,
-} from "@mui/material";
 import { Link } from "react-router-dom";
 
-import MuiDrawer from '@mui/material/Drawer';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+// * mui
+import {
+  Box,
+  Divider,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import MuiDrawer from '@mui/material/Drawer';
+import { CSSObject, Theme, styled, useTheme } from '@mui/material/styles';
 
 // * Icons
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuIcon from '@mui/icons-material/Menu';
 
-import SideBarMenu from "../components/SideBarMenu";
+// * components
+import SideBarMenu from "components/SideBarMenu";
 
 const drawerWidth = 240;
 

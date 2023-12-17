@@ -1,4 +1,4 @@
-import { Coords } from "../models/Coords";
+import { Coords } from "models/Coords";
 
 
 export class Marker {
