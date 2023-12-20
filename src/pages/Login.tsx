@@ -1,7 +1,7 @@
 // ? ref to old login
 // ? https://github.com/Workata/photo-album/blob/main/frontend/src/pages/Login.js
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 
 // * Material UI
@@ -12,16 +12,22 @@ import {
 } from '@mui/material';
 
 import { useLogin } from "hooks/api/auth/useLogin";
+import { AppContext } from 'AppContext';
 
   
 export default function Login () {
+  const { setTokenCookie, setTokenValue } = useContext(AppContext)
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const {login, errorMsg} = useLogin();
 
   const handleLoginButton = async () => {
     if(username === '' || password === '') return;
-    login(username, password);
+    let res = await login(username, password);
+    if(res.status === 200) {
+      setTokenValue(res.data.access_token);
+      setTokenCookie('token', res.data.access_token);
+    }
   }
 
   return (

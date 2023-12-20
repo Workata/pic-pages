@@ -3,32 +3,29 @@ import { useState } from 'react';
 
 
 export const useLogin = () => {
-  const [response, setResponse] = useState<any>();
   const [errorMsg, setErrorMsg] = useState<string>('');
-  const [loading, setLoading] = useState<Boolean>(true);
 
-  const login = async (username: string, password: string) => {
+  const login = (username: string, password: string): any => {
     let data = {
       username: username,
       password: password
     }
     let headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    axios.post(
+
+    return axios.post(
       "/api/v1/auth/login", data, {headers: headers}
-    ).then( res => {
-      setResponse(res);
+    ).then( res => {    // 200
       setErrorMsg('');
-    }).catch( err => {
-      setErrorMsg(err.response.data.detail);
-    }).finally( () => {
-      setLoading(false);
+      return res;
+    }).catch( err => {    // 401
+      let res = err.response;
+      setErrorMsg(res.data.detail);
+      return res;
     });
   }
 
   return {
     login,
-    response,
-    errorMsg,
-    loading
+    errorMsg
   }
 }
