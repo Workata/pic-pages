@@ -1,3 +1,5 @@
+import React, { useContext, useEffect } from 'react';
+
 // * navigation
 import { BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 
@@ -9,8 +11,15 @@ import Categories from "./pages/Categories";
 import CategoriesAlbum from "./pages/CategoriesAlbum";
 
 import AppWrapper from "./wrappers/AppWrapper";
+import { AppContext } from 'AppContext';
 
 function App() {
+  const { getTokenCookie, tokenValue, setTokenValue } = useContext(AppContext);
+  // * on app load check if token exists in cookie
+  useEffect(() => {
+    if (!tokenValue) { setTokenValue(getTokenCookie('token')) }
+  });
+
   return (
     // TODO verify basename and homepage setting after deploy
     <Router 

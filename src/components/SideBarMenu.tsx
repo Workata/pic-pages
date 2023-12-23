@@ -122,33 +122,6 @@ export default function SideBarMenu(props: any) {
         </ListItemButton>
     </ListItem>
   </List>
-
-  <Divider />
-
-  <List>
-    <ListItem key='AdminPanelSettingsIcon' disablePadding sx={{ display: 'block' }}>
-        <ListItemButton
-          sx={{
-            minHeight: 48,
-            justifyContent: props.open ? 'initial' : 'center',
-            px: 2.5,
-          }}
-          component={Link}
-          to={`/login`}
-        >
-          <ListItemIcon
-            sx={{
-              minWidth: 0,
-              mr: props.open ? 3 : 'auto',
-              justifyContent: 'center',
-            }}
-          >
-            <AdminPanelSettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary='Admin' sx={{ opacity: props.open ? 1 : 0 }} />
-        </ListItemButton>
-      </ListItem>
-  </List>
   </>
   );
 }

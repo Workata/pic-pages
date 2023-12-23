@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import { useState, createContext } from 'react'
 
-export const AppContext = React.createContext({
+export const AppContext = createContext({
   tokenValue: '',
-  setTokenValue: (tokenValue: string) => {},
+  setTokenValue: (tokenValue: string): void => {},
   setTokenCookie: (cookieName: string, value: any): void => {},
-  getTokenCookie: (cookieName: string) => {},
-  deleteTokenCookie: (cookieName: string) => {}
+  getTokenCookie: (cookieName: string): string => {return ''},
+  deleteTokenCookie: (cookieName: string): void => {}
 })
 
 export default function ContextProvider (props: any) {

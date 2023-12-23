@@ -1,6 +1,6 @@
 // * react
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, {useContext} from 'react';
+import { Link, useNavigate } from "react-router-dom";
 
 // * mui
 import {
@@ -9,6 +9,7 @@ import {
   IconButton,
   Toolbar,
   Typography,
+  Button
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
@@ -21,6 +22,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // * components
 import SideBarMenu from "components/SideBarMenu";
+
+import { AppContext } from 'AppContext';
 
 const drawerWidth = 240;
 
@@ -95,9 +98,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 export default function AppWrapper(props: any) {
-  // aggregates App Bar and Side Menu (Drawer)
-
+  // * aggregates App Bar and Side Menu (Drawer)
+  const navigate = useNavigate();
   const theme = useTheme();
+  const { tokenValue, setTokenValue, deleteTokenCookie } = useContext(AppContext);
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -127,9 +131,34 @@ export default function AppWrapper(props: any) {
           </IconButton>
           <Box component={Link} to="/" sx={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h6" noWrap component="div">
-              TomTol
+              TomTol {tokenValue && " - Admin"}
             </Typography>
           </Box>
+          
+          { tokenValue ? (
+          <Button
+            color="inherit"
+            sx={{ marginLeft: "auto" }}
+            onClick={() => {
+              setTokenValue('');
+              deleteTokenCookie('token');
+              navigate("/");    // redirect to the homepage after logout
+            }}
+          >
+            Logout
+          </Button>
+          ) : (
+            <Button
+            color="inherit"
+            sx={{ marginLeft: "auto" }}
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Login
+          </Button>
+          )}
+
         </Toolbar>
       </AppBar>
 

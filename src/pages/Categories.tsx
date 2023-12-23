@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {
   Box,
   Menu,
@@ -23,6 +23,8 @@ import ClickableFolder from "components/ClickableFolder";
 import {useGetCategories} from "hooks/api/categories/useGetCategories";
 import { useCreateCategory } from "hooks/api/categories/useCreateCategory";
 
+import { AppContext } from 'AppContext';
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -43,6 +45,7 @@ export default function Categories() {
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
   const {getCategories, categories} = useGetCategories();
   const {createCategory} = useCreateCategory();
+  const { tokenValue } = useContext(AppContext);
 
   const handleOpenDialogWindow = () => {
     setOpenDialogWindow(true);
@@ -81,7 +84,7 @@ export default function Categories() {
 
   const handleCreateCategoryButton = async () => {
     // TODO handle error message
-    createCategory(newCategory);
+    await createCategory(newCategory, tokenValue);
     handleCloseDialogWindow();
     getCategories();
     setOpenSuccessMsg(true);
@@ -102,22 +105,24 @@ export default function Categories() {
         )}
       </Box>
 
-      <Menu
-        open={contextMenu !== null}
-        onClose={handleCloseContextMenu}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
-      >
-        <MenuItem onClick={() => {
-          handleCloseContextMenu();
-          handleOpenDialogWindow();
+      {tokenValue && 
+        <Menu
+          open={contextMenu !== null}
+          onClose={handleCloseContextMenu}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
           }
-        }>Add category</MenuItem>
-      </Menu>
+        >
+          <MenuItem onClick={() => {
+            handleCloseContextMenu();
+            handleOpenDialogWindow();
+            }
+          }>Add category</MenuItem>
+        </Menu>
+      }
 
       <Dialog open={openDialogWindow} onClose={handleCloseDialogWindow}>
         <DialogTitle>Add category</DialogTitle>
