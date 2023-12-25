@@ -34,6 +34,8 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "npx prettier src --check",
     "prettier:fix": "npm run prettier -- --write",
+    "checks": "npm run prettier && npm run lint",
+    "checks:fix": "npm run prettier:fix && npm run lint:fix",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
