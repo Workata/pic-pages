@@ -92,6 +92,7 @@ export default function Categories() {
 
   useEffect(() => {
     getCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -99,13 +100,13 @@ export default function Categories() {
        cursor: 'context-menu',
        height: '85vh'
     }}>
-      <Box sx={{display: 'flex', columnGap: '20px', flexWrap: 'wrap', rowGap: '20px'}}> 
+      <Box sx={{display: 'flex', columnGap: '20px', flexWrap: 'wrap', rowGap: '20px'}}>
         {categories && categories.map(
           (category) => <ClickableFolder key={category.name} link={`/categories/${category.name}`} name={category.name}/>
         )}
       </Box>
 
-      {tokenValue && 
+      {tokenValue &&
         <Menu
           open={contextMenu !== null}
           onClose={handleCloseContextMenu}

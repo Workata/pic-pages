@@ -1,5 +1,5 @@
 // TODO update URL based on current pic variable
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
 // * models
@@ -22,6 +22,8 @@ import commentIcon from 'icons/comment.svg';
 // * hooks
 import {useGetFolderContent} from "hooks/api/images/useGetFolderContent";
 
+import { AppContext } from 'AppContext';
+
 declare type imageToView = {
   mainUrl: string;
   thumbnailUrl?: string;
@@ -36,6 +38,7 @@ export default function Album() {
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const {getFolderContent, images, folders} = useGetFolderContent()
   const navigate = useNavigate();
+  const { tokenValue } = useContext(AppContext);
 
   const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
@@ -92,29 +95,33 @@ export default function Album() {
       })
     );
 
+    let buttons: any;
+    if(tokenValue) buttons = [
+      {
+        name: 'Categorize',
+        iconSrc: categoryIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCategoriesDialogWindow(true)
+      },
+      {
+        name: 'Comment',
+        iconSrc: commentIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCommentDialogWindow(true)
+      }
+    ]; else buttons = [];
+
     setViewer(new ExtendedImageViewer({
       images: data,
       currentSelected: idx,
       showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-      buttons: [
-        {
-          name: 'Categorize',
-          iconSrc: categoryIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCategoriesDialogWindow(true)
-        },
-        {
-          name: 'Comment',
-          iconSrc: commentIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCommentDialogWindow(true)
-        }
-      ]
+      buttons: buttons
     }))
   }
 
   useEffect(() => {
     if (currentFolderId) getFolderContent(currentFolderId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId]);
 
   useEffect(() => {
@@ -124,6 +131,7 @@ export default function Album() {
         images.findIndex(el => el.id === currentImgId)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
 
   return (

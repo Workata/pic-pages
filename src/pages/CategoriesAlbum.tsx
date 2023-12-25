@@ -1,5 +1,5 @@
 // TODO update URL based on current pic variable
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 
 import { useNavigate } from 'react-router-dom';
 import { useParams} from 'react-router-dom';
@@ -18,6 +18,7 @@ import AddCommentModal from "components/modals/AddComment";
 import categoryIcon from 'icons/theatre-svgrepo-com.svg';
 import commentIcon from 'icons/comment.svg';
 import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
+import { AppContext } from 'AppContext';
 
 declare type imageToView = {
   mainUrl: string;
@@ -32,6 +33,7 @@ export default function CategoriesAlbum() {
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const {getCategoryContent, images} = useGetCategoryContent();
   const navigate = useNavigate();
+  const { tokenValue } = useContext(AppContext);
 
   const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
@@ -88,25 +90,27 @@ export default function CategoriesAlbum() {
       })
     );
 
-    // indexes should start from 0
+    let buttons: any;
+    if(tokenValue) buttons = [
+      {
+        name: 'Categorize',
+        iconSrc: categoryIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCategoriesDialogWindow(true)
+      },
+      {
+        name: 'Comment',
+        iconSrc: commentIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCommentDialogWindow(true)
+      }
+    ]; else buttons = [];
+
     setViewer(new ExtendedImageViewer({
       images: data,
       currentSelected: idx,
       showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-      buttons: [
-        {
-          name: 'Categorize',
-          iconSrc: categoryIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCategoriesDialogWindow(true)
-        },
-        {
-          name: 'Comment',
-          iconSrc: commentIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCommentDialogWindow(true)
-        }
-      ]
+      buttons: buttons
     }))
   }
 
