@@ -1,23 +1,23 @@
-import { useState, useContext } from 'react';
+import { useState, useContext } from "react";
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 import { useNavigate } from "react-router-dom";
 import { useCreateMarker } from "hooks/api/markers/useCreateMarker";
 
-import { AppContext } from 'AppContext';
+import { AppContext } from "AppContext";
 
 export default function AddMarkerModal(props: any) {
   const navigate = useNavigate();
   const [longitude, setLongitude] = useState(props.coords?.longitude);
   const [latitude, setLatitude] = useState(props.coords?.latitude);
-  const {createMarker} = useCreateMarker();
-  const [url, setUrl] = useState<string>('');
+  const { createMarker } = useCreateMarker();
+  const [url, setUrl] = useState<string>("");
   const { tokenValue } = useContext(AppContext);
 
   const handleCloseDialogWindow = () => {
@@ -40,10 +40,13 @@ export default function AddMarkerModal(props: any) {
 
   return (
     <>
-      <Dialog open={props.openDialogWindow} onClose={props.handleCloseDialogWindow}>
+      <Dialog
+        open={props.openDialogWindow}
+        onClose={props.handleCloseDialogWindow}
+      >
         <DialogTitle>Add marker</DialogTitle>
-        <DialogContent sx={{width: '400px'}}>
-        <TextField
+        <DialogContent sx={{ width: "400px" }}>
+          <TextField
             margin="dense"
             id="name"
             label="Longitude"
@@ -53,7 +56,7 @@ export default function AddMarkerModal(props: any) {
             defaultValue={props.coords?.longitude}
             onChange={(event) => setLongitude(event.target.value)}
           />
-        <TextField
+          <TextField
             margin="dense"
             id="name"
             label="Latitude"

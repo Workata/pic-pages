@@ -1,41 +1,32 @@
-import React, {useState, useEffect, useContext} from "react";
-import {
-  Box,
-  Menu,
-  MenuItem
-
-} from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { Box, Menu, MenuItem } from "@mui/material";
 
 // * mui
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
 
 // * hooks
-import {useGetCategories} from "hooks/api/categories/useGetCategories";
+import { useGetCategories } from "hooks/api/categories/useGetCategories";
 import { useCreateCategory } from "hooks/api/categories/useCreateCategory";
 
-import { AppContext } from 'AppContext';
+import { AppContext } from "AppContext";
 
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+  function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  },
+);
 
 export default function Categories() {
-
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
@@ -43,8 +34,8 @@ export default function Categories() {
   const [newCategory, setNewCategory] = useState<string>("");
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
-  const {getCategories, categories} = useGetCategories();
-  const {createCategory} = useCreateCategory();
+  const { getCategories, categories } = useGetCategories();
+  const { createCategory } = useCreateCategory();
   const { tokenValue } = useContext(AppContext);
 
   const handleOpenDialogWindow = () => {
@@ -55,8 +46,11 @@ export default function Categories() {
     setOpenDialogWindow(false);
   };
 
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -88,7 +82,7 @@ export default function Categories() {
     handleCloseDialogWindow();
     getCategories();
     setOpenSuccessMsg(true);
-  }
+  };
 
   useEffect(() => {
     getCategories();
@@ -96,17 +90,32 @@ export default function Categories() {
   }, []);
 
   return (
-    <div onContextMenu={handleContextMenu} style={{
-       cursor: 'context-menu',
-       height: '85vh'
-    }}>
-      <Box sx={{display: 'flex', columnGap: '20px', flexWrap: 'wrap', rowGap: '20px'}}>
-        {categories && categories.map(
-          (category) => <ClickableFolder key={category.name} link={`/categories/${category.name}`} name={category.name}/>
-        )}
+    <div
+      onContextMenu={handleContextMenu}
+      style={{
+        cursor: "context-menu",
+        height: "85vh",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          columnGap: "20px",
+          flexWrap: "wrap",
+          rowGap: "20px",
+        }}
+      >
+        {categories &&
+          categories.map((category) => (
+            <ClickableFolder
+              key={category.name}
+              link={`/categories/${category.name}`}
+              name={category.name}
+            />
+          ))}
       </Box>
 
-      {tokenValue &&
+      {tokenValue && (
         <Menu
           open={contextMenu !== null}
           onClose={handleCloseContextMenu}
@@ -117,17 +126,20 @@ export default function Categories() {
               : undefined
           }
         >
-          <MenuItem onClick={() => {
-            handleCloseContextMenu();
-            handleOpenDialogWindow();
-            }
-          }>Add category</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleCloseContextMenu();
+              handleOpenDialogWindow();
+            }}
+          >
+            Add category
+          </MenuItem>
         </Menu>
-      }
+      )}
 
       <Dialog open={openDialogWindow} onClose={handleCloseDialogWindow}>
         <DialogTitle>Add category</DialogTitle>
-        <DialogContent sx={{width: '400px'}}>
+        <DialogContent sx={{ width: "400px" }}>
           <TextField
             autoFocus
             margin="dense"
@@ -145,12 +157,19 @@ export default function Categories() {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={openSuccessMsg} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        open={openSuccessMsg}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           New category has been created!
         </Alert>
       </Snackbar>
-
     </div>
   );
 }
