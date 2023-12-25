@@ -1,0 +1,19 @@
+name: checks
+
+on: [push]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install packages
+      run: npm ci
+
+    - name: Check fromatting with prettier
+      run: npm run prettier
+
+    - name: Lint with eslint
+      run: npm run lint

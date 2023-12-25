@@ -1,8 +1,7 @@
-
 export class Category {
-    name: string;
+  name: string;
 
-    constructor ({name = ''}){
-       this.name = name;
-    }
+  constructor({ name = "" }) {
+    this.name = name;
+  }
 }
