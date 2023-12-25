@@ -7,14 +7,16 @@ export const useCreateMarker = () => {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const createMarker = async (lat: number, lon: number, url: string) => {
+  const createMarker = async (lat: number, lon: number, url: string, token: string) => {
     let data = {
       latitude: lat,
       longitude: lon,
       url: url
     }
+    let headers = {"Authorization": `Bearer ${token}`};
+
     axios.post(
-      "/api/v1/map/marker", data
+      "/api/v1/map/marker", data, {headers: headers}
     ).then( res => {
       setResponse(res);
       setErrorMsg('');

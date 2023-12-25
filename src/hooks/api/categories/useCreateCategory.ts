@@ -3,18 +3,18 @@ import { useState } from 'react';
 
 
 export const useCreateCategory = () => {
-  const [response, setResponse] = useState<any>();
-  const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const createCategory = async (categoryName: string) => {
+  const createCategory = (categoryName: string, token: string): any => {
+    // * returns positive or error response
     let data = {name: categoryName};
-    axios.post("/api/v1/categories", data
-    ).then( (res) => {  // 200
-      setResponse(res);
-      setErrorMsg('');  // clear error message on correct response
-    }).catch( err => {
-      setErrorMsg(err.response.data.detail);
+    let headers = {"Authorization": `Bearer ${token}`};
+
+    return axios.post("/api/v1/categories", data, {headers: headers}
+    ).then( res => {  // 201 - created
+      return res;
+    }).catch( err => {  // 401 etc
+      return err.response;
     }).finally( () => {
       setLoading(false);
     });
@@ -22,8 +22,6 @@ export const useCreateCategory = () => {
 
   return {
     createCategory,
-    response,
-    errorMsg,
     loading
   }
 }

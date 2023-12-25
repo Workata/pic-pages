@@ -7,8 +7,10 @@ export const useUpdateImageComment = () => {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const updateImageComment = async (imgId: string, comment: string) => {
-    axios.patch(`/api/v1/images/${imgId}/comment`, {comment: comment}
+  const updateImageComment = async (imgId: string, comment: string, token: string) => {
+    let headers = {"Authorization": `Bearer ${token}`};
+
+    axios.patch(`/api/v1/images/${imgId}/comment`, {comment: comment}, {headers: headers}
     ).then( res => {
       setResponse(res);
       setErrorMsg('');

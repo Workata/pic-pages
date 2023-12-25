@@ -1,5 +1,5 @@
 // TODO update URL based on current pic variable
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
 // * models
@@ -13,7 +13,8 @@ import { ImageList, ImageListItem, Box } from '@mui/material';
 import ClickableFolder from "components/ClickableFolder";
 import SelectCategoryModal from "components/modals/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
-import ImageViewer from 'awesome-image-viewer';
+
+import { ExtendedImageViewer } from "utils/imageViewer";
 
 import categoryIcon from 'icons/theatre-svgrepo-com.svg';
 import commentIcon from 'icons/comment.svg';
@@ -21,34 +22,38 @@ import commentIcon from 'icons/comment.svg';
 // * hooks
 import {useGetFolderContent} from "hooks/api/images/useGetFolderContent";
 
+import { AppContext } from 'AppContext';
+
 declare type imageToView = {
   mainUrl: string;
   thumbnailUrl?: string;
   description?: string;
 };
 
+
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
-  const [viewer, setViewer] = useState<ImageViewer>();
+  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const {getFolderContent, images, folders} = useGetFolderContent()
   const navigate = useNavigate();
+  const { tokenValue } = useContext(AppContext);
 
   const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   if(rightImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev>=images!.length-1) return;
-      if (viewer?.currentSelected) insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
+      insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
     };
   };
 
   if(leftImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev<=0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev-1));
@@ -90,29 +95,33 @@ export default function Album() {
       })
     );
 
-    setViewer(new ImageViewer({
+    let buttons: any;
+    if(tokenValue) buttons = [
+      {
+        name: 'Categorize',
+        iconSrc: categoryIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCategoriesDialogWindow(true)
+      },
+      {
+        name: 'Comment',
+        iconSrc: commentIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCommentDialogWindow(true)
+      }
+    ]; else buttons = [];
+
+    setViewer(new ExtendedImageViewer({
       images: data,
       currentSelected: idx,
-      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed 
-      buttons: [
-        {
-          name: 'Categorize',
-          iconSrc: categoryIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCategoriesDialogWindow(true)
-        },
-        {
-          name: 'Comment',
-          iconSrc: commentIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCommentDialogWindow(true)
-        }
-      ]
+      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
+      buttons: buttons
     }))
   }
 
   useEffect(() => {
     if (currentFolderId) getFolderContent(currentFolderId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId]);
 
   useEffect(() => {
@@ -122,6 +131,7 @@ export default function Album() {
         images.findIndex(el => el.id === currentImgId)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
 
   return (
@@ -132,7 +142,7 @@ export default function Album() {
         }}
       >
         {/* Folders container */}
-        <Box sx={{display: 'flex', columnGap: '20px'}}> 
+        <Box sx={{display: 'flex', columnGap: '20px'}}>
           {folders && folders.map((folder: Folder) => <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`}/>)}
         </Box>
 

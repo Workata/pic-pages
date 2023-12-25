@@ -1,5 +1,5 @@
 // TODO update URL based on current pic variable
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 
 import { useNavigate } from 'react-router-dom';
 import { useParams} from 'react-router-dom';
@@ -8,7 +8,7 @@ import { ImageList, ImageListItem } from '@mui/material';
 
 
 // * components
-import ImageViewer from 'awesome-image-viewer';
+import { ExtendedImageViewer } from "utils/imageViewer";
 import {
   Box
 } from "@mui/material";
@@ -18,6 +18,7 @@ import AddCommentModal from "components/modals/AddComment";
 import categoryIcon from 'icons/theatre-svgrepo-com.svg';
 import commentIcon from 'icons/comment.svg';
 import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
+import { AppContext } from 'AppContext';
 
 declare type imageToView = {
   mainUrl: string;
@@ -27,26 +28,27 @@ declare type imageToView = {
 
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
-  const [viewer, setViewer] = useState<ImageViewer>();
+  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const {getCategoryContent, images} = useGetCategoryContent();
   const navigate = useNavigate();
+  const { tokenValue } = useContext(AppContext);
 
   const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   if(rightImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev>=images!.length-1) return;
-      if (viewer?.currentSelected) insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
+      insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
     };
   };
 
   if(leftImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev<=0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev-1));
@@ -88,30 +90,33 @@ export default function CategoriesAlbum() {
       })
     );
 
-    // indexes should start from 0
-    setViewer(new ImageViewer({
+    let buttons: any;
+    if(tokenValue) buttons = [
+      {
+        name: 'Categorize',
+        iconSrc: categoryIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCategoriesDialogWindow(true)
+      },
+      {
+        name: 'Comment',
+        iconSrc: commentIcon,
+        iconSize: '18px',
+        onSelect: () => setOpenCommentDialogWindow(true)
+      }
+    ]; else buttons = [];
+
+    setViewer(new ExtendedImageViewer({
       images: data,
       currentSelected: idx,
-      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed 
-      buttons: [
-        {
-          name: 'Categorize',
-          iconSrc: categoryIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCategoriesDialogWindow(true)
-        },
-        {
-          name: 'Comment',
-          iconSrc: commentIcon,
-          iconSize: '18px',
-          onSelect: () => setOpenCommentDialogWindow(true)
-        }
-      ]
+      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
+      buttons: buttons
     }))
   }
 
   useEffect(() => {
     if (currentCategory) getCategoryContent(currentCategory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCategory]);
 
   useEffect(() => {
@@ -121,6 +126,7 @@ export default function CategoriesAlbum() {
         images.findIndex(el => el.id === currentImgId)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
 
   return (

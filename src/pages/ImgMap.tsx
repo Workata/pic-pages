@@ -1,5 +1,5 @@
 // * react
-import { useEffect, useState} from 'react'
+import { useEffect, useState, useContext} from 'react'
 import { Box } from "@mui/material";
 
 // * models
@@ -31,19 +31,21 @@ import {
 
 import { useGetMarkers } from "hooks/api/markers/useGetMarkers";
 
+import { AppContext } from "AppContext";
 
 export default function ImgMap() {
 
-  const CLUSTER_DISTANCE = 50; 
+  const CLUSTER_DISTANCE = 50;
   const CLUSTER_MIN_DISTANCE = 50;
   // Set decimal precision for coordinates
   // ? https://en.wikipedia.org/wiki/Decimal_degrees
-  const COORDS_DECIMAL_PRECISION = 6;   
+  const COORDS_DECIMAL_PRECISION = 6;
 
   // const [markers, setMarkers] = useState<Marker[] | undefined>(undefined);
   const [newMarkerCoords, setNewMarkerCoords] = useState<Coords>();
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
-  const {getMarkers, markers} = useGetMarkers()
+  const {getMarkers, markers} = useGetMarkers();
+  const { tokenValue } = useContext(AppContext);
 
 
   const mapping: any = {};
@@ -61,7 +63,7 @@ export default function ImgMap() {
     let features: any = [];
     markers?.forEach( (marker) => {
       features.push(
-        new Feature({ 
+        new Feature({
           geometry: createPoint(marker.coords.latitude, marker.coords.longitude)
         })
       );
@@ -115,11 +117,10 @@ export default function ImgMap() {
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
       })
     });
-    
     return [raster, clusters]
   };
 
- 
+
   const getUrlFromMapping = (location: any) => {
     // location [longititude, latitude]
     return mapping[convertCoordsToString(location[1].toFixed(COORDS_DECIMAL_PRECISION), location[0].toFixed(COORDS_DECIMAL_PRECISION))]
@@ -156,7 +157,7 @@ export default function ImgMap() {
       setNewMarkerCoords(
         new Coords(
           {
-            longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)), 
+            longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)),
             latitude: Number(coords[1].toFixed(COORDS_DECIMAL_PRECISION))
           }
         )
@@ -171,10 +172,12 @@ export default function ImgMap() {
 
   useEffect(() => {
     getMarkers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if(markers) setupMap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [markers])
 
   return (
@@ -188,12 +191,13 @@ export default function ImgMap() {
         }}
         id="mapContent"
       />
-
+      { tokenValue &&
       <AddMarkerModal
         openDialogWindow={openDialogWindow}
         setOpenDialogWindow={setOpenDialogWindow}
         coords={newMarkerCoords}
       />
+      }
     </>
   );
 }
