@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,12 +11,14 @@ import { useCreateImageData } from "hooks/api/images/useCreateImageData";
 import { useGetImageData } from "hooks/api/images/useGetImageData";
 import { useUpdateImageComment } from "hooks/api/images/useUpdateImageComment";
 
+import { AppContext } from 'AppContext';
 
 export default function AddCommentModal(props: any) {
   const [commentFormInput, setCommentFormInput] = useState<string>('');
   const {getImageData, imageData} = useGetImageData();     // undefined by default, null if resources not found on backend side
   const {updateImageComment} = useUpdateImageComment();
   const {createImageData} = useCreateImageData();
+  const { tokenValue } = useContext(AppContext);
 
   const handleCloseButton = () => {
     props.setOpenDialogWindow(false);
@@ -24,7 +26,7 @@ export default function AddCommentModal(props: any) {
   };
 
   const handleSaveButton = () => {
-    updateImageComment(props.imgId, commentFormInput);
+    updateImageComment(props.imgId, commentFormInput, tokenValue);
     props.setOpenDialogWindow(false);
   }
 
@@ -32,15 +34,17 @@ export default function AddCommentModal(props: any) {
     if(props.openDialogWindow === true && props.imgId) {
       getImageData(props.imgId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one and fetch image data again
     if(imageData === null) {
-      createImageData(props.imgId, props.name);
+      createImageData(props.imgId, props.imgName, [], "", tokenValue);
       getImageData(props.imgId);
     }
     if(imageData !== null && imageData !== undefined && imageData.comment !== '') setCommentFormInput(imageData.comment);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageData]);
 
   return (

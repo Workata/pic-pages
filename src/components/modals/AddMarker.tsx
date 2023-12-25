@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import { useNavigate } from "react-router-dom";
 import { useCreateMarker } from "hooks/api/markers/useCreateMarker";
 
+import { AppContext } from 'AppContext';
 
 export default function AddMarkerModal(props: any) {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function AddMarkerModal(props: any) {
   const [latitude, setLatitude] = useState(props.coords?.latitude);
   const {createMarker} = useCreateMarker();
   const [url, setUrl] = useState<string>('');
+  const { tokenValue } = useContext(AppContext);
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
@@ -29,7 +31,7 @@ export default function AddMarkerModal(props: any) {
     if (lat === undefined) lat = props.coords?.latitude;
     if (lon === undefined) lon = props.coords?.longitude;
 
-    createMarker(Number(lat), Number(lon), url);
+    createMarker(Number(lat), Number(lon), url, tokenValue);
     handleCloseDialogWindow();
     // ? This is a workaround to refetch markers without creating a new (second) map
     // TODO find a way refetch markers and refresh a related (cluster) layer

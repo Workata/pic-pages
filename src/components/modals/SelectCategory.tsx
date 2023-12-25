@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useContext} from "react";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -17,12 +17,15 @@ import { useGetCategories } from "hooks/api/categories/useGetCategories";
 import { useUpdateImageCategories } from "hooks/api/images/useUpdateImageCategories";
 import { useGetImageData } from "hooks/api/images/useGetImageData";
 
+import { AppContext } from 'AppContext';
+
 
 export default function SelectCategoryModal(props: any) {
   const {getImageData, setImageData, imageData} = useGetImageData();  // undefined by default, null if resources not found on backend side
   const {getCategories, categories} = useGetCategories();
   const {updateImageCategories} = useUpdateImageCategories();
   const {createImageData} = useCreateImageData();
+  const { tokenValue } = useContext(AppContext);
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
@@ -44,7 +47,7 @@ export default function SelectCategoryModal(props: any) {
       updatedImageData!.categories = imageData!.categories.concat([new Category({'name': categoryName})]);
       setImageData(updatedImageData);
     }
-    updateImageCategories(props.imgId, updatedCategories);
+    updateImageCategories(props.imgId, updatedCategories, tokenValue);
   }
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function SelectCategoryModal(props: any) {
   useEffect(() => {
     // * if image data was set for null (non existing on backend site) we have to create one
     if(imageData === null) {
-      createImageData(props.imgId, props.name);
+      createImageData(props.imgId, props.imgName, [], '', tokenValue);
       getImageData(props.imgId);
     }
   }, [imageData]);
@@ -76,9 +79,9 @@ export default function SelectCategoryModal(props: any) {
           {/* <Checkbox defaultChecked /> */}
         <FormGroup>
           {imageData && categories && categories.map(
-           (category) => <FormControlLabel 
-            control={imageData?.categories.find(e => e.name === category.name)? <Checkbox defaultChecked/> : <Checkbox/>} 
-            label={category.name} 
+           (category) => <FormControlLabel
+            control={imageData?.categories.find(e => e.name === category.name)? <Checkbox defaultChecked/> : <Checkbox/>}
+            label={category.name}
             key={category.name}
             onChange={() => updateCategories(category.name)}
            />

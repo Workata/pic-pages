@@ -7,8 +7,10 @@ export const useUpdateImageCategories = () => {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const updateImageCategories = async (imgId: string, categories: string[]) => {
-    axios.patch(`/api/v1/images/${imgId}/categories`, categories
+  const updateImageCategories = async (imgId: string, categories: string[], token: string) => {
+    let headers = {"Authorization": `Bearer ${token}`};
+
+    axios.patch(`/api/v1/images/${imgId}/categories`, categories, {headers: headers}
     ).then( res => {
       setResponse(res);
       setErrorMsg('');

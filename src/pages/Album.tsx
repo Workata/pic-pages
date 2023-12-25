@@ -13,7 +13,8 @@ import { ImageList, ImageListItem, Box } from '@mui/material';
 import ClickableFolder from "components/ClickableFolder";
 import SelectCategoryModal from "components/modals/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
-import ImageViewer from 'awesome-image-viewer';
+
+import { ExtendedImageViewer } from "utils/imageViewer";
 
 import categoryIcon from 'icons/theatre-svgrepo-com.svg';
 import commentIcon from 'icons/comment.svg';
@@ -27,9 +28,10 @@ declare type imageToView = {
   description?: string;
 };
 
+
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
-  const [viewer, setViewer] = useState<ImageViewer>();
+  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const {getFolderContent, images, folders} = useGetFolderContent()
@@ -40,15 +42,15 @@ export default function Album() {
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   if(rightImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev>=images!.length-1) return;
-      if (viewer?.currentSelected) insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
+      insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
     };
   };
 
   if(leftImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev<=0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev-1));
@@ -90,10 +92,10 @@ export default function Album() {
       })
     );
 
-    setViewer(new ImageViewer({
+    setViewer(new ExtendedImageViewer({
       images: data,
       currentSelected: idx,
-      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed 
+      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
       buttons: [
         {
           name: 'Categorize',
@@ -132,7 +134,7 @@ export default function Album() {
         }}
       >
         {/* Folders container */}
-        <Box sx={{display: 'flex', columnGap: '20px'}}> 
+        <Box sx={{display: 'flex', columnGap: '20px'}}>
           {folders && folders.map((folder: Folder) => <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`}/>)}
         </Box>
 

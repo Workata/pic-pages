@@ -8,7 +8,7 @@ export const useCreateCategory = () => {
   const createCategory = (categoryName: string, token: string): any => {
     // * returns positive or error response
     let data = {name: categoryName};
-    let headers = {"Authorization": `Bearer ${token}`}
+    let headers = {"Authorization": `Bearer ${token}`};
 
     return axios.post("/api/v1/categories", data, {headers: headers}
     ).then( res => {  // 201 - created

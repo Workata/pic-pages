@@ -8,10 +8,12 @@ export const useCreateImageData = () => {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const createImageData = async (imgId: string, name: string, categories: Category[] = [], comment: string = '') => {
+  const createImageData = async (imgId: string, name: string, categories: Category[], comment: string,  token: string) => {
     let data = {id: imgId, name: name, categories: categories, comment: comment};
+    let headers = {"Authorization": `Bearer ${token}`};
+
     axios.post(
-      "/api/v1/images", data
+      "/api/v1/images", data, {headers: headers}
     ).then( (res) => {
       setResponse(res);
       setErrorMsg('');

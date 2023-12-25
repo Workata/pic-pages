@@ -8,7 +8,7 @@ import { ImageList, ImageListItem } from '@mui/material';
 
 
 // * components
-import ImageViewer from 'awesome-image-viewer';
+import { ExtendedImageViewer } from "utils/imageViewer";
 import {
   Box
 } from "@mui/material";
@@ -27,7 +27,7 @@ declare type imageToView = {
 
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
-  const [viewer, setViewer] = useState<ImageViewer>();
+  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const {getCategoryContent, images} = useGetCategoryContent();
@@ -38,15 +38,15 @@ export default function CategoriesAlbum() {
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   if(rightImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev>=images!.length-1) return;
-      if (viewer?.currentSelected) insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
+      insertImgIdToUrl(getImgIdFromIdx(idxPrev+1));
     };
   };
 
   if(leftImgButton){
-    let idxPrev = Number(viewer?.currentSelected);
+    let idxPrev = Number(viewer!.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev<=0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev-1));
@@ -89,10 +89,10 @@ export default function CategoriesAlbum() {
     );
 
     // indexes should start from 0
-    setViewer(new ImageViewer({
+    setViewer(new ExtendedImageViewer({
       images: data,
       currentSelected: idx,
-      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed 
+      showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
       buttons: [
         {
           name: 'Categorize',
@@ -112,6 +112,7 @@ export default function CategoriesAlbum() {
 
   useEffect(() => {
     if (currentCategory) getCategoryContent(currentCategory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCategory]);
 
   useEffect(() => {
@@ -121,6 +122,7 @@ export default function CategoriesAlbum() {
         images.findIndex(el => el.id === currentImgId)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
 
   return (
