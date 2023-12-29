@@ -1,26 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, forwardRef } from "react";
 import { Box, Menu, MenuItem } from "@mui/material";
 
 // * mui
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
+import AddCategoryModal from "components/modals/AddCategory";
 
 // * hooks
 import { useGetCategories } from "hooks/api/categories/useGetCategories";
-import { useCreateCategory } from "hooks/api/categories/useCreateCategory";
 
 import { AppContext } from "AppContext";
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+const Alert = forwardRef<HTMLDivElement, AlertProps>(
   function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   },
@@ -31,19 +25,13 @@ export default function Categories() {
     mouseX: number;
     mouseY: number;
   } | null>(null);
-  const [newCategory, setNewCategory] = useState<string>("");
   const [openDialogWindow, setOpenDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
   const { getCategories, categories } = useGetCategories();
-  const { createCategory } = useCreateCategory();
   const { tokenValue } = useContext(AppContext);
 
   const handleOpenDialogWindow = () => {
     setOpenDialogWindow(true);
-  };
-
-  const handleCloseDialogWindow = () => {
-    setOpenDialogWindow(false);
   };
 
   const handleCloseSnackbar = (
@@ -76,18 +64,16 @@ export default function Categories() {
     setContextMenu(null);
   };
 
-  const handleCreateCategoryButton = async () => {
-    // TODO handle error message
-    await createCategory(newCategory, tokenValue);
-    handleCloseDialogWindow();
-    getCategories();
-    setOpenSuccessMsg(true);
-  };
-
   useEffect(() => {
     getCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // * refetch categories if new one was created
+    if (openSuccessMsg) getCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openSuccessMsg]);
 
   return (
     <div
@@ -137,25 +123,11 @@ export default function Categories() {
         </Menu>
       )}
 
-      <Dialog open={openDialogWindow} onClose={handleCloseDialogWindow}>
-        <DialogTitle>Add category</DialogTitle>
-        <DialogContent sx={{ width: "400px" }}>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Category name"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={(event) => setNewCategory(event.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialogWindow}>Cancel</Button>
-          <Button onClick={handleCreateCategoryButton}>Create</Button>
-        </DialogActions>
-      </Dialog>
+      <AddCategoryModal
+        openDialogWindow={openDialogWindow}
+        setOpenDialogWindow={setOpenDialogWindow}
+        setOpenSuccessMsg={setOpenSuccessMsg}
+      />
 
       <Snackbar
         open={openSuccessMsg}

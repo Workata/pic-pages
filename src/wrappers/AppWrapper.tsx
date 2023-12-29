@@ -102,7 +102,8 @@ export default function AppWrapper(props: any) {
   const theme = useTheme();
   const { tokenValue, setTokenValue, deleteTokenCookie } =
     useContext(AppContext);
-  const [open, setOpen] = React.useState(false);
+  // * state of sidebar - opened/close (user requested opened by deault)
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
