@@ -21,17 +21,31 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
 );
 
 export default function Categories() {
-  const [contextMenu, setContextMenu] = useState<{
+  const [creationContextMenu, setCreationContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
   } | null>(null);
-  const [openDialogWindow, setOpenDialogWindow] = useState(false);
+  const [modifyContextMenu, setModifyContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+  const [openAddCategoryDialogWindow, setOpenAddCategoryDialogWindow] = useState(false);
   const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
   const { getCategories, categories } = useGetCategories();
   const { tokenValue } = useContext(AppContext);
 
-  const handleOpenDialogWindow = () => {
-    setOpenDialogWindow(true);
+  const handleOpenAddCategoryDialogWindow = () => {
+    setOpenAddCategoryDialogWindow(true);
+  };
+
+  const handleCloseCreationContextMenu = () => {
+    setCreationContextMenu(null);
+  };
+
+  const handleCloseModifyContextMenu = () => {
+    setModifyContextMenu(null);
+    // ! workaround for closing underlapping CreationMenu when we open ModifyMenu
+    handleCloseCreationContextMenu();
   };
 
   const handleCloseSnackbar = (
@@ -45,23 +59,28 @@ export default function Categories() {
     setOpenSuccessMsg(false);
   };
 
-  const handleContextMenu = (event: React.MouseEvent) => {
+  const handleCreationContextMenu = (event: React.MouseEvent) => {
     event.preventDefault();
-    setContextMenu(
-      contextMenu === null
+    setCreationContextMenu(
+      creationContextMenu === null
         ? {
             mouseX: event.clientX + 2,
             mouseY: event.clientY - 6,
           }
-        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-          // Other native context menus might behave different.
-          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-          null,
+        : null,
     );
   };
 
-  const handleCloseContextMenu = () => {
-    setContextMenu(null);
+  const handleModifyContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setModifyContextMenu(
+      modifyContextMenu === null
+        ? {
+            mouseX: event.clientX + 2,
+            mouseY: event.clientY - 6,
+          }
+        : null,
+    );
   };
 
   useEffect(() => {
@@ -77,7 +96,7 @@ export default function Categories() {
 
   return (
     <div
-      onContextMenu={handleContextMenu}
+      onContextMenu={handleCreationContextMenu}
       style={{
         cursor: "context-menu",
         height: "85vh",
@@ -93,29 +112,37 @@ export default function Categories() {
       >
         {categories &&
           categories.map((category) => (
-            <ClickableFolder
+            <div
+              onContextMenu={handleModifyContextMenu}
               key={category.name}
-              link={`/categories/${category.name}`}
-              name={category.name}
-            />
+              style={{
+                cursor: "context-menu",
+              }}
+            >
+              <ClickableFolder
+                link={`/categories/${category.name}`}
+                name={category.name}
+              />
+            </div>
           ))}
       </Box>
 
+      {/* Create new category context menu */}
       {tokenValue && (
         <Menu
-          open={contextMenu !== null}
-          onClose={handleCloseContextMenu}
+          open={creationContextMenu !== null}
+          onClose={handleCloseCreationContextMenu}
           anchorReference="anchorPosition"
           anchorPosition={
-            contextMenu !== null
-              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            creationContextMenu !== null
+              ? { top: creationContextMenu.mouseY, left: creationContextMenu.mouseX }
               : undefined
           }
         >
           <MenuItem
             onClick={() => {
-              handleCloseContextMenu();
-              handleOpenDialogWindow();
+              handleCloseCreationContextMenu();
+              handleOpenAddCategoryDialogWindow();
             }}
           >
             Add category
@@ -123,9 +150,41 @@ export default function Categories() {
         </Menu>
       )}
 
+      {/* Modify existing category context menu */}
+      {tokenValue && (
+        <Menu
+          open={modifyContextMenu !== null}
+          onClose={handleCloseModifyContextMenu}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            modifyContextMenu !== null
+              ? { top: modifyContextMenu.mouseY, left: modifyContextMenu.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem
+            onClick={() => {
+              handleCloseModifyContextMenu();
+              handleOpenAddCategoryDialogWindow();
+            }}
+          >
+            Delete category
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              handleCloseModifyContextMenu();
+              handleOpenAddCategoryDialogWindow();
+            }}
+          >
+            Rename category
+          </MenuItem>
+        </Menu>
+      )}
+
       <AddCategoryModal
-        openDialogWindow={openDialogWindow}
-        setOpenDialogWindow={setOpenDialogWindow}
+        openDialogWindow={openAddCategoryDialogWindow}
+        setOpenDialogWindow={setOpenAddCategoryDialogWindow}
         setOpenSuccessMsg={setOpenSuccessMsg}
       />
 
