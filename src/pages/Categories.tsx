@@ -1,24 +1,15 @@
-import { useState, useEffect, useContext, forwardRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, Menu, MenuItem } from "@mui/material";
-
-// * mui
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
 import AddCategoryModal from "components/modals/AddCategory";
+import DeleteCategoryModal from "components/modals/DeleteCategory";
+import CategoryCreatedSnackbar from "components/snackbars/CategoryCreated";
 
 // * hooks
 import { useGetCategories } from "hooks/api/categories/useGetCategories";
-
 import { AppContext } from "AppContext";
-
-const Alert = forwardRef<HTMLDivElement, AlertProps>(
-  function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  },
-);
 
 export default function Categories() {
   const [creationContextMenu, setCreationContextMenu] = useState<{
@@ -29,14 +20,20 @@ export default function Categories() {
     mouseX: number;
     mouseY: number;
   } | null>(null);
-  const [openAddCategoryDialogWindow, setOpenAddCategoryDialogWindow] = useState(false);
-  const [openSuccessMsg, setOpenSuccessMsg] = useState(false);
+  const [focusedCategoryName, setFocusedCategoryName] = useState<string>("");
+
+  const [openCreateCategoryDialogWindow, setOpenCreateCategoryDialogWindow] =
+    useState(false);
+  const [openDeleteCategoryDialogWindow, setOpenDeleteCategoryDialogWindow] =
+    useState(false);
+
+  const [openCategoryCreatedSuccessMsg, setOpenCategoryCreatedSuccessMsg] =
+    useState(false);
+  const [openCategoryDeletedSuccessMsg, setOpenCategoryDeletedSuccessMsg] =
+    useState(false);
+
   const { getCategories, categories } = useGetCategories();
   const { tokenValue } = useContext(AppContext);
-
-  const handleOpenAddCategoryDialogWindow = () => {
-    setOpenAddCategoryDialogWindow(true);
-  };
 
   const handleCloseCreationContextMenu = () => {
     setCreationContextMenu(null);
@@ -46,17 +43,6 @@ export default function Categories() {
     setModifyContextMenu(null);
     // ! workaround for closing underlapping CreationMenu when we open ModifyMenu
     handleCloseCreationContextMenu();
-  };
-
-  const handleCloseSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string,
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSuccessMsg(false);
   };
 
   const handleCreationContextMenu = (event: React.MouseEvent) => {
@@ -71,7 +57,11 @@ export default function Categories() {
     );
   };
 
-  const handleModifyContextMenu = (event: React.MouseEvent) => {
+  const handleModifyContextMenu = (event: any) => {
+    //  React.MouseEvent
+    // console.log(event.target);
+    // console.log(event.target.innerText);
+    setFocusedCategoryName(event.target.innerText);
     event.preventDefault();
     setModifyContextMenu(
       modifyContextMenu === null
@@ -90,117 +80,137 @@ export default function Categories() {
 
   useEffect(() => {
     // * refetch categories if new one was created
-    if (openSuccessMsg) getCategories();
+    if (openCategoryCreatedSuccessMsg === true) getCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openSuccessMsg]);
+  }, [openCategoryCreatedSuccessMsg]);
+
+  useEffect(() => {
+    // * refetch categories if it one was deleted
+    if (openCategoryDeletedSuccessMsg === true) {
+      getCategories();
+      setOpenCategoryDeletedSuccessMsg(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openCategoryDeletedSuccessMsg]);
 
   return (
-    <div
-      onContextMenu={handleCreationContextMenu}
-      style={{
-        cursor: "context-menu",
-        height: "85vh",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          columnGap: "20px",
-          flexWrap: "wrap",
-          rowGap: "20px",
+    <>
+      <div
+        onContextMenu={handleCreationContextMenu}
+        style={{
+          cursor: "context-menu",
+          height: "85vh",
         }}
       >
-        {categories &&
-          categories.map((category) => (
-            <div
-              onContextMenu={handleModifyContextMenu}
-              key={category.name}
-              style={{
-                cursor: "context-menu",
+        <Box
+          sx={{
+            display: "flex",
+            columnGap: "20px",
+            flexWrap: "wrap",
+            rowGap: "20px",
+          }}
+        >
+          {categories &&
+            categories.map((category) => (
+              <div
+                onContextMenu={handleModifyContextMenu}
+                key={category.name}
+                style={{
+                  cursor: "context-menu",
+                }}
+              >
+                <ClickableFolder
+                  link={`/categories/${category.name}`}
+                  name={category.name}
+                />
+              </div>
+            ))}
+        </Box>
+
+        {/* Create new category context menu */}
+        {tokenValue && (
+          <Menu
+            open={creationContextMenu !== null}
+            onClose={handleCloseCreationContextMenu}
+            anchorReference="anchorPosition"
+            anchorPosition={
+              creationContextMenu !== null
+                ? {
+                    top: creationContextMenu.mouseY,
+                    left: creationContextMenu.mouseX,
+                  }
+                : undefined
+            }
+          >
+            <MenuItem
+              onClick={() => {
+                handleCloseCreationContextMenu();
+                setOpenCreateCategoryDialogWindow(true);
               }}
             >
-              <ClickableFolder
-                link={`/categories/${category.name}`}
-                name={category.name}
-              />
-            </div>
-          ))}
-      </Box>
+              Add category
+            </MenuItem>
+          </Menu>
+        )}
 
-      {/* Create new category context menu */}
-      {tokenValue && (
-        <Menu
-          open={creationContextMenu !== null}
-          onClose={handleCloseCreationContextMenu}
-          anchorReference="anchorPosition"
-          anchorPosition={
-            creationContextMenu !== null
-              ? { top: creationContextMenu.mouseY, left: creationContextMenu.mouseX }
-              : undefined
-          }
-        >
-          <MenuItem
-            onClick={() => {
-              handleCloseCreationContextMenu();
-              handleOpenAddCategoryDialogWindow();
-            }}
+        {/* Modify existing category context menu */}
+        {tokenValue && (
+          <Menu
+            open={modifyContextMenu !== null}
+            onClose={handleCloseModifyContextMenu}
+            anchorReference="anchorPosition"
+            anchorPosition={
+              modifyContextMenu !== null
+                ? {
+                    top: modifyContextMenu.mouseY,
+                    left: modifyContextMenu.mouseX,
+                  }
+                : undefined
+            }
           >
-            Add category
-          </MenuItem>
-        </Menu>
-      )}
+            <MenuItem
+              onClick={() => {
+                handleCloseModifyContextMenu();
+                setOpenDeleteCategoryDialogWindow(true);
+              }}
+            >
+              Delete category
+            </MenuItem>
 
-      {/* Modify existing category context menu */}
-      {tokenValue && (
-        <Menu
-          open={modifyContextMenu !== null}
-          onClose={handleCloseModifyContextMenu}
-          anchorReference="anchorPosition"
-          anchorPosition={
-            modifyContextMenu !== null
-              ? { top: modifyContextMenu.mouseY, left: modifyContextMenu.mouseX }
-              : undefined
-          }
-        >
-          <MenuItem
-            onClick={() => {
-              handleCloseModifyContextMenu();
-              handleOpenAddCategoryDialogWindow();
-            }}
-          >
-            Delete category
-          </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleCloseModifyContextMenu();
+              }}
+            >
+              Rename category
+            </MenuItem>
+          </Menu>
+        )}
+      </div>
 
-          <MenuItem
-            onClick={() => {
-              handleCloseModifyContextMenu();
-              handleOpenAddCategoryDialogWindow();
-            }}
-          >
-            Rename category
-          </MenuItem>
-        </Menu>
-      )}
+      {/* 
+      Instead of one state '...SuccessMessage' there should be two: 
+        1) '...SuccessMessage' --- used for snackbar messages
+        2) 'categoryCreated' / 'categoryDeleted' --- used in useEffect for refetching categories -> change flag there
+    */}
 
       <AddCategoryModal
-        openDialogWindow={openAddCategoryDialogWindow}
-        setOpenDialogWindow={setOpenAddCategoryDialogWindow}
-        setOpenSuccessMsg={setOpenSuccessMsg}
+        openDialogWindow={openCreateCategoryDialogWindow}
+        setOpenDialogWindow={setOpenCreateCategoryDialogWindow}
+        setOpenSuccessMsg={setOpenCategoryCreatedSuccessMsg}
       />
 
-      <Snackbar
-        open={openSuccessMsg}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          New category has been created!
-        </Alert>
-      </Snackbar>
-    </div>
+      <DeleteCategoryModal
+        openDialogWindow={openDeleteCategoryDialogWindow}
+        setOpenDialogWindow={setOpenDeleteCategoryDialogWindow}
+        setOpenSuccessMsg={setOpenCategoryDeletedSuccessMsg}
+        categoryName={focusedCategoryName}
+      />
+
+      <CategoryCreatedSnackbar
+        open={openCategoryCreatedSuccessMsg}
+        setOpen={setOpenCategoryCreatedSuccessMsg}
+      />
+    </>
   );
 }

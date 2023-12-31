@@ -183,7 +183,7 @@ export default function AppWrapper(props: any) {
       </Drawer>
 
       {/* p - padding     */}
-      <Box component="main" sx={{ flexGrow: 1, p: 2 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 2 }} id="wrapperBox">
         <DrawerHeader />
         {props.children}
       </Box>
