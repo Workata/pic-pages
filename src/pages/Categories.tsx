@@ -58,10 +58,10 @@ export default function Categories() {
   };
 
   const handleModifyContextMenu = (event: any) => {
-    //  React.MouseEvent
-    // console.log(event.target);
     // console.log(event.target.innerText);
-    setFocusedCategoryName(event.target.innerText);
+    // console.log(event.target.closest("div").innerText);
+    // * select closest div to target innner category text - otherwise clicking folder icon would return 'undefined'
+    setFocusedCategoryName(event.target.closest("div").innerText);
     event.preventDefault();
     setModifyContextMenu(
       modifyContextMenu === null
@@ -115,6 +115,8 @@ export default function Categories() {
               <div
                 onContextMenu={handleModifyContextMenu}
                 key={category.name}
+                // id={`${category.name}-folder`}
+                className="categoryFolder"
                 style={{
                   cursor: "context-menu",
                 }}
