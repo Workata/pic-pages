@@ -11,7 +11,7 @@ import { ImageList, ImageListItem, Box } from "@mui/material";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
-import SelectCategoryModal from "components/modals/SelectCategory";
+import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 
 import { ExtendedImageViewer } from "utils/imageViewer";

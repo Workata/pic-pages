@@ -184,11 +184,10 @@ export default function ImgMap() {
   return (
     <>
       <Box
+        // TODO fix map height
         sx={{
-          width: "90vw",
+          width: "100%",
           height: "85vh",
-          marginLeft: "auto",
-          marginRight: "auto",
         }}
         id="mapContent"
       />

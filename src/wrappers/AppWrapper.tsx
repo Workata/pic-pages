@@ -102,7 +102,8 @@ export default function AppWrapper(props: any) {
   const theme = useTheme();
   const { tokenValue, setTokenValue, deleteTokenCookie } =
     useContext(AppContext);
-  const [open, setOpen] = React.useState(false);
+  // * state of sidebar - opened/close (user requested opened by deault)
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -182,7 +183,7 @@ export default function AppWrapper(props: any) {
       </Drawer>
 
       {/* p - padding     */}
-      <Box component="main" sx={{ flexGrow: 1, p: 2 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 2 }} id="wrapperBox">
         <DrawerHeader />
         {props.children}
       </Box>

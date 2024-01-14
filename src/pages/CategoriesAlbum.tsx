@@ -9,7 +9,7 @@ import { ImageList, ImageListItem } from "@mui/material";
 // * components
 import { ExtendedImageViewer } from "utils/imageViewer";
 import { Box } from "@mui/material";
-import SelectCategoryModal from "components/modals/SelectCategory";
+import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 
 import categoryIcon from "icons/theatre-svgrepo-com.svg";

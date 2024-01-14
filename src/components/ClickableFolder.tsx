@@ -5,7 +5,14 @@ import FolderIcon from "@mui/icons-material/Folder";
 export default function ClickableFolder(props: any) {
   return (
     <>
-      <Button variant="contained" component={Link} to={props.link}>
+      <Button
+        variant="contained"
+        component={Link}
+        to={props.link}
+        sx={{
+          textTransform: "none",
+        }}
+      >
         <FolderIcon sx={{ marginRight: "15px" }} /> {props.name}
       </Button>
     </>
