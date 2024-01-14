@@ -196,10 +196,10 @@ export default function Album() {
                     src={img.thumbnailUrl}
                     alt={img.name}
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                     onClick={() => {
                       insertImgIdToUrl(img.id);
                     }}
-                    // style={{boxShadow: "2px 2px 5px #ccc"}}
                   />
                 </ImageListItem>
               ))}
