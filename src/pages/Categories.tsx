@@ -3,9 +3,10 @@ import { Box, Menu, MenuItem } from "@mui/material";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
-import AddCategoryModal from "components/modals/AddCategory";
-import DeleteCategoryModal from "components/modals/DeleteCategory";
 import CategoryCreatedSnackbar from "components/snackbars/CategoryCreated";
+import AddCategoryModal from "components/modals/category/AddCategory";
+import DeleteCategoryModal from "components/modals/category/DeleteCategory";
+import RenameCategoryModal from "components/modals/category/RenameCategory";
 
 // * hooks
 import { useGetCategories } from "hooks/api/categories/useGetCategories";
@@ -26,10 +27,14 @@ export default function Categories() {
     useState(false);
   const [openDeleteCategoryDialogWindow, setOpenDeleteCategoryDialogWindow] =
     useState(false);
+  const [openRenameCategoryDialogWindow, setOpenRenameCategoryDialogWindow] =
+    useState(false);
 
   const [openCategoryCreatedSuccessMsg, setOpenCategoryCreatedSuccessMsg] =
     useState(false);
   const [openCategoryDeletedSuccessMsg, setOpenCategoryDeletedSuccessMsg] =
+    useState(false);
+  const [openCategoryRenamedSuccessMsg, setOpenCategoryRenamedSuccessMsg] =
     useState(false);
 
   const { getCategories, categories } = useGetCategories();
@@ -38,7 +43,6 @@ export default function Categories() {
   const handleCloseCreationContextMenu = () => {
     setCreationContextMenu(null);
   };
-
   const handleCloseModifyContextMenu = () => {
     setModifyContextMenu(null);
     // ! workaround for closing underlapping CreationMenu when we open ModifyMenu
@@ -86,13 +90,22 @@ export default function Categories() {
   }, [openCategoryCreatedSuccessMsg]);
 
   useEffect(() => {
-    // * refetch categories if it one was deleted
+    // * refetch categories if one was deleted
     if (openCategoryDeletedSuccessMsg === true) {
       getCategories();
       setOpenCategoryDeletedSuccessMsg(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openCategoryDeletedSuccessMsg]);
+
+  useEffect(() => {
+    // * refetch categories if one was renamed
+    if (openCategoryRenamedSuccessMsg === true) {
+      getCategories();
+      setOpenCategoryRenamedSuccessMsg(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openCategoryRenamedSuccessMsg]);
 
   return (
     <>
@@ -114,7 +127,9 @@ export default function Categories() {
           {categories &&
             categories.map((category) => (
               <div
-                onContextMenu={(event) => {handleModifyContextMenu(event);}}
+                onContextMenu={(event) => {
+                  handleModifyContextMenu(event);
+                }}
                 key={category.name}
                 className="categoryFolder"
                 style={{
@@ -182,6 +197,7 @@ export default function Categories() {
             <MenuItem
               onClick={() => {
                 handleCloseModifyContextMenu();
+                setOpenRenameCategoryDialogWindow(true);
               }}
             >
               Rename
@@ -206,6 +222,13 @@ export default function Categories() {
         openDialogWindow={openDeleteCategoryDialogWindow}
         setOpenDialogWindow={setOpenDeleteCategoryDialogWindow}
         setOpenSuccessMsg={setOpenCategoryDeletedSuccessMsg}
+        categoryName={focusedCategoryName}
+      />
+
+      <RenameCategoryModal
+        openDialogWindow={openRenameCategoryDialogWindow}
+        setOpenDialogWindow={setOpenRenameCategoryDialogWindow}
+        setOpenSuccessMsg={setOpenCategoryRenamedSuccessMsg}
         categoryName={focusedCategoryName}
       />
 

@@ -1,15 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
 
-export const useDeleteCategory = () => {
+export const useRenameCategory = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const deleteCategory = (categoryName: string, token: string): any => {
+  const renameCategory = (
+    oldName: string,
+    newName: string,
+    token: string,
+  ): any => {
     // * returns positive or error response
+    let data = { old_name: oldName, new_name: newName };
     let headers = { Authorization: `Bearer ${token}` };
 
     return axios
-      .delete(`/api/v1/categories/${categoryName}`, { headers: headers })
+      .patch("/api/v1/categories", data, { headers: headers })
       .then((res) => {
         // 201 - created
         return res;
@@ -24,7 +29,7 @@ export const useDeleteCategory = () => {
   };
 
   return {
-    deleteCategory,
+    renameCategory,
     loading,
   };
 };
