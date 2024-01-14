@@ -1,4 +1,4 @@
-import ImageViewer from "awesome-image-viewer";
+import ImageViewer from "components/imageViewer/imageViewer";
 
 export class ExtendedImageViewer extends ImageViewer {
   getCurrentSelected(): number {

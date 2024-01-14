@@ -177,6 +177,7 @@ export default function CategoriesAlbum() {
                     src={img.thumbnailUrl}
                     alt={img.name}
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                     onClick={() => {
                       insertImgIdToUrl(img.id);
                     }}
