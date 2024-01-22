@@ -4,15 +4,16 @@ import { useNavigate, useParams } from "react-router-dom";
 
 // * models
 import { Folder } from "models/Folder";
-import { Image } from "models/Image";
+import { ImageToView } from "./shared/imageToView.type";
 
 // * mui
-import { ImageList, ImageListItem, Box } from "@mui/material";
+import { Box } from "@mui/material";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
+import ThumbnailImageList from "components/ThumbnailImageList";
 
 import { ExtendedImageViewer } from "utils/imageViewer";
 
@@ -23,12 +24,6 @@ import commentIcon from "icons/comment.svg";
 import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
 
 import { AppContext } from "AppContext";
-
-declare type imageToView = {
-  mainUrl: string;
-  thumbnailUrl?: string;
-  description?: string;
-};
 
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
@@ -99,7 +94,7 @@ export default function Album() {
       return;
     }
 
-    let data: imageToView[] = images.map((img) => ({
+    let data: ImageToView[] = images.map((img) => ({
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
       description:
@@ -172,39 +167,10 @@ export default function Album() {
             width: "100%",
           }}
         >
-          {images && (
-            <ImageList
-              // ? https://mui.com/material-ui/react-image-list/
-              variant="masonry"
-              cols={11} // number of columns reflects images (thumbnails) size
-              gap={12}
-              id="images"
-            >
-              {images.map((img: Image) => (
-                <ImageListItem
-                  key={img.id}
-                  sx={{
-                    cursor: "pointer",
-                    // TODO fix scroll bar on hover
-                    // transition: 'transform .2s',
-                    // '&:hover': {
-                    //   transform: 'scale(1.1)'
-                    // }
-                  }}
-                >
-                  <img
-                    src={img.thumbnailUrl}
-                    alt={img.name}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    onClick={() => {
-                      insertImgIdToUrl(img.id);
-                    }}
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
-          )}
+        {images && <ThumbnailImageList
+            images={images}
+            insertImgIdToUrl={insertImgIdToUrl}
+          />}
         </Box>
       </Box>
 

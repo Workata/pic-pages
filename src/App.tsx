@@ -10,10 +10,10 @@ import {
 
 // * pages
 import Login from "./pages/Login";
-import Album from "./pages/Album";
+import Album from "./pages/album/Album";
+import CategoriesAlbum from "./pages/album/CategoriesAlbum";
 import ImgMap from "./pages/ImgMap";
 import Categories from "./pages/Categories";
-import CategoriesAlbum from "./pages/CategoriesAlbum";
 
 import AppWrapper from "./wrappers/AppWrapper";
 import { AppContext } from "AppContext";
