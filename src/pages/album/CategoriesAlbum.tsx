@@ -19,7 +19,6 @@ import commentIcon from "icons/comment.svg";
 import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 import { AppContext } from "AppContext";
 
-
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
@@ -150,10 +149,12 @@ export default function CategoriesAlbum() {
             width: "100%",
           }}
         >
-          {images && <ThumbnailImageList
-            images={images}
-            insertImgIdToUrl={insertImgIdToUrl}
-          />}
+          {images && (
+            <ThumbnailImageList
+              images={images}
+              insertImgIdToUrl={insertImgIdToUrl}
+            />
+          )}
         </Box>
       </Box>
 

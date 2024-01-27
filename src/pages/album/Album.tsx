@@ -167,10 +167,12 @@ export default function Album() {
             width: "100%",
           }}
         >
-        {images && <ThumbnailImageList
-            images={images}
-            insertImgIdToUrl={insertImgIdToUrl}
-          />}
+          {images && (
+            <ThumbnailImageList
+              images={images}
+              insertImgIdToUrl={insertImgIdToUrl}
+            />
+          )}
         </Box>
       </Box>
 

@@ -1,6 +1,5 @@
 import { Image } from "models/Image";
 
-
 // TODO maybe try to round (border radius 5%) all images (even the contained ones)
 export default function ThumbnailImageList(props: any) {
   return (
@@ -11,13 +10,13 @@ export default function ThumbnailImageList(props: any) {
         flexDirection: "row",
         display: "flex",
         flexWrap: "wrap",
-        gap: "20px 20px", /* row-gap column gap */
+        gap: "20px 20px" /* row-gap column gap */,
         // alignItems: "center",
         // justifyContent: "center",
       }}
     >
       {props.images.map((img: Image) => (
-        <div 
+        <div
           id="imageContainer"
           style={{
             width: "200px",
@@ -27,7 +26,7 @@ export default function ThumbnailImageList(props: any) {
             // maxHeight: "200px",
             cursor: "pointer",
           }}
-        > 
+        >
           <img
             src={img.thumbnailUrl}
             alt={img.name}
@@ -44,7 +43,7 @@ export default function ThumbnailImageList(props: any) {
               // height: "auto",
             }}
             // * this is different depending of what is choosen: default album/categories
-            onClick={() => props.insertImgIdToUrl(img.id) }
+            onClick={() => props.insertImgIdToUrl(img.id)}
           />
         </div>
       ))}
