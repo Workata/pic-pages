@@ -26,6 +26,7 @@ export default function ThumbnailImageList(props: any) {
             // maxHeight: "200px",
             cursor: "pointer",
           }}
+          key={img.name}
         >
           <img
             src={img.thumbnailUrl}

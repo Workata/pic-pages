@@ -8,6 +8,11 @@ import { ImageToView } from "./shared/imageToView.type";
 
 // * mui
 import { Box } from "@mui/material";
+import { Button } from "@mui/material";
+import { Link, useSearchParams } from "react-router-dom";
+
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
@@ -27,11 +32,12 @@ import { AppContext } from "AppContext";
 
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getFolderContent, images, folders } = useGetFolderContent();
+  const { getFolderContent, images, folders, nextPageToken } = useGetFolderContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
@@ -73,7 +79,10 @@ export default function Album() {
 
   const insertImgIdToUrl = (imgId: string) => {
     if (!currentImgId || currentImgId !== imgId)
-      navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+      if(searchParams.get("page") === null)
+        navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+      else
+        navigate(`../album/${currentFolderId}/${imgId}?page=${searchParams.get("page")}`, { replace: true });
   };
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -84,7 +93,11 @@ export default function Album() {
   };
 
   const clearUrlFromImg = () => {
-    navigate(`../album/${currentFolderId}`, { replace: true });
+    let pageQueryParam = searchParams.get("page");
+    if(pageQueryParam === null)
+      navigate(`../album/${currentFolderId}`, { replace: true });
+    else
+      navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, { replace: true });
   };
 
   // * open image viewer
@@ -130,9 +143,9 @@ export default function Album() {
   };
 
   useEffect(() => {
-    if (currentFolderId) getFolderContent(currentFolderId);
+    if (currentFolderId) getFolderContent(currentFolderId, searchParams.get("page"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFolderId]);
+  }, [currentFolderId, searchParams.get("page")]);
 
   useEffect(() => {
     if (currentImgId && images && viewerIsClosed()) {
@@ -159,6 +172,34 @@ export default function Album() {
                 link={`/album/${folder.id}`}
               />
             ))}
+        </Box>
+
+        <Box sx={{ display: "flex", columnGap: "20px" }}>
+            {searchParams.get("page") !== null &&
+              <Button
+                variant="contained"
+                component={Link}
+                to={`/album/${currentFolderId}`}
+                sx={{
+                  textTransform: "none",
+                }}
+              >
+                <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+              </Button>
+            }
+
+            {nextPageToken &&
+              <Button
+                variant="contained"
+                component={Link}
+                to={`/album/${currentFolderId}?page=${nextPageToken}`}
+                sx={{
+                  textTransform: "none",
+                }}
+              >
+                next <ArrowRightAltIcon sx={{ marginLeft: "15px" }} />
+              </Button>
+            }
         </Box>
 
         {/* Images container */}
