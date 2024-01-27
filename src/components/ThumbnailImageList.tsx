@@ -1,37 +1,53 @@
 import { Image } from "models/Image";
-import { ImageList, ImageListItem } from "@mui/material";
 
+
+// TODO maybe try to round (border radius 5%) all images (even the contained ones)
 export default function ThumbnailImageList(props: any) {
   return (
-    <ImageList
-      // ? https://mui.com/material-ui/react-image-list/
-      variant="masonry"
-      cols={11} // number of columns reflects images (thumbnails) size
-      gap={12}
-      id="images"
+    <div
+      id="thumbnailImageList"
+      style={{
+        marginTop: "20px",
+        flexDirection: "row",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "20px 20px", /* row-gap column gap */
+        // alignItems: "center",
+        // justifyContent: "center",
+      }}
     >
       {props.images.map((img: Image) => (
-        <ImageListItem
-          key={img.id}
-          sx={{
+        <div 
+          id="imageContainer"
+          style={{
+            width: "200px",
+            height: "200px",
+            // margin: "10px 10px 10px 10px",
+            // maxWidth: "200px",
+            // maxHeight: "200px",
             cursor: "pointer",
-            // TODO fix scroll bar on hover
-            // transition: 'transform .2s',
-            // '&:hover': {
-            //   transform: 'scale(1.1)'
-            // }
           }}
-        >
+        > 
           <img
             src={img.thumbnailUrl}
             alt={img.name}
             loading="lazy"
             referrerPolicy="no-referrer"
-            // this is different depending of what is choosen: default album/categories
+            style={{
+              width: "100%",
+              height: "100%",
+              // maxWidth: "100%",
+              // maxHeight: "100%",
+              objectFit: "contain",
+              // borderRadius: "5%",
+              // width: "auto",
+              // height: "auto",
+            }}
+            // * this is different depending of what is choosen: default album/categories
             onClick={() => props.insertImgIdToUrl(img.id) }
           />
-        </ImageListItem>
+        </div>
       ))}
-    </ImageList>
+    </div>
   );
 }
