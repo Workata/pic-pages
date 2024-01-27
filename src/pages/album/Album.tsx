@@ -11,7 +11,7 @@ import { Box } from "@mui/material";
 import { Button } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
 
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
 // * components
@@ -32,7 +32,7 @@ import { AppContext } from "AppContext";
 
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
@@ -197,7 +197,7 @@ export default function Album() {
                   textTransform: "none",
                 }}
               >
-                next <ArrowRightAltIcon sx={{ marginLeft: "15px" }} />
+                next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
               </Button>
             }
         </Box>
