@@ -4,15 +4,21 @@ import { useNavigate, useParams } from "react-router-dom";
 
 // * models
 import { Folder } from "models/Folder";
-import { Image } from "models/Image";
+import { ImageToView } from "./shared/imageToView.type";
 
 // * mui
-import { ImageList, ImageListItem, Box } from "@mui/material";
+import { Box } from "@mui/material";
+import { Button } from "@mui/material";
+import { Link, useSearchParams } from "react-router-dom";
+
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
+import ThumbnailImageList from "components/ThumbnailImageList";
 
 import { ExtendedImageViewer } from "utils/imageViewer";
 
@@ -24,19 +30,15 @@ import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
 
 import { AppContext } from "AppContext";
 
-declare type imageToView = {
-  mainUrl: string;
-  thumbnailUrl?: string;
-  description?: string;
-};
-
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
+  const [searchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getFolderContent, images, folders } = useGetFolderContent();
+  const { getFolderContent, images, folders, nextPageToken } =
+    useGetFolderContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
@@ -78,7 +80,15 @@ export default function Album() {
 
   const insertImgIdToUrl = (imgId: string) => {
     if (!currentImgId || currentImgId !== imgId)
-      navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+      if (searchParams.get("page") === null)
+        navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+      else
+        navigate(
+          `../album/${currentFolderId}/${imgId}?page=${searchParams.get(
+            "page",
+          )}`,
+          { replace: true },
+        );
   };
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -89,7 +99,13 @@ export default function Album() {
   };
 
   const clearUrlFromImg = () => {
-    navigate(`../album/${currentFolderId}`, { replace: true });
+    let pageQueryParam = searchParams.get("page");
+    if (pageQueryParam === null)
+      navigate(`../album/${currentFolderId}`, { replace: true });
+    else
+      navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, {
+        replace: true,
+      });
   };
 
   // * open image viewer
@@ -99,7 +115,7 @@ export default function Album() {
       return;
     }
 
-    let data: imageToView[] = images.map((img) => ({
+    let data: ImageToView[] = images.map((img) => ({
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
       description:
@@ -135,9 +151,10 @@ export default function Album() {
   };
 
   useEffect(() => {
-    if (currentFolderId) getFolderContent(currentFolderId);
+    if (currentFolderId)
+      getFolderContent(currentFolderId, searchParams.get("page"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFolderId]);
+  }, [currentFolderId, searchParams.get("page")]);
 
   useEffect(() => {
     if (currentImgId && images && viewerIsClosed()) {
@@ -166,6 +183,34 @@ export default function Album() {
             ))}
         </Box>
 
+        <Box sx={{ display: "flex", columnGap: "20px" }}>
+          {searchParams.get("page") !== null && (
+            <Button
+              variant="contained"
+              component={Link}
+              to={`/album/${currentFolderId}`}
+              sx={{
+                textTransform: "none",
+              }}
+            >
+              <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+            </Button>
+          )}
+
+          {nextPageToken && (
+            <Button
+              variant="contained"
+              component={Link}
+              to={`/album/${currentFolderId}?page=${nextPageToken}`}
+              sx={{
+                textTransform: "none",
+              }}
+            >
+              next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
+            </Button>
+          )}
+        </Box>
+
         {/* Images container */}
         <Box
           sx={{
@@ -173,37 +218,10 @@ export default function Album() {
           }}
         >
           {images && (
-            <ImageList
-              // ? https://mui.com/material-ui/react-image-list/
-              variant="masonry"
-              cols={11} // number of columns reflects images (thumbnails) size
-              gap={12}
-              id="images"
-            >
-              {images.map((img: Image) => (
-                <ImageListItem
-                  key={img.id}
-                  sx={{
-                    cursor: "pointer",
-                    // TODO fix scroll bar on hover
-                    // transition: 'transform .2s',
-                    // '&:hover': {
-                    //   transform: 'scale(1.1)'
-                    // }
-                  }}
-                >
-                  <img
-                    src={img.thumbnailUrl}
-                    alt={img.name}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    onClick={() => {
-                      insertImgIdToUrl(img.id);
-                    }}
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
+            <ThumbnailImageList
+              images={images}
+              insertImgIdToUrl={insertImgIdToUrl}
+            />
           )}
         </Box>
       </Box>
