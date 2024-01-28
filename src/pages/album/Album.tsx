@@ -11,8 +11,8 @@ import { Box } from "@mui/material";
 import { Button } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
 
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
@@ -37,7 +37,8 @@ export default function Album() {
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getFolderContent, images, folders, nextPageToken } = useGetFolderContent();
+  const { getFolderContent, images, folders, nextPageToken } =
+    useGetFolderContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
@@ -79,10 +80,15 @@ export default function Album() {
 
   const insertImgIdToUrl = (imgId: string) => {
     if (!currentImgId || currentImgId !== imgId)
-      if(searchParams.get("page") === null)
+      if (searchParams.get("page") === null)
         navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
       else
-        navigate(`../album/${currentFolderId}/${imgId}?page=${searchParams.get("page")}`, { replace: true });
+        navigate(
+          `../album/${currentFolderId}/${imgId}?page=${searchParams.get(
+            "page",
+          )}`,
+          { replace: true },
+        );
   };
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -94,10 +100,12 @@ export default function Album() {
 
   const clearUrlFromImg = () => {
     let pageQueryParam = searchParams.get("page");
-    if(pageQueryParam === null)
+    if (pageQueryParam === null)
       navigate(`../album/${currentFolderId}`, { replace: true });
     else
-      navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, { replace: true });
+      navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, {
+        replace: true,
+      });
   };
 
   // * open image viewer
@@ -143,7 +151,8 @@ export default function Album() {
   };
 
   useEffect(() => {
-    if (currentFolderId) getFolderContent(currentFolderId, searchParams.get("page"));
+    if (currentFolderId)
+      getFolderContent(currentFolderId, searchParams.get("page"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId, searchParams.get("page")]);
 
@@ -175,31 +184,31 @@ export default function Album() {
         </Box>
 
         <Box sx={{ display: "flex", columnGap: "20px" }}>
-            {searchParams.get("page") !== null &&
-              <Button
-                variant="contained"
-                component={Link}
-                to={`/album/${currentFolderId}`}
-                sx={{
-                  textTransform: "none",
-                }}
-              >
-                <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
-              </Button>
-            }
+          {searchParams.get("page") !== null && (
+            <Button
+              variant="contained"
+              component={Link}
+              to={`/album/${currentFolderId}`}
+              sx={{
+                textTransform: "none",
+              }}
+            >
+              <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+            </Button>
+          )}
 
-            {nextPageToken &&
-              <Button
-                variant="contained"
-                component={Link}
-                to={`/album/${currentFolderId}?page=${nextPageToken}`}
-                sx={{
-                  textTransform: "none",
-                }}
-              >
-                next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
-              </Button>
-            }
+          {nextPageToken && (
+            <Button
+              variant="contained"
+              component={Link}
+              to={`/album/${currentFolderId}?page=${nextPageToken}`}
+              sx={{
+                textTransform: "none",
+              }}
+            >
+              next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
+            </Button>
+          )}
         </Box>
 
         {/* Images container */}
