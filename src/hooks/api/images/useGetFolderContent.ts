@@ -17,9 +17,10 @@ export const useGetFolderContent = () => {
     console.log("get folder content request");
     console.log(`folder id: ${folderId}`);
     console.log(`page token: ${pageToken}`);
+    let headers = { "ngrok-skip-browser-warning": "69420" };
     axios
       .get(`/api/v1/gdrive/folder/${folderId}`, {
-        params: { page_token: pageToken },
+        params: { page_token: pageToken }, headers: headers
       })
       .then((res) => {
         setImages(res.data.images.map((o: any) => new Image(o)));
