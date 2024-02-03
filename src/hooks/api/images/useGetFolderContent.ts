@@ -20,7 +20,8 @@ export const useGetFolderContent = () => {
     let headers = { "ngrok-skip-browser-warning": "69420" };
     axios
       .get(`/api/v1/gdrive/folder/${folderId}`, {
-        params: { page_token: pageToken }, headers: headers
+        params: { page_token: pageToken },
+        headers: headers,
       })
       .then((res) => {
         setImages(res.data.images.map((o: any) => new Image(o)));
