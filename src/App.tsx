@@ -29,7 +29,7 @@ function App() {
 
   return (
     // TODO verify basename and homepage setting after deploy
-    <Router basename="/pic-pages">
+    <Router>
       <AppWrapper>
         <Routes>
           {/* <Route path="/" element={<Home />} /> */}
