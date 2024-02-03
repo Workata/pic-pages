@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 
 // * navigation
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -28,7 +28,6 @@ function App() {
   });
 
   return (
-    // TODO verify basename and homepage setting after deploy
     <Router>
       <AppWrapper>
         <Routes>
