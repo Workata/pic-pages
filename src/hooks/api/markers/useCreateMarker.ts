@@ -17,7 +17,10 @@ export const useCreateMarker = () => {
       longitude: lon,
       url: url,
     };
-    let headers = { Authorization: `Bearer ${token}` };
+    let headers = {
+      Authorization: `Bearer ${token}`,
+      "ngrok-skip-browser-warning": "69420",
+    };
 
     axios
       .post("/api/v1/map/marker", data, { headers: headers })

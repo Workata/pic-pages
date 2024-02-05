@@ -11,7 +11,10 @@ export const useRenameCategory = () => {
   ): any => {
     // * returns positive or error response
     let data = { old_name: oldName, new_name: newName };
-    let headers = { Authorization: `Bearer ${token}` };
+    let headers = {
+      Authorization: `Bearer ${token}`,
+      "ngrok-skip-browser-warning": "69420",
+    };
 
     return axios
       .patch("/api/v1/categories", data, { headers: headers })
