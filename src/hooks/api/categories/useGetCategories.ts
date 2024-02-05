@@ -8,8 +8,10 @@ export const useGetCategories = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
   const getCategories = async () => {
+    let headers = { "ngrok-skip-browser-warning": "69420" };
+
     axios
-      .get("/api/v1/categories")
+      .get("/api/v1/categories", { headers: headers })
       .then((res) => {
         let categories = res.data.map((obj: any) => new Category(obj));
         setCategories(categories);

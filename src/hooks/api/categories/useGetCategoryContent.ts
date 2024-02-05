@@ -8,8 +8,10 @@ export const useGetCategoryContent = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
   const getCategoryContent = async (category: string) => {
+    let headers = { "ngrok-skip-browser-warning": "69420" };
+
     axios
-      .get(`/api/v1/categories/${category}`)
+      .get(`/api/v1/categories/${category}`, { headers: headers })
       .then((res) => {
         setImages(res.data.map((o: any) => new Image(o)));
         setErrorMsg("");

@@ -11,7 +11,10 @@ export const useUpdateImageComment = () => {
     comment: string,
     token: string,
   ) => {
-    let headers = { Authorization: `Bearer ${token}` };
+    let headers = {
+      Authorization: `Bearer ${token}`,
+      "ngrok-skip-browser-warning": "69420",
+    };
 
     axios
       .patch(

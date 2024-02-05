@@ -20,7 +20,10 @@ export const useCreateImageData = () => {
       categories: categories,
       comment: comment,
     };
-    let headers = { Authorization: `Bearer ${token}` };
+    let headers = {
+      Authorization: `Bearer ${token}`,
+      "ngrok-skip-browser-warning": "69420",
+    };
 
     axios
       .post("/api/v1/images", data, { headers: headers })

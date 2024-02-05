@@ -6,7 +6,7 @@ export const useCreateCategory = () => {
 
   const createCategory = (categoryName: string, token: string): any => {
     // * returns positive or error response
-    let data = { name: categoryName };
+    let data = { name: categoryName, "ngrok-skip-browser-warning": "69420" };
     let headers = { Authorization: `Bearer ${token}` };
 
     return axios

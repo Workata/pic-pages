@@ -9,7 +9,10 @@ export const useLogin = () => {
       username: username,
       password: password,
     };
-    let headers = { "Content-Type": "application/x-www-form-urlencoded" };
+    let headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "ngrok-skip-browser-warning": "69420",
+    };
 
     return axios
       .post("/api/v1/auth/login", data, { headers: headers })
