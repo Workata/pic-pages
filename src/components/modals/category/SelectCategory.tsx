@@ -12,23 +12,24 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-import { useCreateImageData } from "hooks/api/images/useCreateImageData";
+import { useGetOrCreateImageData } from "hooks/api/images/useGetOrCreateImageData";
 import { useGetCategories } from "hooks/api/categories/useGetCategories";
 import { useUpdateImageCategories } from "hooks/api/images/useUpdateImageCategories";
-import { useGetImageData } from "hooks/api/images/useGetImageData";
 
 import { AppContext } from "AppContext";
 
 export default function SelectCategoryModal(props: any) {
-  const { getImageData, setImageData, imageData } = useGetImageData(); // undefined by default, null if resources not found on backend side
   const { getCategories, categories } = useGetCategories();
   const { updateImageCategories } = useUpdateImageCategories();
-  const { createImageData } = useCreateImageData();
+  const { getOrCreateImageData, imageData, setImageData } =
+    useGetOrCreateImageData();
   const { tokenValue } = useContext(AppContext);
+
+  const modalIsClosed =
+    document.getElementsByClassName("MuiDialog-root").length === 0;
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
-    setImageData(undefined);
   };
 
   const updateCategories = (categoryName: string) => {
@@ -57,20 +58,18 @@ export default function SelectCategoryModal(props: any) {
 
   useEffect(() => {
     if (props.openDialogWindow === true && props.imgId) {
-      getImageData(props.imgId);
+      getOrCreateImageData(props.imgId, props.imgName, [], "", tokenValue);
       getCategories();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
-    // * if image data was set for null (non existing on backend site) we have to create one
-    if (imageData === null) {
-      createImageData(props.imgId, props.imgName, [], "", tokenValue);
-      getImageData(props.imgId);
+    if (modalIsClosed === true) {
+      setImageData(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageData]);
+  }, [modalIsClosed]);
 
   return (
     <>
@@ -83,7 +82,6 @@ export default function SelectCategoryModal(props: any) {
       >
         <DialogTitle>Select Category</DialogTitle>
         <DialogContent sx={{ width: "400px" }}>
-          {/* <Checkbox defaultChecked /> */}
           <FormGroup>
             {imageData &&
               categories &&

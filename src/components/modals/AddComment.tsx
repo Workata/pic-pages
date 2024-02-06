@@ -7,22 +7,22 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
-import { useCreateImageData } from "hooks/api/images/useCreateImageData";
-import { useGetImageData } from "hooks/api/images/useGetImageData";
+import { useGetOrCreateImageData } from "hooks/api/images/useGetOrCreateImageData";
 import { useUpdateImageComment } from "hooks/api/images/useUpdateImageComment";
 
 import { AppContext } from "AppContext";
 
 export default function AddCommentModal(props: any) {
   const [commentFormInput, setCommentFormInput] = useState<string>("");
-  const { getImageData, imageData } = useGetImageData(); // undefined by default, null if resources not found on backend side
   const { updateImageComment } = useUpdateImageComment();
-  const { createImageData } = useCreateImageData();
+  const { getOrCreateImageData, imageData } = useGetOrCreateImageData();
   const { tokenValue } = useContext(AppContext);
+
+  const modalIsClosed =
+    document.getElementsByClassName("MuiDialog-root").length === 0;
 
   const handleCloseButton = () => {
     props.setOpenDialogWindow(false);
-    setCommentFormInput("");
   };
 
   const handleSaveButton = () => {
@@ -32,23 +32,22 @@ export default function AddCommentModal(props: any) {
 
   useEffect(() => {
     if (props.openDialogWindow === true && props.imgId) {
-      getImageData(props.imgId);
+      getOrCreateImageData(props.imgId, props.imgName, [], "", tokenValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
-    // * if image data was set for null (non existing on backend site) we have to create one and fetch image data again
-    if (imageData === null) {
-      createImageData(props.imgId, props.imgName, [], "", tokenValue);
-      getImageData(props.imgId);
+    if (modalIsClosed === true) {
+      setCommentFormInput("");
     }
-    if (
-      imageData !== null &&
-      imageData !== undefined &&
-      imageData.comment !== ""
-    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalIsClosed]);
+
+  useEffect(() => {
+    if (imageData) {
       setCommentFormInput(imageData.comment);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageData]);
 
