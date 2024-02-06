@@ -1,13 +1,14 @@
 import axios from "axios";
 import { Category } from "models/Category";
 import { useState } from "react";
+import { ImageData } from "models/ImageData";
 
-export const useCreateImageData = () => {
-  const [response, setResponse] = useState<any>();
+export const useGetOrCreateImageData = () => {
+  const [imageData, setImageData] = useState<undefined | ImageData>(undefined);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const createImageData = async (
+  const getOrCreateImageData = async (
     imgId: string,
     name: string,
     categories: Category[],
@@ -28,7 +29,7 @@ export const useCreateImageData = () => {
     axios
       .post("/api/v1/images", data, { headers: headers })
       .then((res) => {
-        setResponse(res);
+        setImageData(new ImageData(res.data));
         setErrorMsg("");
       })
       .catch((err) => {
@@ -40,8 +41,9 @@ export const useCreateImageData = () => {
   };
 
   return {
-    createImageData,
-    response,
+    getOrCreateImageData,
+    imageData,
+    setImageData,
     errorMsg,
     loading,
   };
