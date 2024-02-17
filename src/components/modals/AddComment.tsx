@@ -21,12 +21,30 @@ export default function AddCommentModal(props: any) {
   const modalIsClosed =
     document.getElementsByClassName("MuiDialog-root").length === 0;
 
+  const descriptionHtml = document.getElementsByClassName("description")[0];
+
   const handleCloseButton = () => {
     props.setOpenDialogWindow(false);
   };
 
   const handleSaveButton = () => {
-    updateImageComment(props.imgId, commentFormInput, tokenValue);
+    updateImageComment(props.imgId, commentFormInput, tokenValue); // handle update on backend site
+
+    // ! UPDATE IMAGE DESCRIPTION ON FRONTEND WITHOUT REFRESHING WHOLE PAGE
+    // * update comment inside viewer
+    props.viewer.updateComment(props.imgId, commentFormInput);
+
+    // * update images state - for re-rendering imageViewer
+    let imgIdx = props.images.findIndex((e: any) => e.id === props.imgId);
+    props.images[imgIdx].comment = commentFormInput;
+    props.setImages(props.images);
+
+    // * update currently visible html element (image description) -- it has to be the last one
+    descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(
+      new RegExp(" - .*"),
+      ` - ${commentFormInput}`,
+    );
+
     props.setOpenDialogWindow(false);
   };
 

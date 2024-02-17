@@ -1,4 +1,3 @@
-// TODO update URL based on current pic variable
 import { useState, useEffect, useContext } from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -14,8 +13,8 @@ import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 import ThumbnailImageList from "components/ThumbnailImageList";
 
-import categoryIcon from "icons/theatre-svgrepo-com.svg";
-import commentIcon from "icons/comment.svg";
+// import categoryIcon from "icons/theatre-svgrepo-com.svg";
+// import commentIcon from "icons/comment.svg";
 import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 import { AppContext } from "AppContext";
 
@@ -98,18 +97,19 @@ export default function CategoriesAlbum() {
     let buttons: any;
     if (tokenValue)
       buttons = [
-        {
-          name: "Categorize",
-          iconSrc: categoryIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCategoriesDialogWindow(true),
-        },
-        {
-          name: "Comment",
-          iconSrc: commentIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCommentDialogWindow(true),
-        },
+        // TODO enable buttons after fixing logic in Categories album
+        // {
+        //   name: "Categorize",
+        //   iconSrc: categoryIcon,
+        //   iconSize: "18px",
+        //   onSelect: () => setOpenCategoriesDialogWindow(true),
+        // },
+        // {
+        //   name: "Comment",
+        //   iconSrc: commentIcon,
+        //   iconSize: "18px",
+        //   onSelect: () => setOpenCommentDialogWindow(true),
+        // },
       ];
     else buttons = [];
 

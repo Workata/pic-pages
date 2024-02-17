@@ -38,6 +38,7 @@ export const useGetFolderContent = () => {
   return {
     getFolderContent,
     images,
+    setImages,
     folders,
     nextPageToken,
     loading,
