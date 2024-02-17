@@ -1,4 +1,3 @@
-// TODO update URL based on current pic variable
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -37,7 +36,7 @@ export default function Album() {
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getFolderContent, images, folders, nextPageToken } =
+  const { getFolderContent, images, setImages, folders, nextPageToken } =
     useGetFolderContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
@@ -116,6 +115,7 @@ export default function Album() {
     }
 
     let data: ImageToView[] = images.map((img) => ({
+      id: img.id,   // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
       description:
@@ -233,13 +233,17 @@ export default function Album() {
         imgId={currentImgId}
         imgName={images?.find((e) => e.id === currentImgId)?.name}
       />
-
-      <AddCommentModal
-        openDialogWindow={openCommentDialogWindow}
-        setOpenDialogWindow={setOpenCommentDialogWindow}
-        imgId={currentImgId}
-        imgName={images?.find((e) => e.id === currentImgId)?.name}
-      />
+      {viewer &&
+        <AddCommentModal
+          openDialogWindow={openCommentDialogWindow}
+          viewer={viewer}
+          setOpenDialogWindow={setOpenCommentDialogWindow}
+          imgId={currentImgId}
+          imgName={images?.find((e) => e.id === currentImgId)?.name}
+          images={images}
+          setImages={setImages}
+        />
+      }
     </>
   );
 }
