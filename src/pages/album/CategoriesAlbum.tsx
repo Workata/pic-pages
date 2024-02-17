@@ -13,8 +13,8 @@ import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 import ThumbnailImageList from "components/ThumbnailImageList";
 
-// import categoryIcon from "icons/theatre-svgrepo-com.svg";
-// import commentIcon from "icons/comment.svg";
+import categoryIcon from "icons/theatre-svgrepo-com.svg";
+import commentIcon from "icons/comment.svg";
 import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 import { AppContext } from "AppContext";
 
@@ -24,7 +24,7 @@ export default function CategoriesAlbum() {
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getCategoryContent, images } = useGetCategoryContent();
+  const { getCategoryContent, images, setImages } = useGetCategoryContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
@@ -88,6 +88,7 @@ export default function CategoriesAlbum() {
     }
 
     let data: ImageToView[] = images.map((img) => ({
+      id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
       description:
@@ -97,19 +98,18 @@ export default function CategoriesAlbum() {
     let buttons: any;
     if (tokenValue)
       buttons = [
-        // TODO enable buttons after fixing logic in Categories album
-        // {
-        //   name: "Categorize",
-        //   iconSrc: categoryIcon,
-        //   iconSize: "18px",
-        //   onSelect: () => setOpenCategoriesDialogWindow(true),
-        // },
-        // {
-        //   name: "Comment",
-        //   iconSrc: commentIcon,
-        //   iconSize: "18px",
-        //   onSelect: () => setOpenCommentDialogWindow(true),
-        // },
+        {
+          name: "Categorize",
+          iconSrc: categoryIcon,
+          iconSize: "18px",
+          onSelect: () => setOpenCategoriesDialogWindow(true),
+        },
+        {
+          name: "Comment",
+          iconSrc: commentIcon,
+          iconSize: "18px",
+          onSelect: () => setOpenCommentDialogWindow(true),
+        },
       ];
     else buttons = [];
 
@@ -163,13 +163,19 @@ export default function CategoriesAlbum() {
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
+        imgName={images?.find((e) => e.id === currentImgId)?.name}
       />
-
-      <AddCommentModal
-        openDialogWindow={openCommentDialogWindow}
-        setOpenDialogWindow={setOpenCommentDialogWindow}
-        imgId={currentImgId}
-      />
+      {viewer && (
+        <AddCommentModal
+          openDialogWindow={openCommentDialogWindow}
+          viewer={viewer}
+          setOpenDialogWindow={setOpenCommentDialogWindow}
+          imgId={currentImgId}
+          imgName={images?.find((e) => e.id === currentImgId)?.name}
+          images={images}
+          setImages={setImages}
+        />
+      )}
     </>
   );
 }
