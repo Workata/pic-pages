@@ -171,19 +171,8 @@ export default function Album() {
           width: "100%",
         }}
       >
-        {/* Folders container */}
-        <Box sx={{ display: "flex", columnGap: "20px" }}>
-          {folders &&
-            folders.map((folder: Folder) => (
-              <ClickableFolder
-                key={folder.id}
-                name={folder.name}
-                link={`/album/${folder.id}`}
-              />
-            ))}
-        </Box>
-
-        <Box sx={{ display: "flex", columnGap: "20px" }}>
+        <Box sx={{ display: "flex", columnGap: "20px", marginBottom: "10px", marginTop: "10px"}}>
+          {/* BUTTON FOR STARTING PAGE (IMAGES) */}
           {searchParams.get("page") !== null && (
             <Button
               variant="contained"
@@ -197,6 +186,7 @@ export default function Album() {
             </Button>
           )}
 
+          {/* BUTTON FOR NEXT PAGE (IMAGES) */}
           {nextPageToken && (
             <Button
               variant="contained"
@@ -209,6 +199,18 @@ export default function Album() {
               next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
             </Button>
           )}
+        </Box>
+
+        {/* Folders container */}
+        <Box sx={{ display: "flex", columnGap: "20px", marginTop: "20px" }}>
+          {folders &&
+            folders.map((folder: Folder) => (
+              <ClickableFolder
+                key={folder.id}
+                name={folder.name}
+                link={`/album/${folder.id}`}
+              />
+            ))}
         </Box>
 
         {/* Images container */}

@@ -27,6 +27,7 @@ export const useGetCategoryContent = () => {
   return {
     getCategoryContent,
     images,
+    setImages,
     errorMsg,
     loading,
   };
