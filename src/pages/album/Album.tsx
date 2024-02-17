@@ -115,7 +115,7 @@ export default function Album() {
     }
 
     let data: ImageToView[] = images.map((img) => ({
-      id: img.id,   // * additional (not enforced) data for image searching
+      id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
       description:
@@ -233,7 +233,7 @@ export default function Album() {
         imgId={currentImgId}
         imgName={images?.find((e) => e.id === currentImgId)?.name}
       />
-      {viewer &&
+      {viewer && (
         <AddCommentModal
           openDialogWindow={openCommentDialogWindow}
           viewer={viewer}
@@ -243,7 +243,7 @@ export default function Album() {
           images={images}
           setImages={setImages}
         />
-      }
+      )}
     </>
   );
 }

@@ -28,7 +28,7 @@ export default function AddCommentModal(props: any) {
   };
 
   const handleSaveButton = () => {
-    updateImageComment(props.imgId, commentFormInput, tokenValue);    // handle update on backend site
+    updateImageComment(props.imgId, commentFormInput, tokenValue); // handle update on backend site
 
     // ! UPDATE IMAGE DESCRIPTION ON FRONTEND WITHOUT REFRESHING WHOLE PAGE
     // * update comment inside viewer
@@ -40,7 +40,10 @@ export default function AddCommentModal(props: any) {
     props.setImages(props.images);
 
     // * update currently visible html element (image description) -- it has to be the last one
-    descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(new RegExp(" - .*"), ` - ${commentFormInput}`);
+    descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(
+      new RegExp(" - .*"),
+      ` - ${commentFormInput}`,
+    );
 
     props.setOpenDialogWindow(false);
   };
