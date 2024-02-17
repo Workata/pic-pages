@@ -171,7 +171,14 @@ export default function Album() {
           width: "100%",
         }}
       >
-        <Box sx={{ display: "flex", columnGap: "20px", marginBottom: "10px", marginTop: "10px"}}>
+        <Box
+          sx={{
+            display: "flex",
+            columnGap: "20px",
+            marginBottom: "10px",
+            marginTop: "10px",
+          }}
+        >
           {/* BUTTON FOR STARTING PAGE (IMAGES) */}
           {searchParams.get("page") !== null && (
             <Button
