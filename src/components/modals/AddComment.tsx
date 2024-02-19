@@ -40,10 +40,14 @@ export default function AddCommentModal(props: any) {
     props.setImages(props.images);
 
     // * update currently visible html element (image description) -- it has to be the last one
-    descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(
-      new RegExp(" - .*"),
-      ` - ${commentFormInput}`,
-    );
+    if (!descriptionHtml.innerHTML.includes("-")) {
+      descriptionHtml.innerHTML = `${descriptionHtml.innerHTML} - ${commentFormInput}`;
+    } else {
+      descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(
+        new RegExp(" - .*"),
+        ` - ${commentFormInput}`,
+      );
+    }
 
     props.setOpenDialogWindow(false);
   };
