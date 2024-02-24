@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.fc83bc07.css",
-    "main.js": "/static/js/main.cf82d117.js",
+    "main.js": "/static/js/main.4bf9be1b.js",
     "static/media/theatre-svgrepo-com.svg": "/static/media/theatre-svgrepo-com.f1da04f2a9d09b5c4b79dc902d326baa.svg",
     "static/media/comment.svg": "/static/media/comment.ba4c954032c287421128a3177cb3e3ee.svg",
     "index.html": "/index.html",
     "main.fc83bc07.css.map": "/static/css/main.fc83bc07.css.map",
-    "main.cf82d117.js.map": "/static/js/main.cf82d117.js.map"
+    "main.4bf9be1b.js.map": "/static/js/main.4bf9be1b.js.map"
   },
   "entrypoints": [
     "static/css/main.fc83bc07.css",
-    "static/js/main.cf82d117.js"
+    "static/js/main.4bf9be1b.js"
   ]
 }
