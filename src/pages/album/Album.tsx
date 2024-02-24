@@ -179,33 +179,39 @@ export default function Album() {
             marginTop: "10px",
           }}
         >
-          {/* BUTTON FOR STARTING PAGE (IMAGES) */}
-          {searchParams.get("page") !== null && (
-            <Button
-              variant="contained"
-              component={Link}
-              to={`/album/${currentFolderId}`}
-              sx={{
-                textTransform: "none",
-              }}
-            >
-              <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
-            </Button>
-          )}
+          <Button
+            id="starting-page-button"
+            variant="contained"
+            disabled={searchParams.get("page") === null}
+            component={Link}
+            to={`/album/${currentFolderId}`}
+            sx={{
+              textTransform: "none",
+              "&.Mui-disabled": {
+                background: "#7a8aa3",
+                color: "#c0c0c0"
+              }
+            }}
+          >
+            <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+          </Button>
 
-          {/* BUTTON FOR NEXT PAGE (IMAGES) */}
-          {nextPageToken && (
-            <Button
-              variant="contained"
-              component={Link}
-              to={`/album/${currentFolderId}?page=${nextPageToken}`}
-              sx={{
-                textTransform: "none",
-              }}
-            >
-              next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
-            </Button>
-          )}
+          <Button
+            id="next-page-button"
+            variant="contained"
+            disabled={nextPageToken === null}
+            component={Link}
+            to={`/album/${currentFolderId}?page=${nextPageToken}`}
+            sx={{
+              textTransform: "none",
+              "&.Mui-disabled": {
+                background: "#7a8aa3",
+                color: "#c0c0c0"
+              }
+            }}
+          >
+            next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
+          </Button>
         </Box>
 
         {/* Folders container */}
