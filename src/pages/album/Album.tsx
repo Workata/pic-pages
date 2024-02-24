@@ -189,8 +189,8 @@ export default function Album() {
               textTransform: "none",
               "&.Mui-disabled": {
                 background: "#7a8aa3",
-                color: "#c0c0c0"
-              }
+                color: "#c0c0c0",
+              },
             }}
           >
             <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
@@ -206,8 +206,8 @@ export default function Album() {
               textTransform: "none",
               "&.Mui-disabled": {
                 background: "#7a8aa3",
-                color: "#c0c0c0"
-              }
+                color: "#c0c0c0",
+              },
             }}
           >
             next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
