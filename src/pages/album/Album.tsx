@@ -172,11 +172,19 @@ export default function Album() {
         }}
       >
         <Box
+          id="buttons-container"
           sx={{
+            position: "fixed",
             display: "flex",
             columnGap: "20px",
             marginBottom: "10px",
-            marginTop: "10px",
+            width: "100%",
+            backgroundColor: "#202124",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            marginTop: "-37px",
+            // borderStyle: 'dotted',
+            // borderColor: 'red',
           }}
         >
           <Button
@@ -214,8 +222,15 @@ export default function Album() {
           </Button>
         </Box>
 
-        {/* Folders container */}
-        <Box sx={{ display: "flex", columnGap: "20px", marginTop: "20px" }}>
+        <Box
+          id="folders-container"
+          sx={{
+            display: "flex",
+            columnGap: "20px",
+            marginTop: "20px",
+            paddingTop: "22px",
+          }}
+        >
           {folders &&
             folders.map((folder: Folder) => (
               <ClickableFolder
