@@ -10,7 +10,10 @@ export default function ThumbnailImageList(props: any) {
         flexDirection: "row",
         display: "flex",
         flexWrap: "wrap",
-        gap: "20px 20px" /* row-gap column gap */,
+        // gap: "20px 20px" /* row-gap column gap */,
+        // gap: "2% 2%",
+        columnGap: "2%",
+        rowGap: "15px",
         // alignItems: "center",
         // justifyContent: "center",
       }}
@@ -19,8 +22,10 @@ export default function ThumbnailImageList(props: any) {
         <div
           id="imageContainer"
           style={{
-            width: "200px",
-            height: "200px",
+            // width: "200px",
+            // height: "200px",
+            width: "18%", // 5 images in row
+
             // margin: "10px 10px 10px 10px",
             // maxWidth: "200px",
             // maxHeight: "200px",
