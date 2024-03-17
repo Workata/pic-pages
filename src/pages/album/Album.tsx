@@ -11,6 +11,7 @@ import { Button } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 // * components
@@ -22,6 +23,7 @@ import ThumbnailImageList from "components/ThumbnailImageList";
 import { ExtendedImageViewer } from "utils/imageViewer";
 
 import categoryIcon from "icons/theatre-svgrepo-com.svg";
+import downloadIcon from "icons/file-download-svgrepo-com.svg";
 import commentIcon from "icons/comment.svg";
 
 // * hooks
@@ -50,6 +52,10 @@ export default function Album() {
   const closeImgButton: HTMLElement = document.getElementsByClassName(
     "defaultButton closeButton",
   )[0] as HTMLElement;
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   if (rightImgButton) {
     let idxPrev = Number(viewer!.getCurrentSelected());
@@ -97,6 +103,33 @@ export default function Album() {
     return "";
   };
 
+  const getImgIdDynmically = (url: string): string => {
+    let splittedUrl = url.split("/");
+    return splittedUrl[splittedUrl.length - 1];
+  };
+
+  const downloadImage = (): any => {
+    let imgId = getImgIdDynmically(window.location.href);
+    let url = `https://drive.lienuc.com/uc?id=${imgId}`;
+    fetch(url)
+      .then((resp) => resp.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.referrerPolicy = "no-referrer";
+        a.href = url;
+        a.download = imgId!; // filename
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => {
+        alert("An error has occured! Contact dev team.");
+        console.log(err);
+      });
+  };
+
   const clearUrlFromImg = () => {
     let pageQueryParam = searchParams.get("page");
     if (pageQueryParam === null)
@@ -123,7 +156,7 @@ export default function Album() {
     }));
 
     let buttons: any;
-    if (tokenValue)
+    if (tokenValue) {
       buttons = [
         {
           name: "Categorize",
@@ -137,8 +170,23 @@ export default function Album() {
           iconSize: "18px",
           onSelect: () => setOpenCommentDialogWindow(true),
         },
+        {
+          name: "Download",
+          iconSrc: downloadIcon,
+          iconSize: "18px",
+          onSelect: () => downloadImage(),
+        },
       ];
-    else buttons = [];
+    } else {
+      buttons = [
+        {
+          name: "Download",
+          iconSrc: downloadIcon,
+          iconSize: "18px",
+          onSelect: () => downloadImage(),
+        },
+      ];
+    }
 
     setViewer(
       new ExtendedImageViewer({
@@ -202,6 +250,24 @@ export default function Album() {
             }}
           >
             <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+          </Button>
+
+          <Button
+            id="previous-page-button"
+            variant="contained"
+            // disabled={searchParams.get("page") === null}
+            // component={Link}
+            onClick={goBack}
+            // to={`/album/${currentFolderId}`}
+            sx={{
+              textTransform: "none",
+              "&.Mui-disabled": {
+                background: "#7a8aa3",
+                color: "#c0c0c0",
+              },
+            }}
+          >
+            <KeyboardArrowLeftIcon sx={{ marginRight: "15px" }} /> prev
           </Button>
 
           <Button
