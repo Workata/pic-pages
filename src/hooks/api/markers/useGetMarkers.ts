@@ -19,8 +19,8 @@ export const useGetMarkers = () => {
             (o: any) =>
               new Marker({
                 coords: new Coords({
-                  longitude: o.longitude,
-                  latitude: o.latitude,
+                  longitude: o.coords.longitude,
+                  latitude: o.coords.latitude,
                 }),
                 url: o.url,
               }),
