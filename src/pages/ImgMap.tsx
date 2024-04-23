@@ -41,7 +41,7 @@ export default function ImgMap() {
 
   const mapping: any = {};
   const convertCoordsToString = (latitude: number, longitude: number) => {
-    return `${latitude}, ${longitude}`;
+    return `${parseFloat(String(latitude)).toFixed(6)}, ${parseFloat(String(longitude)).toFixed(6)}`;
   };
 
   const prepMapData = () => {
