@@ -16,14 +16,7 @@ export const useGetMarkers = () => {
       .then((res) => {
         setMarkers(
           res.data.map(
-            (o: any) =>
-              new Marker({
-                coords: new Coords({
-                  longitude: o.coords.longitude,
-                  latitude: o.coords.latitude,
-                }),
-                url: o.url,
-              }),
+            (o: any) => new Marker(o),
           ),
         );
         setErrorMsg("");
