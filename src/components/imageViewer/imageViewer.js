@@ -248,10 +248,9 @@ class ImageViewer {
   //selectImage:
   selectImage(index) {
     if (index > this.images.length - 1) {
-      console.log("Next page...");
       // TODO add query param "showFirst=True" and handle it in Album
-      // TODO handle last page null (page === null)
-      window.location.href = `${window.location.origin}/#${this.nextPageUrl}`;
+      if (this.nextPageUrl === null) return;
+      window.location.href = `${window.location.origin}/#${this.nextPageUrl}&showFirst=yes`;
       this.hide();
       return;
     }

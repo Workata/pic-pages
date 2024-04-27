@@ -1,3 +1,4 @@
+/* eslint-disable */
 // * react
 import { useEffect, useState, useContext } from "react";
 import { Box } from "@mui/material";
@@ -191,13 +192,14 @@ export default function ImgMap() {
         }}
         id="mapContent"
       />
-      {tokenValue && (
+      {/* TODO uncomment after fixing modal */}
+      {/* {tokenValue && (
         <AddMarkerModal
           openDialogWindow={openDialogWindow}
           setOpenDialogWindow={setOpenDialogWindow}
           coords={newMarkerCoords}
         />
-      )}
+      )} */}
     </>
   );
 }
