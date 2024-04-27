@@ -1,3 +1,4 @@
+/* eslint-disable */
 // * react
 import { useEffect, useState, useContext } from "react";
 import { Box } from "@mui/material";
@@ -41,7 +42,7 @@ export default function ImgMap() {
 
   const mapping: any = {};
   const convertCoordsToString = (latitude: number, longitude: number) => {
-    return `${latitude}, ${longitude}`;
+    return `${parseFloat(String(latitude)).toFixed(6)}, ${parseFloat(String(longitude)).toFixed(6)}`;
   };
 
   const prepMapData = () => {
@@ -191,13 +192,14 @@ export default function ImgMap() {
         }}
         id="mapContent"
       />
-      {tokenValue && (
+      {/* TODO uncomment after fixing modal */}
+      {/* {tokenValue && (
         <AddMarkerModal
           openDialogWindow={openDialogWindow}
           setOpenDialogWindow={setOpenDialogWindow}
           coords={newMarkerCoords}
         />
-      )}
+      )} */}
     </>
   );
 }

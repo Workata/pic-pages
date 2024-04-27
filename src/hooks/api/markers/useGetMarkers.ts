@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState } from "react";
-import { Coords } from "models/Coords";
 import { Marker } from "models/Marker";
 
 export const useGetMarkers = () => {
@@ -14,18 +13,7 @@ export const useGetMarkers = () => {
     axios
       .get("/api/v1/map/marker", { headers: headers })
       .then((res) => {
-        setMarkers(
-          res.data.map(
-            (o: any) =>
-              new Marker({
-                coords: new Coords({
-                  longitude: o.longitude,
-                  latitude: o.latitude,
-                }),
-                url: o.url,
-              }),
-          ),
-        );
+        setMarkers(res.data.map((o: any) => new Marker(o)));
         setErrorMsg("");
       })
       .catch((err) => {

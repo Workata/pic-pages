@@ -194,6 +194,9 @@ export default function Album() {
         currentSelected: idx,
         showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
         buttons: buttons,
+        nextPageUrl: nextPageToken
+          ? `/album/${currentFolderId}?page=${nextPageToken}`
+          : null,
       }),
     );
   };
@@ -205,12 +208,18 @@ export default function Album() {
   }, [currentFolderId, searchParams.get("page")]);
 
   useEffect(() => {
+    // if (images && searchParams.get("showFirst") === "yes")
+    // navigate(`../album/${currentFolderId}/${images[0].id}?page=${searchParams.get("page")}`, { replace: true });
     if (currentImgId && images && viewerIsClosed()) {
       console.log(`Currently selected img ID ${currentImgId}`);
       viewImage(images.findIndex((el) => el.id === currentImgId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
+
+  // useEffect(() => {
+  //   if (searchParams.get("showFirst") === "yes") viewImage(0);
+  // }, [searchParams.get("showFirst")])
 
   return (
     <>

@@ -16,6 +16,7 @@ type button = {
 type constructorParameters = {
   images: image[];
   currentSelected?: number;
+  nextPageUrl: string;
   buttons?: button[];
   showThumbnails?: boolean;
   isZoomable?: boolean;
@@ -29,6 +30,7 @@ export default class ImageViewer {
   protected view: HTMLElement;
   protected images: image[];
   protected currentSelected: number;
+  protected nextPageUrl: string;
   protected buttons?: button[];
   protected showThumbnails: boolean;
   protected isZoomable: boolean;
@@ -67,6 +69,7 @@ export default class ImageViewer {
     this.dbcTimer = setTimeout(() => {}, 0);
     this.dbcWaiting = false;
     this.isSwiping = false;
+    this.nextPageUrl = "";
 
     //show images:
     this.showImages();
