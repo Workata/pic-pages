@@ -194,6 +194,7 @@ export default function Album() {
         currentSelected: idx,
         showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
         buttons: buttons,
+        nextPageUrl: `/album/${currentFolderId}?page=${nextPageToken}`,
       }),
     );
   };

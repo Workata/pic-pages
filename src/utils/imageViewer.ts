@@ -1,6 +1,10 @@
 import ImageViewer from "components/imageViewer/imageViewer";
 
 export class ExtendedImageViewer extends ImageViewer {
+  constructor(parameters: any) {
+    super(parameters);
+    this.nextPageUrl = parameters.nextPageUrl;
+  }
   getCurrentSelected(): number {
     return this.currentSelected;
   }
