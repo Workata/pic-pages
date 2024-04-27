@@ -203,7 +203,7 @@ class ImageViewer {
       ".touchSurface, .imageContainer, .arrowButton, .thumbnailContainer",
     );
     const firstElement = elements[0];
-    setTimeout(() => firstElement.focus(), 100);
+    firstElement.focus();
     elements.forEach((element) => {
       element.addEventListener("keydown", (e) => {
         const event = e;
@@ -252,7 +252,9 @@ class ImageViewer {
     this.loadImage(index - 1);
     this.loadImage(index);
     this.loadImage(index + 1);
-    this.scrollToImage(index);
+    // * small timeout needed for correct image centering after first load
+    setTimeout(() => this.scrollToImage(index), 100);
+
     this.setDescription(this.images[index].description);
     this.setThumbnail(index);
   }
@@ -276,7 +278,8 @@ class ImageViewer {
       (imagesWrapper.getBoundingClientRect().width -
         imageContainer.getBoundingClientRect().width) /
         2;
-    imagesWrapper.scrollTo({ left: imageCenterPosition, behavior: "smooth" });
+    // * choose behavior: "smooth" to get animation; probably additional timeouts are needed then
+    imagesWrapper.scrollTo({ left: imageCenterPosition, behavior: "auto" });
   }
   //setDescription:
   setDescription(text) {
@@ -306,9 +309,10 @@ class ImageViewer {
       (thumbnailsWrapper.getBoundingClientRect().width -
         thumbnail.getBoundingClientRect().width) /
         2;
+    // * choose behavior: "smooth" to get animation; probably additional timeouts are needed then
     thumbnailsWrapper.scrollTo({
       left: thumbnailCenterPosition,
-      behavior: "smooth",
+      behavior: "auto", // smooth
     });
   }
   //onSwipe:
@@ -385,11 +389,9 @@ class ImageViewer {
         e.stopPropagation();
         if (!this.dbcWaiting) {
           this.dbcWaiting = true;
-          this.dbcTimer = setTimeout(() => {
-            //single click:
-            if (this.dbcWaiting) this.flipHud(!this.isHudShow);
-            this.dbcWaiting = false;
-          }, 200);
+
+          if (this.dbcWaiting) this.flipHud(!this.isHudShow);
+          this.dbcWaiting = false;
         } else {
           //double click:
           clearTimeout(this.dbcTimer);
@@ -458,10 +460,10 @@ class ImageViewer {
   flipHud(show) {
     if (show) {
       this.view.classList.remove("hudDisplay");
-      setTimeout(() => this.view.classList.remove("hudOpacity"), 50);
+      this.view.classList.remove("hudOpacity");
     } else {
       this.view.classList.add("hudOpacity");
-      setTimeout(() => this.view.classList.add("hudDisplay"), 200);
+      this.view.classList.add("hudDisplay");
     }
     this.isHudShow = show;
   }
@@ -486,9 +488,7 @@ class ImageViewer {
   //show:
   show() {
     const thisView = this;
-    setTimeout(() => {
-      thisView.view.classList.add("visible");
-    }, 50); //slight delay between adding to DOM and running css animation
+    thisView.view.classList.add("visible");
   }
   //addEventToHide:
   addEventToHide() {
@@ -501,9 +501,7 @@ class ImageViewer {
   hide() {
     this.view.classList.remove("visible");
     const thisView = this;
-    setTimeout(() => {
-      thisView.view.remove();
-    }, 500); //long enough to make sure that it is hidden
+    thisView.view.remove();
   }
 }
 exports.default = ImageViewer;
