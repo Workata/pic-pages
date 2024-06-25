@@ -116,7 +116,7 @@ class ImageViewer {
             <button class="imageContainer${
               stretchImages ? " stretch" : ""
             }" data-url="${imageSrc}">
-                <img class="image" referrerpolicy="no-referrer"/>
+                <img class="image" referrerpolicy="no-referrer" crossorigin="anonymous" />
             </button>
         `;
     return ImageViewer.getChildNode(html);
