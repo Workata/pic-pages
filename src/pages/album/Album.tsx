@@ -111,7 +111,7 @@ export default function Album() {
   const downloadImage = (): any => {
     let imgId = getImgIdDynmically(window.location.href);
     // w10000 -> image quality
-    let url = `https://lh3.googleusercontent.com/d/${imgId}=w10000?authuser=0`; 
+    let url = `https://lh3.googleusercontent.com/d/${imgId}=w10000?authuser=0`;
     fetch(url)
       .then((resp) => resp.blob())
       .then((blob) => {
