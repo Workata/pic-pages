@@ -23,7 +23,13 @@ export const useGetFolderContent = () => {
       })
       .then((res) => {
         setImages(res.data.images.map((o: any) => new Image(o)));
-        setFolders(res.data.folders.map((o: any) => new Folder(o)));
+        // years: 2025, 2024, 2023 ...
+        // locations: Venezuela, Georgia, Armenia
+        setFolders(
+          res.data.folders
+            .map((o: any) => new Folder(o))
+            .sort((a: Folder, b: Folder) => (a.name < b.name ? 1 : -1)),
+        );
         setNextPageToken(res.data.nextPageToken);
         return res;
       })
