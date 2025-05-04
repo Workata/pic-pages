@@ -14,7 +14,7 @@ export const useGetFolderContent = () => {
     folderId: string,
     pageToken: null | string,
   ) => {
-    let headers = { "ngrok-skip-browser-warning": "69420" };
+    let headers = {};
 
     axios
       .get(`/api/v1/gdrive/folder/${folderId}`, {

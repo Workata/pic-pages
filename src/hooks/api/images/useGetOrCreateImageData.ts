@@ -22,8 +22,7 @@ export const useGetOrCreateImageData = () => {
       comment: comment,
     };
     let headers = {
-      Authorization: `Bearer ${token}`,
-      "ngrok-skip-browser-warning": "69420",
+      Authorization: `Bearer ${token}`
     };
 
     axios

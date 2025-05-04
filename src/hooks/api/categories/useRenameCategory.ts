@@ -12,8 +12,7 @@ export const useRenameCategory = () => {
     // * returns positive or error response
     let data = { old_name: oldName, new_name: newName };
     let headers = {
-      Authorization: `Bearer ${token}`,
-      "ngrok-skip-browser-warning": "69420",
+      Authorization: `Bearer ${token}`
     };
 
     return axios

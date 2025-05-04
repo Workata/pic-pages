@@ -18,8 +18,7 @@ export const useCreateMarker = () => {
       url: url,
     };
     let headers = {
-      Authorization: `Bearer ${token}`,
-      "ngrok-skip-browser-warning": "69420",
+      Authorization: `Bearer ${token}`
     };
 
     axios

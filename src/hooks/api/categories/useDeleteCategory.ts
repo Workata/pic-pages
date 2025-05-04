@@ -7,8 +7,7 @@ export const useDeleteCategory = () => {
   const deleteCategory = (categoryName: string, token: string): any => {
     // * returns positive or error response
     let headers = {
-      Authorization: `Bearer ${token}`,
-      "ngrok-skip-browser-warning": "69420",
+      Authorization: `Bearer ${token}`
     };
 
     return axios

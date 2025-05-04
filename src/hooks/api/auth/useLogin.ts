@@ -10,8 +10,7 @@ export const useLogin = () => {
       password: password,
     };
     let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "ngrok-skip-browser-warning": "69420",
+      "Content-Type": "application/x-www-form-urlencoded"
     };
 
     return axios
