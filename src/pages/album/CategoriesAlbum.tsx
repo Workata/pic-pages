@@ -13,6 +13,8 @@ import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 import ThumbnailImageList from "components/ThumbnailImageList";
 
+import { ImageDownloader } from "utils/imageDownloader";
+
 import categoryIcon from "icons/theatre-svgrepo-com.svg";
 import commentIcon from "icons/comment.svg";
 import downloadIcon from "icons/file-download-svgrepo-com.svg";
@@ -82,33 +84,6 @@ export default function CategoriesAlbum() {
     navigate(`../categories/${currentCategory}`, { replace: true });
   };
 
-  const getImgIdDynmically = (url: string): string => {
-    let splittedUrl = url.split("/");
-    return splittedUrl[splittedUrl.length - 1];
-  };
-
-  const downloadImage = (): any => {
-    let imgId = getImgIdDynmically(window.location.href);
-    let url = `https://drive.lienuc.com/uc?id=${imgId}`;
-    fetch(url)
-      .then((resp) => resp.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.referrerPolicy = "no-referrer";
-        a.href = url;
-        a.download = imgId!; // filename
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((err) => {
-        alert("An error has occured! Contact dev team.");
-        console.log(err);
-      });
-  };
-
   // * open image viewer
   const viewImage = (idx: number) => {
     if (!images) {
@@ -143,7 +118,7 @@ export default function CategoriesAlbum() {
           name: "Download",
           iconSrc: downloadIcon,
           iconSize: "18px",
-          onSelect: () => downloadImage(),
+          onSelect: () => new ImageDownloader().downloadImage(),
         },
       ];
     } else {
@@ -152,7 +127,7 @@ export default function CategoriesAlbum() {
           name: "Download",
           iconSrc: downloadIcon,
           iconSize: "18px",
-          onSelect: () => downloadImage(),
+          onSelect: () => new ImageDownloader().downloadImage(),
         },
       ];
     }
