@@ -12,7 +12,7 @@ export const useUpdateImageCategories = () => {
     token: string,
   ) => {
     let headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
 
     axios

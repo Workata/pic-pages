@@ -10,7 +10,7 @@ export const useLogin = () => {
       password: password,
     };
     let headers = {
-      "Content-Type": "application/x-www-form-urlencoded"
+      "Content-Type": "application/x-www-form-urlencoded",
     };
 
     return axios

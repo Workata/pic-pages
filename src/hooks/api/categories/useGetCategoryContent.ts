@@ -11,12 +11,12 @@ export const useGetCategoryContent = () => {
 
   const getCategoryContent = async (category: string, page: number = 0) => {
     let headers = {};
-    let params = {page: page};
+    let params = { page: page };
 
     axios
       .get(`/api/v1/categories/${category}`, {
         headers: headers,
-        params: params
+        params: params,
       })
       .then((res) => {
         setImages(res.data.images.map((o: any) => new Image(o)));

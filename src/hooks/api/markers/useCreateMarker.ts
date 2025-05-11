@@ -18,7 +18,7 @@ export const useCreateMarker = () => {
       url: url,
     };
     let headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
 
     axios

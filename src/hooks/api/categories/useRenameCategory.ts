@@ -12,7 +12,7 @@ export const useRenameCategory = () => {
     // * returns positive or error response
     let data = { old_name: oldName, new_name: newName };
     let headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
 
     return axios

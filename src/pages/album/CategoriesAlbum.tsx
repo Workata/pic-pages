@@ -1,6 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 
-import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
+import {
+  useParams,
+  Link,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 
 // * models
 import { ImageToView } from "./shared/imageToView.type";
@@ -33,7 +38,8 @@ export default function CategoriesAlbum() {
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getCategoryContent, images, setImages, previousPage, nextPage } = useGetCategoryContent();
+  const { getCategoryContent, images, setImages, previousPage, nextPage } =
+    useGetCategoryContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
@@ -149,12 +155,11 @@ export default function CategoriesAlbum() {
 
   useEffect(() => {
     if (currentCategory) {
-      if (searchParams.get("page") === null){
+      if (searchParams.get("page") === null) {
         getCategoryContent(currentCategory);
       } else {
         getCategoryContent(currentCategory, Number(searchParams.get("page")!));
       }
-      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCategory, searchParams.get("page")]);

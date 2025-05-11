@@ -22,7 +22,7 @@ export const useGetOrCreateImageData = () => {
       comment: comment,
     };
     let headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
 
     axios

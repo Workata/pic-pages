@@ -7,7 +7,7 @@ export const useDeleteCategory = () => {
   const deleteCategory = (categoryName: string, token: string): any => {
     // * returns positive or error response
     let headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
 
     return axios
