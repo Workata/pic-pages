@@ -23,7 +23,6 @@ export const useGetOrCreateImageData = () => {
     };
     let headers = {
       Authorization: `Bearer ${token}`,
-      "ngrok-skip-browser-warning": "69420",
     };
 
     axios

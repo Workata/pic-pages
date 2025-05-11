@@ -11,7 +11,6 @@ export const useLogin = () => {
     };
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      "ngrok-skip-browser-warning": "69420",
     };
 
     return axios

@@ -1,14 +1,23 @@
 import { useState, useEffect, useContext } from "react";
 
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import {
+  useParams,
+  Link,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 
 // * models
 import { ImageToView } from "./shared/imageToView.type";
 
 // * components
 import { ExtendedImageViewer } from "utils/imageViewer";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+
 import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
 import ThumbnailImageList from "components/ThumbnailImageList";
@@ -24,11 +33,13 @@ import { AppContext } from "AppContext";
 
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
+  const [searchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
     useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getCategoryContent, images, setImages } = useGetCategoryContent();
+  const { getCategoryContent, images, setImages, previousPage, nextPage } =
+    useGetCategoryContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
@@ -143,9 +154,15 @@ export default function CategoriesAlbum() {
   };
 
   useEffect(() => {
-    if (currentCategory) getCategoryContent(currentCategory);
+    if (currentCategory) {
+      if (searchParams.get("page") === null) {
+        getCategoryContent(currentCategory);
+      } else {
+        getCategoryContent(currentCategory, Number(searchParams.get("page")!));
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCategory]);
+  }, [currentCategory, searchParams.get("page")]);
 
   useEffect(() => {
     if (currentImgId && images && viewerIsClosed()) {
@@ -163,6 +180,74 @@ export default function CategoriesAlbum() {
           width: "100%",
         }}
       >
+        <Box
+          id="buttons-container"
+          sx={{
+            position: "fixed",
+            display: "flex",
+            columnGap: "20px",
+            marginBottom: "10px",
+            width: "100%",
+            backgroundColor: "#202124",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            marginTop: "-37px",
+            // borderStyle: 'dotted',
+            // borderColor: 'red',
+          }}
+        >
+          <Button
+            id="starting-page-button"
+            variant="contained"
+            disabled={searchParams.get("page") === null}
+            component={Link}
+            to={`/categories/${currentCategory}`}
+            sx={{
+              textTransform: "none",
+              "&.Mui-disabled": {
+                background: "#7a8aa3",
+                color: "#c0c0c0",
+              },
+            }}
+          >
+            <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+          </Button>
+
+          <Button
+            id="previous-page-button"
+            variant="contained"
+            disabled={previousPage === null}
+            component={Link}
+            to={`/categories/${currentCategory}?page=${previousPage}`}
+            sx={{
+              textTransform: "none",
+              "&.Mui-disabled": {
+                background: "#7a8aa3",
+                color: "#c0c0c0",
+              },
+            }}
+          >
+            <KeyboardArrowLeftIcon sx={{ marginRight: "15px" }} /> prev
+          </Button>
+
+          <Button
+            id="next-page-button"
+            variant="contained"
+            disabled={nextPage === null}
+            component={Link}
+            to={`/categories/${currentCategory}?page=${nextPage}`}
+            sx={{
+              textTransform: "none",
+              "&.Mui-disabled": {
+                background: "#7a8aa3",
+                color: "#c0c0c0",
+              },
+            }}
+          >
+            next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
+          </Button>
+        </Box>
+
         <Box
           sx={{
             width: "100%",

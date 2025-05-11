@@ -8,7 +8,7 @@ export const useGetMarkers = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
   const getMarkers = async () => {
-    let headers = { "ngrok-skip-browser-warning": "69420" };
+    let headers = {};
 
     axios
       .get("/api/v1/map/marker", { headers: headers })

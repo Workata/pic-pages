@@ -13,7 +13,6 @@ export const useUpdateImageComment = () => {
   ) => {
     let headers = {
       Authorization: `Bearer ${token}`,
-      "ngrok-skip-browser-warning": "69420",
     };
 
     axios

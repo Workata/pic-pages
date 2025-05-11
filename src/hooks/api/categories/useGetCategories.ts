@@ -8,7 +8,7 @@ export const useGetCategories = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
   const getCategories = async () => {
-    let headers = { "ngrok-skip-browser-warning": "69420" };
+    let headers = {};
 
     axios
       .get("/api/v1/categories", { headers: headers })

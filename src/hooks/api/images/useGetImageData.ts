@@ -10,7 +10,7 @@ export const useGetImageData = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
   const getImageData = async (imgId: number): Promise<any> => {
-    let headers = { "ngrok-skip-browser-warning": "69420" };
+    let headers = {};
 
     axios
       .get(`/api/v1/images/${imgId}`, { headers: headers })
