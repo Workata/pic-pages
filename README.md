@@ -1,6 +1,23 @@
 # PicPages
 
-## Design assumptions
+Frontend for tomtol application.
+
+
+### Development
+
+Make sure you are using `Node 25.2.1`
+```sh
+nvm use 25.2.1
+```
+
+Start development server
+```sh
+npm start
+```
+
+
+### Design assumptions
+TODO
 
 ### Stack
 
