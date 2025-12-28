@@ -36,23 +36,15 @@ export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
-  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
-    useState(false);
+  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getFolderContent, images, setImages, folders, nextPageToken } =
-    useGetFolderContent();
+  const { getFolderContent, images, setImages, folders, nextPageToken } = useGetFolderContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
-  const rightImgButton: HTMLElement = document.getElementsByClassName(
-    "arrowButton rightButton",
-  )[0] as HTMLElement;
-  const leftImgButton: HTMLElement = document.getElementsByClassName(
-    "arrowButton leftButton",
-  )[0] as HTMLElement;
-  const closeImgButton: HTMLElement = document.getElementsByClassName(
-    "defaultButton closeButton",
-  )[0] as HTMLElement;
+  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
+  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
+  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   const goBack = () => {
     navigate(-1);
@@ -86,15 +78,8 @@ export default function Album() {
 
   const insertImgIdToUrl = (imgId: string) => {
     if (!currentImgId || currentImgId !== imgId)
-      if (searchParams.get("page") === null)
-        navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
-      else
-        navigate(
-          `../album/${currentFolderId}/${imgId}?page=${searchParams.get(
-            "page",
-          )}`,
-          { replace: true },
-        );
+      if (searchParams.get("page") === null) navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+      else navigate(`../album/${currentFolderId}/${imgId}?page=${searchParams.get("page")}`, { replace: true });
   };
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -106,8 +91,7 @@ export default function Album() {
 
   const clearUrlFromImg = () => {
     let pageQueryParam = searchParams.get("page");
-    if (pageQueryParam === null)
-      navigate(`../album/${currentFolderId}`, { replace: true });
+    if (pageQueryParam === null) navigate(`../album/${currentFolderId}`, { replace: true });
     else
       navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, {
         replace: true,
@@ -125,8 +109,7 @@ export default function Album() {
       id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
-      description:
-        img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
+      description: img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
     }));
 
     let buttons: any;
@@ -168,16 +151,13 @@ export default function Album() {
         currentSelected: idx,
         showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
         buttons: buttons,
-        nextPageUrl: nextPageToken
-          ? `/album/${currentFolderId}?page=${nextPageToken}`
-          : null,
+        nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
       }),
     );
   };
 
   useEffect(() => {
-    if (currentFolderId)
-      getFolderContent(currentFolderId, searchParams.get("page"));
+    if (currentFolderId) getFolderContent(currentFolderId, searchParams.get("page"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId, searchParams.get("page")]);
 
@@ -282,11 +262,7 @@ export default function Album() {
         >
           {folders &&
             folders.map((folder: Folder) => (
-              <ClickableFolder
-                key={folder.id}
-                name={folder.name}
-                link={`/album/${folder.id}`}
-              />
+              <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`} />
             ))}
         </Box>
 
@@ -296,12 +272,7 @@ export default function Album() {
             width: "100%",
           }}
         >
-          {images && (
-            <ThumbnailImageList
-              images={images}
-              insertImgIdToUrl={insertImgIdToUrl}
-            />
-          )}
+          {images && <ThumbnailImageList images={images} insertImgIdToUrl={insertImgIdToUrl} />}
         </Box>
       </Box>
 

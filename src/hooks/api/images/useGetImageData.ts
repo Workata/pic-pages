@@ -3,9 +3,7 @@ import { useState } from "react";
 import { ImageData } from "models/ImageData";
 
 export const useGetImageData = () => {
-  const [imageData, setImageData] = useState<undefined | null | ImageData>(
-    undefined,
-  );
+  const [imageData, setImageData] = useState<undefined | null | ImageData>(undefined);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(true);
 

@@ -3,14 +3,7 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // * mui
-import {
-  Box,
-  Divider,
-  IconButton,
-  Toolbar,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Box, Divider, IconButton, Toolbar, Typography, Button } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
 import { CSSObject, Theme, styled, useTheme } from "@mui/material/styles";
@@ -100,8 +93,7 @@ export default function AppWrapper(props: any) {
   // * aggregates App Bar and Side Menu (Drawer)
   const navigate = useNavigate();
   const theme = useTheme();
-  const { tokenValue, setTokenValue, deleteTokenCookie } =
-    useContext(AppContext);
+  const { tokenValue, setTokenValue, deleteTokenCookie } = useContext(AppContext);
   // * state of sidebar - opened/close (user requested opened by deault)
   const [open, setOpen] = React.useState(true);
 
@@ -130,11 +122,7 @@ export default function AppWrapper(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          <Box
-            component={Link}
-            to="/"
-            sx={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Box component={Link} to="/" sx={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h6" noWrap component="div">
               TomTol {tokenValue && " - Admin"}
             </Typography>
@@ -169,11 +157,7 @@ export default function AppWrapper(props: any) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
 

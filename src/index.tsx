@@ -7,9 +7,7 @@ import ContextProvider from "AppContext";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
   // <React.StrictMode>

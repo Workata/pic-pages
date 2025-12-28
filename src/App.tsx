@@ -1,12 +1,7 @@
 import React, { useContext, useEffect } from "react";
 
 // * navigation
-import {
-  HashRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // * pages
 import Login from "./pages/Login";
@@ -32,36 +27,17 @@ function App() {
       <AppWrapper>
         <Routes>
           {/* <Route path="/" element={<Home />} /> */}
-          <Route
-            path="/"
-            element={
-              <Navigate to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`} />
-            }
-          />
+          <Route path="/" element={<Navigate to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`} />} />
 
           <Route path="/login" element={<Login />} />
 
           <Route path="/categories" element={<Categories />} />
-          <Route
-            path="/categories/:currentCategory"
-            element={<CategoriesAlbum />}
-          />
-          <Route
-            path="/categories/:currentCategory/:currentImgId"
-            element={<CategoriesAlbum />}
-          />
+          <Route path="/categories/:currentCategory" element={<CategoriesAlbum />} />
+          <Route path="/categories/:currentCategory/:currentImgId" element={<CategoriesAlbum />} />
 
-          <Route
-            path="/album"
-            element={
-              <Navigate to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`} />
-            }
-          />
+          <Route path="/album" element={<Navigate to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`} />} />
           <Route path="/album/:currentFolderId" element={<Album />} />
-          <Route
-            path="/album/:currentFolderId/:currentImgId"
-            element={<Album />}
-          />
+          <Route path="/album/:currentFolderId/:currentImgId" element={<Album />} />
 
           <Route path="/map" element={<ImgMap />} />
         </Routes>

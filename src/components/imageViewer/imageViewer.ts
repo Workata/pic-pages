@@ -49,14 +49,9 @@ export default class ImageViewer {
 
     //the view:
     this.viewID = ImageViewer.generateViewID();
-    const view = ImageViewer.getHtml(
-      this.viewID,
-      (this.isZoomable = parameters.isZoomable ?? true),
-    );
+    const view = ImageViewer.getHtml(this.viewID, (this.isZoomable = parameters.isZoomable ?? true));
     document.body.appendChild(view);
-    this.view =
-      document.getElementById(this.viewID.toString()) ||
-      document.createElement("div");
+    this.view = document.getElementById(this.viewID.toString()) || document.createElement("div");
 
     //set properties:
     this.images = parameters.images;
@@ -163,14 +158,9 @@ export default class ImageViewer {
   }
 
   //getThumbnailHtml:
-  protected static getImageHtml(
-    imageSrc: string,
-    stretchImages: boolean,
-  ): ChildNode {
+  protected static getImageHtml(imageSrc: string, stretchImages: boolean): ChildNode {
     const html = `
-            <button class="imageContainer${
-              stretchImages ? " stretch" : ""
-            }" data-url="${imageSrc}">
+            <button class="imageContainer${stretchImages ? " stretch" : ""}" data-url="${imageSrc}">
                 <img class="image"/>
             </button>
         `;
@@ -178,11 +168,7 @@ export default class ImageViewer {
   }
 
   //getButtonHtml:
-  protected static getButtonHtml(
-    name: string,
-    iconSrc: string,
-    iconSize: string,
-  ): ChildNode {
+  protected static getButtonHtml(name: string, iconSrc: string, iconSize: string): ChildNode {
     const html = `
             <input
                 type="button"
@@ -196,11 +182,7 @@ export default class ImageViewer {
   }
 
   //getThumbnailHtml:
-  protected static getThumbnailHtml(
-    index: number,
-    imageSrc: string,
-    title?: string,
-  ): ChildNode {
+  protected static getThumbnailHtml(index: number, imageSrc: string, title?: string): ChildNode {
     const html = `
             <button class="thumbnailContainer">
                 <img class="thumbnail" data-index="${index}" src="${imageSrc}" title="${title}"/>
@@ -218,29 +200,18 @@ export default class ImageViewer {
 
   //showImages:
   protected showImages() {
-    const imagesWrapper = this.view.getElementsByClassName(
-      "imagesWrapper",
-    )[0] as HTMLElement;
+    const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
     this.images.forEach((image) => {
-      const imageHtml = ImageViewer.getImageHtml(
-        image.mainUrl,
-        this.stretchImages,
-      );
+      const imageHtml = ImageViewer.getImageHtml(image.mainUrl, this.stretchImages);
       imagesWrapper.appendChild(imageHtml);
     });
   }
 
   //showToolbar:
   protected showToolbar() {
-    const toolbar = this.view.getElementsByClassName(
-      "toolbar",
-    )[0] as HTMLElement;
+    const toolbar = this.view.getElementsByClassName("toolbar")[0] as HTMLElement;
     this.buttons?.forEach((button) => {
-      const buttonHtml = ImageViewer.getButtonHtml(
-        button.name,
-        button.iconSrc,
-        button.iconSize,
-      );
+      const buttonHtml = ImageViewer.getButtonHtml(button.name, button.iconSrc, button.iconSize);
       toolbar.appendChild(buttonHtml);
       buttonHtml.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -251,12 +222,8 @@ export default class ImageViewer {
 
   //addEventToArrows:
   protected addEventToArrows() {
-    const leftButton = this.view.getElementsByClassName(
-      "leftButton",
-    )[0] as HTMLElement;
-    const rightButton = this.view.getElementsByClassName(
-      "rightButton",
-    )[0] as HTMLElement;
+    const leftButton = this.view.getElementsByClassName("leftButton")[0] as HTMLElement;
+    const rightButton = this.view.getElementsByClassName("rightButton")[0] as HTMLElement;
 
     //if there is only one image, ignore all:
     if (this.images.length === 1) {
@@ -276,9 +243,7 @@ export default class ImageViewer {
     });
 
     //navigation with arrow buttons:
-    const elements = this.view.querySelectorAll(
-      ".touchSurface, .imageContainer, .arrowButton, .thumbnailContainer",
-    );
+    const elements = this.view.querySelectorAll(".touchSurface, .imageContainer, .arrowButton, .thumbnailContainer");
     const firstElement = elements[0] as HTMLElement;
     setTimeout(() => firstElement.focus(), 100);
     elements.forEach((element) => {
@@ -299,16 +264,10 @@ export default class ImageViewer {
   //echoThumbnails:
   protected echoThumbnails() {
     if (!this.showThumbnails || this.images.length <= 1) return; //if there is only one image, ignore all
-    const thumbnailsWrapper = this.view.getElementsByClassName(
-      "thumbnailsWrapper",
-    )[0] as HTMLElement;
+    const thumbnailsWrapper = this.view.getElementsByClassName("thumbnailsWrapper")[0] as HTMLElement;
     let i = 0;
     this.images.forEach((image) => {
-      const thumbnailHtml = ImageViewer.getThumbnailHtml(
-        i,
-        image.thumbnailUrl ?? image.mainUrl,
-        image.description,
-      );
+      const thumbnailHtml = ImageViewer.getThumbnailHtml(i, image.thumbnailUrl ?? image.mainUrl, image.description);
       thumbnailsWrapper.appendChild(thumbnailHtml);
       thumbnailHtml.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -335,38 +294,28 @@ export default class ImageViewer {
   //loadImage:
   protected loadImage(index: number) {
     if (index < 0 || index > this.images.length - 1) return;
-    const imagesWrapper = this.view.getElementsByClassName(
-      "imagesWrapper",
-    )[0] as HTMLElement;
+    const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
     const imageContainers = imagesWrapper.children;
     const imageContainer = imageContainers.item(index) as HTMLElement;
     const url = imageContainer.dataset.url;
-    const image = imageContainer.getElementsByClassName(
-      "image",
-    )[0] as HTMLImageElement;
+    const image = imageContainer.getElementsByClassName("image")[0] as HTMLImageElement;
     image.src = url!;
   }
 
   //scrollToImage:
   protected scrollToImage(index: number) {
-    const imagesWrapper = this.view.getElementsByClassName(
-      "imagesWrapper",
-    )[0] as HTMLElement;
+    const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
     const imageContainers = imagesWrapper.children;
     const imageContainer = imageContainers.item(index) as HTMLElement;
     const imageCenterPosition =
       imageContainer.offsetLeft -
-      (imagesWrapper.getBoundingClientRect().width -
-        imageContainer.getBoundingClientRect().width) /
-        2;
+      (imagesWrapper.getBoundingClientRect().width - imageContainer.getBoundingClientRect().width) / 2;
     imagesWrapper.scrollTo({ left: imageCenterPosition, behavior: "smooth" });
   }
 
   //setDescription:
   protected setDescription(text?: string) {
-    const description = this.view.getElementsByClassName(
-      "description",
-    )[0] as HTMLElement;
+    const description = this.view.getElementsByClassName("description")[0] as HTMLElement;
     description.innerHTML = text || "";
   }
 
@@ -376,9 +325,7 @@ export default class ImageViewer {
     thumbnails.forEach((th) => {
       th.classList.remove("selected");
     });
-    const thumbnail = this.view.querySelector(
-      '[data-index="' + index + '"]',
-    ) as HTMLElement;
+    const thumbnail = this.view.querySelector('[data-index="' + index + '"]') as HTMLElement;
     if (thumbnail !== null) {
       thumbnail.classList!.add("selected");
       this.scrollThumbnail(index);
@@ -387,16 +334,12 @@ export default class ImageViewer {
 
   //scrollThumbnail:
   protected scrollThumbnail(index: number) {
-    const thumbnailsWrapper = this.view.getElementsByClassName(
-      "thumbnailsWrapper",
-    )[0] as HTMLElement;
+    const thumbnailsWrapper = this.view.getElementsByClassName("thumbnailsWrapper")[0] as HTMLElement;
     const thumbnails = thumbnailsWrapper.children;
     const thumbnail = thumbnails.item(index) as HTMLElement;
     const thumbnailCenterPosition =
       thumbnail.offsetLeft -
-      (thumbnailsWrapper.getBoundingClientRect().width -
-        thumbnail.getBoundingClientRect().width) /
-        2;
+      (thumbnailsWrapper.getBoundingClientRect().width - thumbnail.getBoundingClientRect().width) / 2;
     thumbnailsWrapper.scrollTo({
       left: thumbnailCenterPosition,
       behavior: "smooth",
@@ -404,33 +347,24 @@ export default class ImageViewer {
   }
 
   //onSwipe:
-  protected addEventToSwipe(
-    onSwipe: (direction: string) => void,
-    notSwiped: () => void,
-  ) {
+  protected addEventToSwipe(onSwipe: (direction: string) => void, notSwiped: () => void) {
     let swipeDetection = { startX: 0, startY: 0, endX: 0, endY: 0 };
     let minX = 30; //min x swipe for horizontal swipe
     let maxX = 30; //max x difference for vertical swipe
     let minY = 50; //min y swipe for vertical swipe
     let maxY = 60; //max y difference for horizontal swipe
     let direction = "";
-    const imagesWrapper = this.view.getElementsByClassName(
-      "imagesWrapper",
-    )[0] as HTMLElement;
+    const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
     let wrapperInfo = imagesWrapper.getBoundingClientRect();
     let scrollPosition = wrapperInfo.left;
     //events:
-    const touchSurface = this.view.getElementsByClassName(
-      "touchSurface",
-    )[0] as HTMLElement;
+    const touchSurface = this.view.getElementsByClassName("touchSurface")[0] as HTMLElement;
     touchSurface.addEventListener("touchstart", (e) => {
       if (this.isInZoom) return;
       let touch = e.touches[0];
       swipeDetection.startX = touch.screenX;
       swipeDetection.startY = touch.screenY;
-      const imagesWrapper = this.view.getElementsByClassName(
-        "imagesWrapper",
-      )[0] as HTMLElement;
+      const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
       const images = imagesWrapper.children;
       const currentImage = images.item(this.currentSelected) as HTMLElement;
       scrollPosition = currentImage.offsetLeft;
@@ -449,8 +383,7 @@ export default class ImageViewer {
       if (this.isInZoom) return;
       //horizontal detection:
       if (
-        (swipeDetection.endX - minX > swipeDetection.startX ||
-          swipeDetection.endX + minX < swipeDetection.startX) &&
+        (swipeDetection.endX - minX > swipeDetection.startX || swipeDetection.endX + minX < swipeDetection.startX) &&
         swipeDetection.endY < swipeDetection.startY + maxY &&
         swipeDetection.startY > swipeDetection.endY - maxY &&
         swipeDetection.endX > 0
@@ -460,8 +393,7 @@ export default class ImageViewer {
       }
       //vertical detection:
       else if (
-        (swipeDetection.endY - minY > swipeDetection.startY ||
-          swipeDetection.endY + minY < swipeDetection.startY) &&
+        (swipeDetection.endY - minY > swipeDetection.startY || swipeDetection.endY + minY < swipeDetection.startY) &&
         swipeDetection.endX < swipeDetection.startX + maxX &&
         swipeDetection.startX > swipeDetection.endX - maxX &&
         swipeDetection.endY > 0
@@ -502,30 +434,19 @@ export default class ImageViewer {
     });
 
     //zoom button:
-    const zoomButtons = this.view.querySelectorAll(
-      ".zoomInButton, .zoomOutButton",
-    );
+    const zoomButtons = this.view.querySelectorAll(".zoomInButton, .zoomOutButton");
     zoomButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         e.stopPropagation();
-        const imagesWrapper = this.view.getElementsByClassName(
-          "imagesWrapper",
-        )[0] as HTMLElement;
+        const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
         const imageContainers = imagesWrapper.children;
-        const imageContainer = imageContainers.item(
-          this.currentSelected,
-        ) as HTMLElement;
-        this.flipZoom(
-          imageContainer.offsetWidth / 2,
-          imageContainer.offsetHeight / 2,
-        );
+        const imageContainer = imageContainers.item(this.currentSelected) as HTMLElement;
+        this.flipZoom(imageContainer.offsetWidth / 2, imageContainer.offsetHeight / 2);
       });
     });
 
     //prevent scroll on zoom:
-    const imagesWrapper = this.view.getElementsByClassName(
-      "imagesWrapper",
-    )[0] as HTMLElement;
+    const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
     imagesWrapper.addEventListener("touchmove", (e) => {
       if (this.isInZoom) imagesWrapper.style.overflow = "hidden";
       else imagesWrapper.style.overflow = "scroll";
@@ -535,31 +456,21 @@ export default class ImageViewer {
   //flipZoom:
   protected flipZoom(clickX: number, clickY: number) {
     if (!this.isZoomable) return;
-    const imagesWrapper = this.view.getElementsByClassName(
-      "imagesWrapper",
-    )[0] as HTMLElement;
+    const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0] as HTMLElement;
     const imageContainers = imagesWrapper.children;
-    const imageContainer = imageContainers.item(
-      this.currentSelected,
-    ) as HTMLElement;
-    const touchSurface = this.view.getElementsByClassName(
-      "touchSurface",
-    )[0] as HTMLElement;
+    const imageContainer = imageContainers.item(this.currentSelected) as HTMLElement;
+    const touchSurface = this.view.getElementsByClassName("touchSurface")[0] as HTMLElement;
     if (!imageContainer.classList.contains("zoom")) {
       imageContainer.classList.add("zoom");
-      const image = imageContainer.getElementsByClassName(
-        "image",
-      )[0] as HTMLElement;
+      const image = imageContainer.getElementsByClassName("image")[0] as HTMLElement;
       imageContainer!.scrollTop =
         image.offsetHeight / 2 -
         imageContainer.offsetHeight / 2 +
-        (clickY - imageContainer.offsetHeight / 2) *
-          (image.offsetHeight / imageContainer.offsetHeight);
+        (clickY - imageContainer.offsetHeight / 2) * (image.offsetHeight / imageContainer.offsetHeight);
       imageContainer!.scrollLeft =
         image.offsetWidth / 2 -
         imageContainer.offsetWidth / 2 +
-        (clickX - imageContainer.offsetWidth / 2) *
-          (image.offsetWidth / imageContainer.offsetWidth);
+        (clickX - imageContainer.offsetWidth / 2) * (image.offsetWidth / imageContainer.offsetWidth);
       this.isInZoom = true;
       this.flipHud(false);
       this.view.classList.add("halfHud");
@@ -599,8 +510,7 @@ export default class ImageViewer {
     for (const [className, style] of Object.entries(this.style)) {
       const elements = this.view.querySelectorAll("." + className);
       elements.forEach((element) => {
-        for (const property of style)
-          (element as HTMLElement).style.setProperty(property[0], property[1]);
+        for (const property of style) (element as HTMLElement).style.setProperty(property[0], property[1]);
       });
     }
   }

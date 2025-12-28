@@ -21,12 +21,10 @@ import { AppContext } from "AppContext";
 export default function SelectCategoryModal(props: any) {
   const { getCategories, categories } = useGetCategories();
   const { updateImageCategories } = useUpdateImageCategories();
-  const { getOrCreateImageData, imageData, setImageData } =
-    useGetOrCreateImageData();
+  const { getOrCreateImageData, imageData, setImageData } = useGetOrCreateImageData();
   const { tokenValue } = useContext(AppContext);
 
-  const modalIsClosed =
-    document.getElementsByClassName("MuiDialog-root").length === 0;
+  const modalIsClosed = document.getElementsByClassName("MuiDialog-root").length === 0;
 
   const handleCloseDialogWindow = () => {
     props.setOpenDialogWindow(false);
@@ -34,23 +32,17 @@ export default function SelectCategoryModal(props: any) {
 
   const updateCategories = (categoryName: string) => {
     let updatedImageData = imageData;
-    let updatedCategories: string[] = imageData!.categories.map(
-      (category) => category.name,
-    );
+    let updatedCategories: string[] = imageData!.categories.map((category) => category.name);
     if (updatedCategories?.includes(categoryName)) {
       // * uncheck category
       const index = updatedCategories.indexOf(categoryName);
       updatedCategories.splice(index, 1); // 2nd parameter means remove one item only
-      updatedImageData!.categories = imageData!.categories.filter(
-        (category) => category.name !== categoryName,
-      );
+      updatedImageData!.categories = imageData!.categories.filter((category) => category.name !== categoryName);
       setImageData(updatedImageData);
     } else {
       // * check category
       updatedCategories.push(categoryName);
-      updatedImageData!.categories = imageData!.categories.concat([
-        new Category({ name: categoryName }),
-      ]);
+      updatedImageData!.categories = imageData!.categories.concat([new Category({ name: categoryName })]);
       setImageData(updatedImageData);
     }
     updateImageCategories(props.imgId, updatedCategories, tokenValue);
@@ -88,9 +80,7 @@ export default function SelectCategoryModal(props: any) {
               categories.map((category) => (
                 <FormControlLabel
                   control={
-                    imageData?.categories.find(
-                      (e) => e.name === category.name,
-                    ) ? (
+                    imageData?.categories.find((e) => e.name === category.name) ? (
                       <Checkbox defaultChecked />
                     ) : (
                       <Checkbox />

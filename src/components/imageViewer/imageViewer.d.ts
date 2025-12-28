@@ -37,20 +37,9 @@ export default class ImageViewer {
   protected static appendCSS(): void;
   protected static generateViewID(): number;
   protected static getHtml(viewID: number, isZoomable: boolean): ChildNode;
-  protected static getImageHtml(
-    imageSrc: string,
-    stretchImages: boolean,
-  ): ChildNode;
-  protected static getButtonHtml(
-    name: string,
-    iconSrc: string,
-    iconSize: string,
-  ): ChildNode;
-  protected static getThumbnailHtml(
-    index: number,
-    imageSrc: string,
-    title?: string,
-  ): ChildNode;
+  protected static getImageHtml(imageSrc: string, stretchImages: boolean): ChildNode;
+  protected static getButtonHtml(name: string, iconSrc: string, iconSize: string): ChildNode;
+  protected static getThumbnailHtml(index: number, imageSrc: string, title?: string): ChildNode;
   protected static getChildNode(html: string): ChildNode;
   protected showImages(): void;
   protected showToolbar(): void;
@@ -62,10 +51,7 @@ export default class ImageViewer {
   protected setDescription(text?: string): void;
   protected setThumbnail(index: number): void;
   protected scrollThumbnail(index: number): void;
-  protected addEventToSwipe(
-    onSwipe: (direction: string) => void,
-    notSwiped: () => void,
-  ): void;
+  protected addEventToSwipe(onSwipe: (direction: string) => void, notSwiped: () => void): void;
   protected addEventToHudAndZoom(): void;
   protected flipZoom(clickX: number, clickY: number): void;
   protected flipHud(show: boolean): void;

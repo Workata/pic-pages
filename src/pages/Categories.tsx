@@ -23,19 +23,13 @@ export default function Categories() {
   } | null>(null);
   const [focusedCategoryName, setFocusedCategoryName] = useState<string>("");
 
-  const [openCreateCategoryDialogWindow, setOpenCreateCategoryDialogWindow] =
-    useState(false);
-  const [openDeleteCategoryDialogWindow, setOpenDeleteCategoryDialogWindow] =
-    useState(false);
-  const [openRenameCategoryDialogWindow, setOpenRenameCategoryDialogWindow] =
-    useState(false);
+  const [openCreateCategoryDialogWindow, setOpenCreateCategoryDialogWindow] = useState(false);
+  const [openDeleteCategoryDialogWindow, setOpenDeleteCategoryDialogWindow] = useState(false);
+  const [openRenameCategoryDialogWindow, setOpenRenameCategoryDialogWindow] = useState(false);
 
-  const [openCategoryCreatedSuccessMsg, setOpenCategoryCreatedSuccessMsg] =
-    useState(false);
-  const [openCategoryDeletedSuccessMsg, setOpenCategoryDeletedSuccessMsg] =
-    useState(false);
-  const [openCategoryRenamedSuccessMsg, setOpenCategoryRenamedSuccessMsg] =
-    useState(false);
+  const [openCategoryCreatedSuccessMsg, setOpenCategoryCreatedSuccessMsg] = useState(false);
+  const [openCategoryDeletedSuccessMsg, setOpenCategoryDeletedSuccessMsg] = useState(false);
+  const [openCategoryRenamedSuccessMsg, setOpenCategoryRenamedSuccessMsg] = useState(false);
 
   const { getCategories, categories } = useGetCategories();
   const { tokenValue } = useContext(AppContext);
@@ -136,10 +130,7 @@ export default function Categories() {
                   cursor: "context-menu",
                 }}
               >
-                <ClickableFolder
-                  link={`/categories/${category.name}`}
-                  name={category.name}
-                />
+                <ClickableFolder link={`/categories/${category.name}`} name={category.name} />
               </div>
             ))}
         </Box>
@@ -232,10 +223,7 @@ export default function Categories() {
         categoryName={focusedCategoryName}
       />
 
-      <CategoryCreatedSnackbar
-        open={openCategoryCreatedSuccessMsg}
-        setOpen={setOpenCategoryCreatedSuccessMsg}
-      />
+      <CategoryCreatedSnackbar open={openCategoryCreatedSuccessMsg} setOpen={setOpenCategoryCreatedSuccessMsg} />
     </>
   );
 }

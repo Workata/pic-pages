@@ -55,15 +55,10 @@ export default function ImgMap() {
     markers?.forEach((marker) => {
       features.push(
         new Feature({
-          geometry: createPoint(
-            marker.coords.latitude,
-            marker.coords.longitude,
-          ),
+          geometry: createPoint(marker.coords.latitude, marker.coords.longitude),
         }),
       );
-      mapping[
-        convertCoordsToString(marker.coords.latitude, marker.coords.longitude)
-      ] = marker.url;
+      mapping[convertCoordsToString(marker.coords.latitude, marker.coords.longitude)] = marker.url;
     });
 
     // new layer with points on top?
@@ -140,9 +135,7 @@ export default function ImgMap() {
     // https://stackoverflow.com/questions/26967638/convert-point-to-lat-lon
     mainMap.on("click", function (event) {
       mainMap.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
-        let loc = JSON.parse(
-          JSON.stringify(feature.getGeometry()),
-        ).flatCoordinates;
+        let loc = JSON.parse(JSON.stringify(feature.getGeometry())).flatCoordinates;
         let loc_plus = transform(loc, "EPSG:3857", "EPSG:4326");
         let url = getUrlFromMapping(loc_plus);
         window.location.href = url; // navigate user to the specific page (full url)
@@ -152,11 +145,7 @@ export default function ImgMap() {
     // * right click event
     mainMap.getViewport().addEventListener("contextmenu", function (event) {
       event.preventDefault();
-      let coords = transform(
-        mainMap.getEventCoordinate(event),
-        "EPSG:3857",
-        "EPSG:4326",
-      );
+      let coords = transform(mainMap.getEventCoordinate(event), "EPSG:3857", "EPSG:4326");
       console.log(coords);
       setNewMarkerCoords(
         new Coords({

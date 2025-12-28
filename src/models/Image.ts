@@ -5,13 +5,7 @@ export class Image {
   thumbnailUrl: string;
   imageUrl: string;
 
-  constructor({
-    id = "",
-    name = "",
-    comment = "",
-    thumbnail_url = "",
-    image_url = "",
-  }) {
+  constructor({ id = "", name = "", comment = "", thumbnail_url = "", image_url = "" }) {
     this.id = id;
     this.name = name;
     this.comment = comment;

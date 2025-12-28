@@ -10,10 +10,7 @@ export const useGetFolderContent = () => {
   const [nextPageToken, setNextPageToken] = useState<null | string>(null);
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const getFolderContent = async (
-    folderId: string,
-    pageToken: null | string,
-  ) => {
+  const getFolderContent = async (folderId: string, pageToken: null | string) => {
     let headers = {};
 
     axios
@@ -26,9 +23,7 @@ export const useGetFolderContent = () => {
         // years: 2025, 2024, 2023 ...
         // locations: Venezuela, Georgia, Armenia
         setFolders(
-          res.data.folders
-            .map((o: any) => new Folder(o))
-            .sort((a: Folder, b: Folder) => (a.name < b.name ? 1 : -1)),
+          res.data.folders.map((o: any) => new Folder(o)).sort((a: Folder, b: Folder) => (a.name < b.name ? 1 : -1)),
         );
         setNextPageToken(res.data.nextPageToken);
         return res;

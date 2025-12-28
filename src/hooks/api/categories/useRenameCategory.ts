@@ -4,11 +4,7 @@ import { useState } from "react";
 export const useRenameCategory = () => {
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const renameCategory = (
-    oldName: string,
-    newName: string,
-    token: string,
-  ): any => {
+  const renameCategory = (oldName: string, newName: string, token: string): any => {
     // * returns positive or error response
     let data = { old_name: oldName, new_name: newName };
     let headers = {
