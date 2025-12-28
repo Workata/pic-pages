@@ -7,13 +7,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-    - name: Install packages
-      run: npm ci
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          # node-version: '25.2.1'
 
-    - name: Check fromatting with prettier
-      run: npm run prettier
+      - name: Install packages
+        run: npm ci
 
-    - name: Lint with eslint
-      run: npm run lint
+      - name: Check fromatting with prettier
+        run: npm run prettier
+
+      - name: Lint with eslint
+        run: npm run lint
