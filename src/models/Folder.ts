@@ -7,3 +7,9 @@ export class Folder {
     this.name = name;
   }
 }
+
+export interface ChainedGoogleDriveFolder {
+  id: string;
+  name: string;
+  level: number;
+}

@@ -24,9 +24,8 @@ function App() {
 
   return (
     <Router>
-      <AppWrapper>
-        <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
+      <Routes>
+        <Route element={<AppWrapper />}>
           <Route path="/" element={<Navigate to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`} />} />
 
           <Route path="/login" element={<Login />} />
@@ -40,8 +39,8 @@ function App() {
           <Route path="/album/:currentFolderId/:currentImgId" element={<Album />} />
 
           <Route path="/map" element={<ImgMap />} />
-        </Routes>
-      </AppWrapper>
+        </Route>
+      </Routes>
     </Router>
   );
 }
