@@ -23,9 +23,7 @@ export default function ContextProvider(props: any) {
     const dt = new Date();
     dt.setMinutes(dt.getMinutes() + cookieLifetimeMinutes);
     const expires = dt.toUTCString();
-    document.cookie = `${cookieName}=${encodeURIComponent(
-      value,
-    )}; expires=${expires}; path=${path}`;
+    document.cookie = `${cookieName}=${encodeURIComponent(value)}; expires=${expires}; path=${path}`;
   };
 
   // https://www.w3schools.com/js/js_cookies.asp
@@ -42,8 +40,7 @@ export default function ContextProvider(props: any) {
   };
 
   // * set negative cookie lifetime to delete cookie
-  const deleteTokenCookie = (cookieName: string, path: string = "/"): void =>
-    setTokenCookie(cookieName, "", -1, path);
+  const deleteTokenCookie = (cookieName: string, path: string = "/"): void => setTokenCookie(cookieName, "", -1, path);
 
   return (
     <AppContext.Provider

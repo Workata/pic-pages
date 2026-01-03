@@ -12,12 +12,12 @@ export class ExtendedImageViewer extends ImageViewer {
     let imgIdx = this.images.findIndex((e: any) => e.id === imgId);
 
     if (!this.images[imgIdx].description?.includes("-")) {
-      this.images[imgIdx].description =
-        `${this.images[imgIdx].description} - ${newComment}`;
+      this.images[imgIdx].description = `${this.images[imgIdx].description} - ${newComment}`;
     } else {
-      this.images[imgIdx].description = this.images[
-        imgIdx
-      ].description?.replace(new RegExp(" - .*"), ` - ${newComment}`);
+      this.images[imgIdx].description = this.images[imgIdx].description?.replace(
+        new RegExp(" - .*"),
+        ` - ${newComment}`,
+      );
     }
   }
 }

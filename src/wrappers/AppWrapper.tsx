@@ -1,16 +1,9 @@
 // * react
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate, useParams, Outlet } from "react-router-dom";
 
 // * mui
-import {
-  Box,
-  Divider,
-  IconButton,
-  Toolbar,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Box, Divider, IconButton, Toolbar, Typography, Button } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
 import { CSSObject, Theme, styled, useTheme } from "@mui/material/styles";
@@ -20,8 +13,12 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
 
+import { useGetFolderPath } from "hooks/api/images/useGetFolderPath";
+
 // * components
 import SideBarMenu from "components/SideBarMenu";
+
+import { ChainedGoogleDriveFolder } from "models/Folder";
 
 import { AppContext } from "AppContext";
 
@@ -100,8 +97,9 @@ export default function AppWrapper(props: any) {
   // * aggregates App Bar and Side Menu (Drawer)
   const navigate = useNavigate();
   const theme = useTheme();
-  const { tokenValue, setTokenValue, deleteTokenCookie } =
-    useContext(AppContext);
+  const { currentFolderId } = useParams();
+  const { tokenValue, setTokenValue, deleteTokenCookie } = useContext(AppContext);
+  const { getFolderPath, chainedFolders } = useGetFolderPath();
   // * state of sidebar - opened/close (user requested opened by deault)
   const [open, setOpen] = React.useState(true);
 
@@ -112,6 +110,13 @@ export default function AppWrapper(props: any) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (currentFolderId) {
+      getFolderPath(currentFolderId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFolderId]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -130,14 +135,34 @@ export default function AppWrapper(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          <Box
-            component={Link}
-            to="/"
-            sx={{ textDecoration: "none", color: "inherit" }}
-          >
+
+          <Box component={Link} to="/" sx={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h6" noWrap component="div">
               TomTol {tokenValue && " - Admin"}
             </Typography>
+          </Box>
+
+          <Box
+            id="path-container"
+            sx={{
+              display: "flex",
+              columnGap: "5px",
+              marginLeft: "30px",
+            }}
+          >
+            <Box component={Link} to="/" sx={{ textDecoration: "none", color: "inherit" }}>
+              <Typography variant="h6" noWrap component="div">
+                Home
+              </Typography>
+            </Box>
+            {chainedFolders &&
+              chainedFolders.map((folder: ChainedGoogleDriveFolder) => (
+                <Box component={Link} to={`/album/${folder.id}`} sx={{ textDecoration: "none", color: "inherit" }}>
+                  <Typography variant="h6" noWrap component="div">
+                    <ChevronRightIcon sx={{ verticalAlign: "-5px" }} /> {folder.name}
+                  </Typography>
+                </Box>
+              ))}
           </Box>
 
           {tokenValue ? (
@@ -169,11 +194,7 @@ export default function AppWrapper(props: any) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
 
@@ -182,10 +203,9 @@ export default function AppWrapper(props: any) {
         <SideBarMenu open={open} />
       </Drawer>
 
-      {/* p - padding     */}
       <Box component="main" sx={{ flexGrow: 1, p: 2 }} id="wrapperBox">
         <DrawerHeader />
-        {props.children}
+        <Outlet />
       </Box>
     </Box>
   );

@@ -34,18 +34,9 @@ export default function RenameCategoryModal(props: any) {
       <Dialog open={props.openDialogWindow} onClose={handleCloseDialogWindow}>
         <DialogTitle>Rename category</DialogTitle>
         <DialogContent sx={{ width: "400px" }}>
-          <TextField
-            disabled
-            label="Old name"
-            variant="standard"
-            defaultValue={props.categoryName}
-          />
+          <TextField disabled label="Old name" variant="standard" defaultValue={props.categoryName} />
           <br /> <br />
-          <TextField
-            label="New name"
-            variant="standard"
-            onChange={(event) => setRenamedCategory(event.target.value)}
-          />
+          <TextField label="New name" variant="standard" onChange={(event) => setRenamedCategory(event.target.value)} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogWindow}>Close</Button>

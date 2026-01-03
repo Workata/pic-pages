@@ -6,12 +6,7 @@ export const useCreateMarker = () => {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const createMarker = async (
-    lat: number,
-    lon: number,
-    url: string,
-    token: string,
-  ) => {
+  const createMarker = async (lat: number, lon: number, url: string, token: string) => {
     let data = {
       latitude: lat,
       longitude: lon,

@@ -36,23 +36,15 @@ export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
-  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
-    useState(false);
+  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getFolderContent, images, setImages, folders, nextPageToken } =
-    useGetFolderContent();
+  const { getFolderContent, images, setImages, folders, nextPageToken } = useGetFolderContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
-  const rightImgButton: HTMLElement = document.getElementsByClassName(
-    "arrowButton rightButton",
-  )[0] as HTMLElement;
-  const leftImgButton: HTMLElement = document.getElementsByClassName(
-    "arrowButton leftButton",
-  )[0] as HTMLElement;
-  const closeImgButton: HTMLElement = document.getElementsByClassName(
-    "defaultButton closeButton",
-  )[0] as HTMLElement;
+  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
+  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
+  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   const goBack = () => {
     navigate(-1);
@@ -86,15 +78,8 @@ export default function Album() {
 
   const insertImgIdToUrl = (imgId: string) => {
     if (!currentImgId || currentImgId !== imgId)
-      if (searchParams.get("page") === null)
-        navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
-      else
-        navigate(
-          `../album/${currentFolderId}/${imgId}?page=${searchParams.get(
-            "page",
-          )}`,
-          { replace: true },
-        );
+      if (searchParams.get("page") === null) navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
+      else navigate(`../album/${currentFolderId}/${imgId}?page=${searchParams.get("page")}`, { replace: true });
   };
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -106,8 +91,7 @@ export default function Album() {
 
   const clearUrlFromImg = () => {
     let pageQueryParam = searchParams.get("page");
-    if (pageQueryParam === null)
-      navigate(`../album/${currentFolderId}`, { replace: true });
+    if (pageQueryParam === null) navigate(`../album/${currentFolderId}`, { replace: true });
     else
       navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, {
         replace: true,
@@ -125,8 +109,7 @@ export default function Album() {
       id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
-      description:
-        img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
+      description: img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
     }));
 
     let buttons: any;
@@ -168,32 +151,25 @@ export default function Album() {
         currentSelected: idx,
         showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
         buttons: buttons,
-        nextPageUrl: nextPageToken
-          ? `/album/${currentFolderId}?page=${nextPageToken}`
-          : null,
+        nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
       }),
     );
   };
 
   useEffect(() => {
-    if (currentFolderId)
+    if (currentFolderId) {
       getFolderContent(currentFolderId, searchParams.get("page"));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId, searchParams.get("page")]);
 
   useEffect(() => {
-    // if (images && searchParams.get("showFirst") === "yes")
-    // navigate(`../album/${currentFolderId}/${images[0].id}?page=${searchParams.get("page")}`, { replace: true });
     if (currentImgId && images && viewerIsClosed()) {
       console.log(`Currently selected img ID ${currentImgId}`);
       viewImage(images.findIndex((el) => el.id === currentImgId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
-
-  // useEffect(() => {
-  //   if (searchParams.get("showFirst") === "yes") viewImage(0);
-  // }, [searchParams.get("showFirst")])
 
   return (
     <>
@@ -202,107 +178,93 @@ export default function Album() {
           width: "100%",
         }}
       >
-        <Box
-          id="buttons-container"
-          sx={{
-            position: "fixed",
-            display: "flex",
-            columnGap: "20px",
-            marginBottom: "10px",
-            width: "100%",
-            backgroundColor: "#202124",
-            paddingTop: "10px",
-            paddingBottom: "10px",
-            marginTop: "-37px",
-            // borderStyle: 'dotted',
-            // borderColor: 'red',
-          }}
-        >
-          <Button
-            id="starting-page-button"
-            variant="contained"
-            disabled={searchParams.get("page") === null}
-            component={Link}
-            to={`/album/${currentFolderId}`}
+        {images.length !== 0 && (
+          <Box
+            id="paginations-buttons-container"
             sx={{
-              textTransform: "none",
-              "&.Mui-disabled": {
-                background: "#7a8aa3",
-                color: "#c0c0c0",
-              },
+              display: "flex",
+              columnGap: "20px",
+              width: "100%",
+              marginTop: "15px",
             }}
           >
-            <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
-          </Button>
+            <Button
+              id="starting-page-button"
+              variant="contained"
+              disabled={searchParams.get("page") === null}
+              component={Link}
+              to={`/album/${currentFolderId}`}
+              sx={{
+                textTransform: "none",
+                "&.Mui-disabled": {
+                  background: "#7a8aa3",
+                  color: "#c0c0c0",
+                },
+              }}
+            >
+              <KeyboardDoubleArrowLeftIcon sx={{ marginRight: "15px" }} /> start
+            </Button>
 
-          <Button
-            id="previous-page-button"
-            variant="contained"
-            // disabled={searchParams.get("page") === null}
-            // component={Link}
-            onClick={goBack}
-            // to={`/album/${currentFolderId}`}
+            <Button
+              id="previous-page-button"
+              variant="contained"
+              onClick={goBack}
+              sx={{
+                textTransform: "none",
+                "&.Mui-disabled": {
+                  background: "#7a8aa3",
+                  color: "#c0c0c0",
+                },
+              }}
+            >
+              <KeyboardArrowLeftIcon sx={{ marginRight: "15px" }} /> prev
+            </Button>
+
+            <Button
+              id="next-page-button"
+              variant="contained"
+              disabled={nextPageToken === null}
+              component={Link}
+              to={`/album/${currentFolderId}?page=${nextPageToken}`}
+              sx={{
+                textTransform: "none",
+                "&.Mui-disabled": {
+                  background: "#7a8aa3",
+                  color: "#c0c0c0",
+                },
+              }}
+            >
+              next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
+            </Button>
+          </Box>
+        )}
+
+        {folders.length !== 0 && (
+          <Box
+            id="folders-container"
             sx={{
-              textTransform: "none",
-              "&.Mui-disabled": {
-                background: "#7a8aa3",
-                color: "#c0c0c0",
-              },
+              display: "flex",
+              columnGap: "20px",
+              marginTop: "10px",
             }}
           >
-            <KeyboardArrowLeftIcon sx={{ marginRight: "15px" }} /> prev
-          </Button>
-
-          <Button
-            id="next-page-button"
-            variant="contained"
-            disabled={nextPageToken === null}
-            component={Link}
-            to={`/album/${currentFolderId}?page=${nextPageToken}`}
-            sx={{
-              textTransform: "none",
-              "&.Mui-disabled": {
-                background: "#7a8aa3",
-                color: "#c0c0c0",
-              },
-            }}
-          >
-            next <KeyboardArrowRightIcon sx={{ marginLeft: "15px" }} />
-          </Button>
-        </Box>
-
-        <Box
-          id="folders-container"
-          sx={{
-            display: "flex",
-            columnGap: "20px",
-            marginTop: "20px",
-            paddingTop: "22px",
-          }}
-        >
-          {folders &&
-            folders.map((folder: Folder) => (
-              <ClickableFolder
-                key={folder.id}
-                name={folder.name}
-                link={`/album/${folder.id}`}
-              />
+            {folders.map((folder: Folder) => (
+              <ClickableFolder key={folder.id} name={folder.name} link={`/album/${folder.id}`} />
             ))}
-        </Box>
+          </Box>
+        )}
 
-        {/* Images container */}
-        <Box
-          sx={{
-            width: "100%",
-          }}
-        >
-          {images && (
-            <ThumbnailImageList
-              images={images}
-              insertImgIdToUrl={insertImgIdToUrl}
-            />
-          )}
-        </Box>
+        {images.length !== 0 && (
+          <Box
+            id="images-container"
+            sx={{
+              width: "100%",
+              marginTop: "30px",
+            }}
+          >
+            <ThumbnailImageList images={images} insertImgIdToUrl={insertImgIdToUrl} />
+          </Box>
+        )}
       </Box>
 
       {/* MODALS */}

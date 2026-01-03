@@ -18,8 +18,7 @@ export default function AddCommentModal(props: any) {
   const { getOrCreateImageData, imageData } = useGetOrCreateImageData();
   const { tokenValue } = useContext(AppContext);
 
-  const modalIsClosed =
-    document.getElementsByClassName("MuiDialog-root").length === 0;
+  const modalIsClosed = document.getElementsByClassName("MuiDialog-root").length === 0;
 
   const descriptionHtml = document.getElementsByClassName("description")[0];
 
@@ -43,10 +42,7 @@ export default function AddCommentModal(props: any) {
     if (!descriptionHtml.innerHTML.includes("-")) {
       descriptionHtml.innerHTML = `${descriptionHtml.innerHTML} - ${commentFormInput}`;
     } else {
-      descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(
-        new RegExp(" - .*"),
-        ` - ${commentFormInput}`,
-      );
+      descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(new RegExp(" - .*"), ` - ${commentFormInput}`);
     }
 
     props.setOpenDialogWindow(false);

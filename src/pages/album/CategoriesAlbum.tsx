@@ -1,11 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 
-import {
-  useParams,
-  Link,
-  useSearchParams,
-  useNavigate,
-} from "react-router-dom";
+import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 
 // * models
 import { ImageToView } from "./shared/imageToView.type";
@@ -35,23 +30,15 @@ export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
   const [viewer, setViewer] = useState<ExtendedImageViewer>();
-  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] =
-    useState(false);
+  const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
-  const { getCategoryContent, images, setImages, previousPage, nextPage } =
-    useGetCategoryContent();
+  const { getCategoryContent, images, setImages, previousPage, nextPage } = useGetCategoryContent();
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
 
-  const rightImgButton: HTMLElement = document.getElementsByClassName(
-    "arrowButton rightButton",
-  )[0] as HTMLElement;
-  const leftImgButton: HTMLElement = document.getElementsByClassName(
-    "arrowButton leftButton",
-  )[0] as HTMLElement;
-  const closeImgButton: HTMLElement = document.getElementsByClassName(
-    "defaultButton closeButton",
-  )[0] as HTMLElement;
+  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
+  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
+  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   if (rightImgButton) {
     let idxPrev = Number(viewer!.getCurrentSelected());
@@ -106,8 +93,7 @@ export default function CategoriesAlbum() {
       id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
-      description:
-        img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
+      description: img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
     }));
 
     let buttons: any;
@@ -253,12 +239,7 @@ export default function CategoriesAlbum() {
             width: "100%",
           }}
         >
-          {images && (
-            <ThumbnailImageList
-              images={images}
-              insertImgIdToUrl={insertImgIdToUrl}
-            />
-          )}
+          {images && <ThumbnailImageList images={images} insertImgIdToUrl={insertImgIdToUrl} />}
         </Box>
       </Box>
 

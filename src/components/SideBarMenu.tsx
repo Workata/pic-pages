@@ -11,11 +11,7 @@ export default function SideBarMenu(props: any) {
   return (
     <>
       <List>
-        <ListItem
-          key="PhotoLibraryIcon"
-          disablePadding
-          sx={{ display: "block" }}
-        >
+        <ListItem key="PhotoLibraryIcon" disablePadding sx={{ display: "block" }}>
           <ListItemButton
             sx={{
               minHeight: 48,
@@ -34,10 +30,7 @@ export default function SideBarMenu(props: any) {
             >
               <PhotoLibraryIcon />
             </ListItemIcon>
-            <ListItemText
-              primary="Album"
-              sx={{ opacity: props.open ? 1 : 0 }}
-            />
+            <ListItemText primary="Album" sx={{ opacity: props.open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
 
@@ -83,10 +76,7 @@ export default function SideBarMenu(props: any) {
             >
               <CategoryIcon />
             </ListItemIcon>
-            <ListItemText
-              primary="Categories"
-              sx={{ opacity: props.open ? 1 : 0 }}
-            />
+            <ListItemText primary="Categories" sx={{ opacity: props.open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
       </List>

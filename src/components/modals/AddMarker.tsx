@@ -40,10 +40,7 @@ export default function AddMarkerModal(props: any) {
 
   return (
     <>
-      <Dialog
-        open={props.openDialogWindow}
-        onClose={props.handleCloseDialogWindow}
-      >
+      <Dialog open={props.openDialogWindow} onClose={props.handleCloseDialogWindow}>
         <DialogTitle>Add marker</DialogTitle>
         <DialogContent sx={{ width: "400px" }}>
           <TextField

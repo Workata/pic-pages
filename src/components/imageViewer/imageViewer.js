@@ -12,23 +12,17 @@ class ImageViewer {
     this.viewID = ImageViewer.generateViewID();
     const view = ImageViewer.getHtml(
       this.viewID,
-      (this.isZoomable =
-        (_a = parameters.isZoomable) !== null && _a !== void 0 ? _a : true),
+      (this.isZoomable = (_a = parameters.isZoomable) !== null && _a !== void 0 ? _a : true),
     );
     document.body.appendChild(view);
-    this.view =
-      document.getElementById(this.viewID.toString()) ||
-      document.createElement("div");
+    this.view = document.getElementById(this.viewID.toString()) || document.createElement("div");
     //set properties:
     this.images = parameters.images;
-    this.currentSelected =
-      (_b = parameters.currentSelected) !== null && _b !== void 0 ? _b : 0;
+    this.currentSelected = (_b = parameters.currentSelected) !== null && _b !== void 0 ? _b : 0;
     this.buttons = parameters.buttons;
-    this.showThumbnails =
-      (_c = parameters.showThumbnails) !== null && _c !== void 0 ? _c : true;
+    this.showThumbnails = (_c = parameters.showThumbnails) !== null && _c !== void 0 ? _c : true;
     this.isInZoom = false;
-    this.stretchImages =
-      (_d = parameters.stretchImages) !== null && _d !== void 0 ? _d : false;
+    this.stretchImages = (_d = parameters.stretchImages) !== null && _d !== void 0 ? _d : false;
     this.isHudShow = true;
     this.dbcTimer = setTimeout(() => {}, 0);
     this.dbcWaiting = false;
@@ -113,9 +107,7 @@ class ImageViewer {
   //getThumbnailHtml:
   static getImageHtml(imageSrc, stretchImages) {
     const html = `
-            <button class="imageContainer${
-              stretchImages ? " stretch" : ""
-            }" data-url="${imageSrc}">
+            <button class="imageContainer${stretchImages ? " stretch" : ""}" data-url="${imageSrc}">
                 <img class="image" referrerpolicy="no-referrer" crossorigin="anonymous" />
             </button>
         `;
@@ -153,10 +145,7 @@ class ImageViewer {
   showImages() {
     const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0];
     this.images.forEach((image) => {
-      const imageHtml = ImageViewer.getImageHtml(
-        image.mainUrl,
-        this.stretchImages,
-      );
+      const imageHtml = ImageViewer.getImageHtml(image.mainUrl, this.stretchImages);
       imagesWrapper.appendChild(imageHtml);
     });
   }
@@ -167,11 +156,7 @@ class ImageViewer {
     (_a = this.buttons) === null || _a === void 0
       ? void 0
       : _a.forEach((button) => {
-          const buttonHtml = ImageViewer.getButtonHtml(
-            button.name,
-            button.iconSrc,
-            button.iconSize,
-          );
+          const buttonHtml = ImageViewer.getButtonHtml(button.name, button.iconSrc, button.iconSize);
           toolbar.appendChild(buttonHtml);
           buttonHtml.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -199,9 +184,7 @@ class ImageViewer {
       this.selectImage(this.currentSelected + 1);
     });
     //navigation with arrow buttons:
-    const elements = this.view.querySelectorAll(
-      ".touchSurface, .imageContainer, .arrowButton, .thumbnailContainer",
-    );
+    const elements = this.view.querySelectorAll(".touchSurface, .imageContainer, .arrowButton, .thumbnailContainer");
     const firstElement = elements[0];
     firstElement.focus();
     elements.forEach((element) => {
@@ -221,16 +204,13 @@ class ImageViewer {
   //echoThumbnails:
   echoThumbnails() {
     if (!this.showThumbnails || this.images.length <= 1) return; //if there is only one image, ignore all
-    const thumbnailsWrapper =
-      this.view.getElementsByClassName("thumbnailsWrapper")[0];
+    const thumbnailsWrapper = this.view.getElementsByClassName("thumbnailsWrapper")[0];
     let i = 0;
     this.images.forEach((image) => {
       var _a;
       const thumbnailHtml = ImageViewer.getThumbnailHtml(
         i,
-        (_a = image.thumbnailUrl) !== null && _a !== void 0
-          ? _a
-          : image.mainUrl,
+        (_a = image.thumbnailUrl) !== null && _a !== void 0 ? _a : image.mainUrl,
         image.description,
       );
       thumbnailsWrapper.appendChild(thumbnailHtml);
@@ -238,9 +218,7 @@ class ImageViewer {
         e.stopPropagation();
         const tar = e.target;
         const index = tar.dataset.index;
-        this.selectImage(
-          parseInt(index !== null && index !== void 0 ? index : "0"),
-        );
+        this.selectImage(parseInt(index !== null && index !== void 0 ? index : "0"));
       });
       i++;
     });
@@ -282,9 +260,7 @@ class ImageViewer {
     const imageContainer = imageContainers.item(index);
     const imageCenterPosition =
       imageContainer.offsetLeft -
-      (imagesWrapper.getBoundingClientRect().width -
-        imageContainer.getBoundingClientRect().width) /
-        2;
+      (imagesWrapper.getBoundingClientRect().width - imageContainer.getBoundingClientRect().width) / 2;
     // * choose behavior: "smooth" to get animation; probably additional timeouts are needed then
     imagesWrapper.scrollTo({ left: imageCenterPosition, behavior: "auto" });
   }
@@ -307,15 +283,12 @@ class ImageViewer {
   }
   //scrollThumbnail:
   scrollThumbnail(index) {
-    const thumbnailsWrapper =
-      this.view.getElementsByClassName("thumbnailsWrapper")[0];
+    const thumbnailsWrapper = this.view.getElementsByClassName("thumbnailsWrapper")[0];
     const thumbnails = thumbnailsWrapper.children;
     const thumbnail = thumbnails.item(index);
     const thumbnailCenterPosition =
       thumbnail.offsetLeft -
-      (thumbnailsWrapper.getBoundingClientRect().width -
-        thumbnail.getBoundingClientRect().width) /
-        2;
+      (thumbnailsWrapper.getBoundingClientRect().width - thumbnail.getBoundingClientRect().width) / 2;
     // * choose behavior: "smooth" to get animation; probably additional timeouts are needed then
     thumbnailsWrapper.scrollTo({
       left: thumbnailCenterPosition,
@@ -340,8 +313,7 @@ class ImageViewer {
       let touch = e.touches[0];
       swipeDetection.startX = touch.screenX;
       swipeDetection.startY = touch.screenY;
-      const imagesWrapper =
-        this.view.getElementsByClassName("imagesWrapper")[0];
+      const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0];
       const images = imagesWrapper.children;
       const currentImage = images.item(this.currentSelected);
       scrollPosition = currentImage.offsetLeft;
@@ -360,8 +332,7 @@ class ImageViewer {
       if (this.isInZoom) return;
       //horizontal detection:
       if (
-        (swipeDetection.endX - minX > swipeDetection.startX ||
-          swipeDetection.endX + minX < swipeDetection.startX) &&
+        (swipeDetection.endX - minX > swipeDetection.startX || swipeDetection.endX + minX < swipeDetection.startX) &&
         swipeDetection.endY < swipeDetection.startY + maxY &&
         swipeDetection.startY > swipeDetection.endY - maxY &&
         swipeDetection.endX > 0
@@ -371,8 +342,7 @@ class ImageViewer {
       }
       //vertical detection:
       else if (
-        (swipeDetection.endY - minY > swipeDetection.startY ||
-          swipeDetection.endY + minY < swipeDetection.startY) &&
+        (swipeDetection.endY - minY > swipeDetection.startY || swipeDetection.endY + minY < swipeDetection.startY) &&
         swipeDetection.endX < swipeDetection.startX + maxX &&
         swipeDetection.startX > swipeDetection.endX - maxX &&
         swipeDetection.endY > 0
@@ -408,20 +378,14 @@ class ImageViewer {
       });
     });
     //zoom button:
-    const zoomButtons = this.view.querySelectorAll(
-      ".zoomInButton, .zoomOutButton",
-    );
+    const zoomButtons = this.view.querySelectorAll(".zoomInButton, .zoomOutButton");
     zoomButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         e.stopPropagation();
-        const imagesWrapper =
-          this.view.getElementsByClassName("imagesWrapper")[0];
+        const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0];
         const imageContainers = imagesWrapper.children;
         const imageContainer = imageContainers.item(this.currentSelected);
-        this.flipZoom(
-          imageContainer.offsetWidth / 2,
-          imageContainer.offsetHeight / 2,
-        );
+        this.flipZoom(imageContainer.offsetWidth / 2, imageContainer.offsetHeight / 2);
       });
     });
     //prevent scroll on zoom:
@@ -444,13 +408,11 @@ class ImageViewer {
       imageContainer.scrollTop =
         image.offsetHeight / 2 -
         imageContainer.offsetHeight / 2 +
-        (clickY - imageContainer.offsetHeight / 2) *
-          (image.offsetHeight / imageContainer.offsetHeight);
+        (clickY - imageContainer.offsetHeight / 2) * (image.offsetHeight / imageContainer.offsetHeight);
       imageContainer.scrollLeft =
         image.offsetWidth / 2 -
         imageContainer.offsetWidth / 2 +
-        (clickX - imageContainer.offsetWidth / 2) *
-          (image.offsetWidth / imageContainer.offsetWidth);
+        (clickX - imageContainer.offsetWidth / 2) * (image.offsetWidth / imageContainer.offsetWidth);
       this.isInZoom = true;
       this.flipHud(false);
       this.view.classList.add("halfHud");
@@ -487,8 +449,7 @@ class ImageViewer {
     for (const [className, style] of Object.entries(this.style)) {
       const elements = this.view.querySelectorAll("." + className);
       elements.forEach((element) => {
-        for (const property of style)
-          element.style.setProperty(property[0], property[1]);
+        for (const property of style) element.style.setProperty(property[0], property[1]);
       });
     }
   }

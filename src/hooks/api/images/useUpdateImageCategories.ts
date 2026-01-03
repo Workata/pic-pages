@@ -6,11 +6,7 @@ export const useUpdateImageCategories = () => {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(true);
 
-  const updateImageCategories = async (
-    imgId: string,
-    categories: string[],
-    token: string,
-  ) => {
+  const updateImageCategories = async (imgId: string, categories: string[], token: string) => {
     let headers = {
       Authorization: `Bearer ${token}`,
     };

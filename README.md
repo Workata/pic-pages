@@ -10,10 +10,17 @@ Make sure you are using `Node 25.2.1`
 nvm use 25.2.1
 ```
 
+Run static checks
+```sh
+make check
+```
+
 Start development server
 ```sh
-npm start
+make run
 ```
+
+
 
 
 ### Design assumptions
