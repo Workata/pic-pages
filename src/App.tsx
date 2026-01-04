@@ -1,5 +1,5 @@
 import { AppContext } from "AppContext";
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 import { Navigate, Route, HashRouter as Router, Routes } from "react-router-dom";
 import Album from "./pages/album/Album";

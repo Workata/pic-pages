@@ -1,5 +1,3 @@
-// * react
-
 import { AppContext } from "AppContext";
 // * Icons
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -15,7 +13,7 @@ import SideBarMenu from "components/SideBarMenu";
 
 import { useGetFolderPath } from "hooks/api/images/useGetFolderPath";
 import type { ChainedGoogleDriveFolder } from "models/Folder";
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -97,7 +95,7 @@ export default function AppWrapper(props: any) {
   const { tokenValue, setTokenValue, deleteTokenCookie } = useContext(AppContext);
   const { getFolderPath, chainedFolders } = useGetFolderPath();
   // * state of sidebar - opened/close (user requested opened by deault)
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);

@@ -1,6 +1,6 @@
 import { AppContext } from "AppContext";
 import { Box } from "@mui/material";
-import AddMarkerModal from "components/modals/AddMarker";
+// import AddMarkerModal from "components/modals/AddMarker";
 import { useGetMarkers } from "hooks/api/markers/useGetMarkers";
 import { Coords } from "models/Coords";
 import Feature from "ol/Feature.js";
