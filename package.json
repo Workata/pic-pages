@@ -19,7 +19,6 @@
     "axios": "^1.6.7",
     "npm": "^11.7.0",
     "ol": "^7.5.2",
-    "prettier": "^3.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",
@@ -30,22 +29,13 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "lint": "npx eslint src",
-    "lint:fix": "npm run lint -- --fix",
-    "prettier": "npx prettier src --check",
-    "prettier:fix": "npm run prettier -- --write",
-    "checks": "npm run prettier && npm run lint",
-    "checks:fix": "npm run prettier:fix && npm run lint:fix",
+    "format": "npx @biomejs/biome format --write",
+    "lint": "npx @biomejs/biome lint --write --diagnostic-level=error",
+    "check": "npx @biomejs/biome check --write",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -60,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.11",
     "gh-pages": "^5.0.0"
   },
   "engines": {

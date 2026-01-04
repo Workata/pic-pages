@@ -61,4 +61,3 @@ export default class ImageViewer {
   protected addEventToHide(): void;
   hide(): void;
 }
-export {};

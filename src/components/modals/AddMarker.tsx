@@ -1,16 +1,13 @@
-import { useState, useContext } from "react";
-
+import { AppContext } from "AppContext";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-
-import { useNavigate } from "react-router-dom";
 import { useCreateMarker } from "hooks/api/markers/useCreateMarker";
-
-import { AppContext } from "AppContext";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AddMarkerModal(props: any) {
   const navigate = useNavigate();

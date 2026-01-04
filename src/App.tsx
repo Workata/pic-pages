@@ -1,17 +1,13 @@
+import { AppContext } from "AppContext";
 import React, { useContext, useEffect } from "react";
 
-// * navigation
-import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
-// * pages
-import Login from "./pages/Login";
+import { Navigate, Route, HashRouter as Router, Routes } from "react-router-dom";
 import Album from "./pages/album/Album";
 import CategoriesAlbum from "./pages/album/CategoriesAlbum";
-import ImgMap from "./pages/ImgMap";
 import Categories from "./pages/Categories";
-
+import ImgMap from "./pages/ImgMap";
+import Login from "./pages/Login";
 import AppWrapper from "./wrappers/AppWrapper";
-import { AppContext } from "AppContext";
 
 function App() {
   const { getTokenCookie, tokenValue, setTokenValue } = useContext(AppContext);

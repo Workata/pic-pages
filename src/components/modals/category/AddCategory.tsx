@@ -1,17 +1,14 @@
-import { useState, useContext } from "react";
-
+import { AppContext } from "AppContext";
+import Button from "@mui/material/Button";
 // * mui
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-
-import { AppContext } from "AppContext";
-
 // * hooks
 import { useCreateCategory } from "hooks/api/categories/useCreateCategory";
+import { useContext, useState } from "react";
 
 export default function AddCategoryModal(props: any) {
   const [newCategory, setNewCategory] = useState<string>("");

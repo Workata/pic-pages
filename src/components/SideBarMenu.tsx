@@ -1,11 +1,10 @@
-import { List, ListItem, ListItemButton, ListItemIcon } from "@mui/material";
-import { Link } from "react-router-dom";
-
-// * Icons
-import ListItemText from "@mui/material/ListItemText";
+import CategoryIcon from "@mui/icons-material/Category";
 import MapIcon from "@mui/icons-material/Map";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
-import CategoryIcon from "@mui/icons-material/Category";
+import { List, ListItem, ListItemButton, ListItemIcon } from "@mui/material";
+// * Icons
+import ListItemText from "@mui/material/ListItemText";
+import { Link } from "react-router-dom";
 
 export default function SideBarMenu(props: any) {
   return (

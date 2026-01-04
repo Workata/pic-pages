@@ -1,6 +1,6 @@
+import FolderIcon from "@mui/icons-material/Folder";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import FolderIcon from "@mui/icons-material/Folder";
 
 export default function ClickableFolder(props: any) {
   return (

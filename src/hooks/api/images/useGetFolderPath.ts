@@ -1,14 +1,13 @@
 import axios from "axios";
+import type { ChainedGoogleDriveFolder } from "models/Folder";
 import { useState } from "react";
-
-import { ChainedGoogleDriveFolder } from "models/Folder";
 
 export const useGetFolderPath = () => {
   const [chainedFolders, setChainedFolders] = useState<ChainedGoogleDriveFolder[]>([]);
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getFolderPath = async (folderId: string) => {
-    let headers = {};
+    const headers = {};
 
     axios
       .get(`/api/v1/gdrive/folder/path/${folderId}`, {

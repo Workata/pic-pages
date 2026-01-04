@@ -1,17 +1,16 @@
 import axios from "axios";
-import { useState } from "react";
-
 import { Folder } from "models/Folder";
 import { Image } from "models/Image";
+import { useState } from "react";
 
 export const useGetFolderContent = () => {
   const [images, setImages] = useState<Image[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [nextPageToken, setNextPageToken] = useState<null | string>(null);
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getFolderContent = async (folderId: string, pageToken: null | string) => {
-    let headers = {};
+    const headers = {};
 
     axios
       .get(`/api/v1/gdrive/folder/${folderId}`, {

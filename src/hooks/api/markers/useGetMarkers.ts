@@ -1,14 +1,14 @@
 import axios from "axios";
-import { useState } from "react";
 import { Marker } from "models/Marker";
+import { useState } from "react";
 
 export const useGetMarkers = () => {
   const [markers, setMarkers] = useState<undefined | Marker[]>();
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getMarkers = async () => {
-    let headers = {};
+    const headers = {};
 
     axios
       .get("/api/v1/map/marker", { headers: headers })

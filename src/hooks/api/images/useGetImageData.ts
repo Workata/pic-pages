@@ -1,14 +1,14 @@
 import axios from "axios";
-import { useState } from "react";
 import { ImageData } from "models/ImageData";
+import { useState } from "react";
 
 export const useGetImageData = () => {
   const [imageData, setImageData] = useState<undefined | null | ImageData>(undefined);
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getImageData = async (imgId: number): Promise<any> => {
-    let headers = {};
+    const headers = {};
 
     axios
       .get(`/api/v1/images/${imgId}`, { headers: headers })

@@ -1,17 +1,15 @@
-import { useContext, useState } from "react";
-
+import { AppContext } from "AppContext";
+import { TextField } from "@mui/material";
+import Button from "@mui/material/Button";
 // * mui
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
-
-import { AppContext } from "AppContext";
 
 // * hooks
 import { useRenameCategory } from "hooks/api/categories/useRenameCategory";
-import { TextField } from "@mui/material";
+import { useContext, useState } from "react";
 
 export default function RenameCategoryModal(props: any) {
   const { renameCategory } = useRenameCategory();

@@ -1,16 +1,14 @@
-import { useState, useEffect, useContext } from "react";
-
+import { AppContext } from "AppContext";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
 import { useGetOrCreateImageData } from "hooks/api/images/useGetOrCreateImageData";
 import { useUpdateImageComment } from "hooks/api/images/useUpdateImageComment";
-
-import { AppContext } from "AppContext";
+import { useContext, useEffect, useState } from "react";
 
 export default function AddCommentModal(props: any) {
   const [commentFormInput, setCommentFormInput] = useState<string>("");
@@ -34,7 +32,7 @@ export default function AddCommentModal(props: any) {
     props.viewer.updateComment(props.imgId, commentFormInput);
 
     // * update images state - for re-rendering imageViewer
-    let imgIdx = props.images.findIndex((e: any) => e.id === props.imgId);
+    const imgIdx = props.images.findIndex((e: any) => e.id === props.imgId);
     props.images[imgIdx].comment = commentFormInput;
     props.setImages(props.images);
 
@@ -42,7 +40,7 @@ export default function AddCommentModal(props: any) {
     if (!descriptionHtml.innerHTML.includes("-")) {
       descriptionHtml.innerHTML = `${descriptionHtml.innerHTML} - ${commentFormInput}`;
     } else {
-      descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(new RegExp(" - .*"), ` - ${commentFormInput}`);
+      descriptionHtml.innerHTML = descriptionHtml.innerHTML.replace(/ - .*/, ` - ${commentFormInput}`);
     }
 
     props.setOpenDialogWindow(false);
@@ -52,21 +50,18 @@ export default function AddCommentModal(props: any) {
     if (props.openDialogWindow === true && props.imgId) {
       getOrCreateImageData(props.imgId, props.imgName, [], "", tokenValue);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
     if (modalIsClosed === true) {
       setCommentFormInput("");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalIsClosed]);
 
   useEffect(() => {
     if (imageData) {
       setCommentFormInput(imageData.comment);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageData]);
 
   return (

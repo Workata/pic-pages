@@ -14,11 +14,14 @@ jobs:
           node-version-file: '.nvmrc'
           # node-version: '25.2.1'
 
+      # the same like `npm install` but in an automated environment
+      # it will install both dependecies and dev dependencies
+      # * https://docs.npmjs.com/cli/v8/commands/npm-ci
       - name: Install packages
         run: npm ci
 
+      # runs formatter, linter and import sorting to the requested files.
+      # files won’t be modified, the command is a read-only operation.
+      # * https://biomejs.dev/reference/cli/#biome-ci
       - name: Check fromatting with prettier
-        run: npm run prettier
-
-      - name: Lint with eslint
-        run: npm run lint
+        run: npm run biome ci .

@@ -4,10 +4,10 @@ import { useState } from "react";
 export const useUpdateImageCategories = () => {
   const [response, setResponse] = useState<any>();
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const updateImageCategories = async (imgId: string, categories: string[], token: string) => {
-    let headers = {
+    const headers = {
       Authorization: `Bearer ${token}`,
     };
 
