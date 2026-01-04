@@ -2,11 +2,11 @@ import axios from "axios";
 import { useState } from "react";
 
 export const useDeleteCategory = () => {
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const deleteCategory = (categoryName: string, token: string): any => {
     // * returns positive or error response
-    let headers = {
+    const headers = {
       Authorization: `Bearer ${token}`,
     };
 

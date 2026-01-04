@@ -1,30 +1,22 @@
-import { useState, useEffect, useContext } from "react";
-
-import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
-
-// * models
-import { ImageToView } from "./shared/imageToView.type";
-
-// * components
-import { ExtendedImageViewer } from "utils/imageViewer";
-import { Box, Button } from "@mui/material";
-
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { AppContext } from "AppContext";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-
-import SelectCategoryModal from "components/modals/category/SelectCategory";
+import { Box, Button } from "@mui/material";
 import AddCommentModal from "components/modals/AddComment";
+import SelectCategoryModal from "components/modals/category/SelectCategory";
 import ThumbnailImageList from "components/ThumbnailImageList";
-
-import { ImageDownloader } from "utils/imageDownloader";
-
-import categoryIcon from "icons/theatre-svgrepo-com.svg";
+import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 import commentIcon from "icons/comment.svg";
 import downloadIcon from "icons/file-download-svgrepo-com.svg";
-
-import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
-import { AppContext } from "AppContext";
+import categoryIcon from "icons/theatre-svgrepo-com.svg";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { ImageDownloader } from "utils/imageDownloader";
+// * components
+import { ExtendedImageViewer } from "utils/imageViewer";
+// * models
+import type { ImageToView } from "./shared/imageToView.type";
 
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
@@ -41,7 +33,7 @@ export default function CategoriesAlbum() {
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   if (rightImgButton) {
-    let idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer!.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev >= images!.length - 1) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
@@ -49,7 +41,7 @@ export default function CategoriesAlbum() {
   }
 
   if (leftImgButton) {
-    let idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer!.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev <= 0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
@@ -89,7 +81,7 @@ export default function CategoriesAlbum() {
       return;
     }
 
-    let data: ImageToView[] = images.map((img) => ({
+    const data: ImageToView[] = images.map((img) => ({
       id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
@@ -147,7 +139,6 @@ export default function CategoriesAlbum() {
         getCategoryContent(currentCategory, Number(searchParams.get("page")!));
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCategory, searchParams.get("page")]);
 
   useEffect(() => {
@@ -155,7 +146,6 @@ export default function CategoriesAlbum() {
       console.log(`Currently selected img ID ${currentImgId}`);
       viewImage(images.findIndex((el) => el.id === currentImgId));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
 
   return (

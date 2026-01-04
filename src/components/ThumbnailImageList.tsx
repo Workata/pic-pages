@@ -1,4 +1,4 @@
-import { Image } from "models/Image";
+import type { Image } from "models/Image";
 
 // TODO maybe try to round (border radius 5%) all images (even the contained ones)
 export default function ThumbnailImageList(props: any) {

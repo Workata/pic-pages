@@ -1,4 +1,4 @@
-import { Category } from "models/Category";
+import type { Category } from "models/Category";
 
 export class ImageData {
   id: string;

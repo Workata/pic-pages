@@ -1,6 +1,3 @@
-/* eslint no-useless-concat: 0 */ // --> OFF
-/* eslint valid-typeof: 0 */ // --> OFF
-
 Object.defineProperty(exports, "__esModule", { value: true });
 class ImageViewer {
   //constructor:
@@ -298,19 +295,19 @@ class ImageViewer {
   //onSwipe:
   addEventToSwipe(onSwipe, notSwiped) {
     let swipeDetection = { startX: 0, startY: 0, endX: 0, endY: 0 };
-    let minX = 30; //min x swipe for horizontal swipe
-    let maxX = 30; //max x difference for vertical swipe
-    let minY = 50; //min y swipe for vertical swipe
-    let maxY = 60; //max y difference for horizontal swipe
+    const minX = 30; //min x swipe for horizontal swipe
+    const maxX = 30; //max x difference for vertical swipe
+    const minY = 50; //min y swipe for vertical swipe
+    const maxY = 60; //max y difference for horizontal swipe
     let direction = "";
     const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0];
-    let wrapperInfo = imagesWrapper.getBoundingClientRect();
+    const wrapperInfo = imagesWrapper.getBoundingClientRect();
     let scrollPosition = wrapperInfo.left;
     //events:
     const touchSurface = this.view.getElementsByClassName("touchSurface")[0];
     touchSurface.addEventListener("touchstart", (e) => {
       if (this.isInZoom) return;
-      let touch = e.touches[0];
+      const touch = e.touches[0];
       swipeDetection.startX = touch.screenX;
       swipeDetection.startY = touch.screenY;
       const imagesWrapper = this.view.getElementsByClassName("imagesWrapper")[0];
@@ -321,11 +318,11 @@ class ImageViewer {
     touchSurface.addEventListener("touchmove", (e) => {
       if (this.isInZoom) return;
       e.preventDefault();
-      let touch = e.touches[0];
+      const touch = e.touches[0];
       swipeDetection.endX = touch.screenX;
       swipeDetection.endY = touch.screenY;
       //sync the scroll with touch:
-      let touchChange = swipeDetection.startX - touch.screenX;
+      const touchChange = swipeDetection.startX - touch.screenX;
       imagesWrapper.scrollLeft = scrollPosition + touchChange;
     });
     touchSurface.addEventListener("touchend", (e) => {
@@ -455,8 +452,7 @@ class ImageViewer {
   }
   //show:
   show() {
-    const thisView = this;
-    thisView.view.classList.add("visible");
+    this.view.classList.add("visible");
   }
   //addEventToHide:
   addEventToHide() {
@@ -468,8 +464,7 @@ class ImageViewer {
   //hide:
   hide() {
     this.view.classList.remove("visible");
-    const thisView = this;
-    thisView.view.remove();
+    this.view.remove();
   }
 }
 exports.default = ImageViewer;

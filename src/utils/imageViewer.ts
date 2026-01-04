@@ -9,15 +9,12 @@ export class ExtendedImageViewer extends ImageViewer {
     return this.currentSelected;
   }
   updateComment(imgId: number, newComment: string): any {
-    let imgIdx = this.images.findIndex((e: any) => e.id === imgId);
+    const imgIdx = this.images.findIndex((e: any) => e.id === imgId);
 
     if (!this.images[imgIdx].description?.includes("-")) {
       this.images[imgIdx].description = `${this.images[imgIdx].description} - ${newComment}`;
     } else {
-      this.images[imgIdx].description = this.images[imgIdx].description?.replace(
-        new RegExp(" - .*"),
-        ` - ${newComment}`,
-      );
+      this.images[imgIdx].description = this.images[imgIdx].description?.replace(/ - .*/, ` - ${newComment}`);
     }
   }
 }

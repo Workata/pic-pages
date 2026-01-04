@@ -1,36 +1,26 @@
-import { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
-// * models
-import { Folder } from "models/Folder";
-import { ImageToView } from "./shared/imageToView.type";
-
-// * mui
-import { Box } from "@mui/material";
-import { Button } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
-
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { AppContext } from "AppContext";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-
+// * mui
+import { Box, Button } from "@mui/material";
 // * components
 import ClickableFolder from "components/ClickableFolder";
-import SelectCategoryModal from "components/modals/category/SelectCategory";
 import AddCommentModal from "components/modals/AddComment";
+import SelectCategoryModal from "components/modals/category/SelectCategory";
 import ThumbnailImageList from "components/ThumbnailImageList";
-
-import { ExtendedImageViewer } from "utils/imageViewer";
-import { ImageDownloader } from "utils/imageDownloader";
-
-import categoryIcon from "icons/theatre-svgrepo-com.svg";
-import downloadIcon from "icons/file-download-svgrepo-com.svg";
-import commentIcon from "icons/comment.svg";
-
 // * hooks
 import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
-
-import { AppContext } from "AppContext";
+import commentIcon from "icons/comment.svg";
+import downloadIcon from "icons/file-download-svgrepo-com.svg";
+import categoryIcon from "icons/theatre-svgrepo-com.svg";
+// * models
+import type { Folder } from "models/Folder";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { ImageDownloader } from "utils/imageDownloader";
+import { ExtendedImageViewer } from "utils/imageViewer";
+import type { ImageToView } from "./shared/imageToView.type";
 
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
@@ -51,7 +41,7 @@ export default function Album() {
   };
 
   if (rightImgButton) {
-    let idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer!.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev >= images!.length - 1) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
@@ -59,7 +49,7 @@ export default function Album() {
   }
 
   if (leftImgButton) {
-    let idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer!.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev <= 0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
@@ -90,7 +80,7 @@ export default function Album() {
   };
 
   const clearUrlFromImg = () => {
-    let pageQueryParam = searchParams.get("page");
+    const pageQueryParam = searchParams.get("page");
     if (pageQueryParam === null) navigate(`../album/${currentFolderId}`, { replace: true });
     else
       navigate(`../album/${currentFolderId}?page=${pageQueryParam}`, {
@@ -105,7 +95,7 @@ export default function Album() {
       return;
     }
 
-    let data: ImageToView[] = images.map((img) => ({
+    const data: ImageToView[] = images.map((img) => ({
       id: img.id, // * additional (not enforced) data for image searching
       mainUrl: img.imageUrl,
       thumbnailUrl: img.thumbnailUrl,
@@ -160,7 +150,6 @@ export default function Album() {
     if (currentFolderId) {
       getFolderContent(currentFolderId, searchParams.get("page"));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId, searchParams.get("page")]);
 
   useEffect(() => {
@@ -168,7 +157,6 @@ export default function Album() {
       console.log(`Currently selected img ID ${currentImgId}`);
       viewImage(images.findIndex((el) => el.id === currentImgId));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, currentImgId]);
 
   return (
