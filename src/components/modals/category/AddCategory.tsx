@@ -27,26 +27,24 @@ export default function AddCategoryModal(props: any) {
   };
 
   return (
-    <>
-      <Dialog open={props.openDialogWindow} onClose={handleCloseDialogWindow}>
-        <DialogTitle>Add category</DialogTitle>
-        <DialogContent sx={{ width: "400px" }}>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Category name"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={(event) => setNewCategory(event.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialogWindow}>Cancel</Button>
-          <Button onClick={handleCreateCategoryButton}>Create</Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <Dialog open={props.openDialogWindow} onClose={handleCloseDialogWindow}>
+      <DialogTitle>Add category</DialogTitle>
+      <DialogContent sx={{ width: "400px" }}>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Category name"
+          type="text"
+          fullWidth
+          variant="standard"
+          onChange={(event) => setNewCategory(event.target.value)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialogWindow}>Cancel</Button>
+        <Button onClick={handleCreateCategoryButton}>Create</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

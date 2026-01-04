@@ -25,17 +25,15 @@ export default function DeleteCategoryModal(props: any) {
   };
 
   return (
-    <>
-      <Dialog open={props.openDialogWindow} onClose={handleCloseDialogWindow}>
-        <DialogTitle>Delete category</DialogTitle>
-        <DialogContent sx={{ width: "400px" }}>
-          Are you sure you want to delete '{props.categoryName}' category?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialogWindow}>No</Button>
-          <Button onClick={handleDeleteCategoryButton}>Yes</Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <Dialog open={props.openDialogWindow} onClose={handleCloseDialogWindow}>
+      <DialogTitle>Delete category</DialogTitle>
+      <DialogContent sx={{ width: "400px" }}>
+        Are you sure you want to delete '{props.categoryName}' category?
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialogWindow}>No</Button>
+        <Button onClick={handleDeleteCategoryButton}>Yes</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

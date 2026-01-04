@@ -8,77 +8,75 @@ import { Link } from "react-router-dom";
 
 export default function SideBarMenu(props: any) {
   return (
-    <>
-      <List>
-        <ListItem key="PhotoLibraryIcon" disablePadding sx={{ display: "block" }}>
-          <ListItemButton
+    <List>
+      <ListItem key="PhotoLibraryIcon" disablePadding sx={{ display: "block" }}>
+        <ListItemButton
+          sx={{
+            minHeight: 48,
+            justifyContent: props.open ? "initial" : "center",
+            px: 2.5,
+          }}
+          component={Link}
+          to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`}
+        >
+          <ListItemIcon
             sx={{
-              minHeight: 48,
-              justifyContent: props.open ? "initial" : "center",
-              px: 2.5,
+              minWidth: 0,
+              mr: props.open ? 3 : "auto",
+              justifyContent: "center",
             }}
-            component={Link}
-            to={`/album/${process.env.REACT_APP_ROOT_FOLDER_ID}`}
           >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: props.open ? 3 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <PhotoLibraryIcon />
-            </ListItemIcon>
-            <ListItemText primary="Album" sx={{ opacity: props.open ? 1 : 0 }} />
-          </ListItemButton>
-        </ListItem>
+            <PhotoLibraryIcon />
+          </ListItemIcon>
+          <ListItemText primary="Album" sx={{ opacity: props.open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
 
-        <ListItem key="MapIcon" disablePadding sx={{ display: "block" }}>
-          <ListItemButton
+      <ListItem key="MapIcon" disablePadding sx={{ display: "block" }}>
+        <ListItemButton
+          sx={{
+            minHeight: 48,
+            justifyContent: props.open ? "initial" : "center",
+            px: 2.5,
+          }}
+          component={Link}
+          to={`/map`}
+        >
+          <ListItemIcon
             sx={{
-              minHeight: 48,
-              justifyContent: props.open ? "initial" : "center",
-              px: 2.5,
+              minWidth: 0,
+              mr: props.open ? 3 : "auto",
+              justifyContent: "center",
             }}
-            component={Link}
-            to={`/map`}
           >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: props.open ? 3 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <MapIcon />
-            </ListItemIcon>
-            <ListItemText primary="Map" sx={{ opacity: props.open ? 1 : 0 }} />
-          </ListItemButton>
-        </ListItem>
+            <MapIcon />
+          </ListItemIcon>
+          <ListItemText primary="Map" sx={{ opacity: props.open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
 
-        <ListItem key="CategoryIcon" disablePadding sx={{ display: "block" }}>
-          <ListItemButton
+      <ListItem key="CategoryIcon" disablePadding sx={{ display: "block" }}>
+        <ListItemButton
+          sx={{
+            minHeight: 48,
+            justifyContent: props.open ? "initial" : "center",
+            px: 2.5,
+          }}
+          component={Link}
+          to={`/categories`}
+        >
+          <ListItemIcon
             sx={{
-              minHeight: 48,
-              justifyContent: props.open ? "initial" : "center",
-              px: 2.5,
+              minWidth: 0,
+              mr: props.open ? 3 : "auto",
+              justifyContent: "center",
             }}
-            component={Link}
-            to={`/categories`}
           >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: props.open ? 3 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <CategoryIcon />
-            </ListItemIcon>
-            <ListItemText primary="Categories" sx={{ opacity: props.open ? 1 : 0 }} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </>
+            <CategoryIcon />
+          </ListItemIcon>
+          <ListItemText primary="Categories" sx={{ opacity: props.open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
+    </List>
   );
 }
