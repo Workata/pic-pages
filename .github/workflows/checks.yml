@@ -23,5 +23,6 @@ jobs:
       # runs formatter, linter and import sorting to the requested files.
       # files won’t be modified, the command is a read-only operation.
       # * https://biomejs.dev/reference/cli/#biome-ci
-      - name: Check fromatting with prettier
-        run: npm run biome ci .
+      # * https://biomejs.dev/recipes/continuous-integration/#github-actions
+      - name: Run linter and check formatting with biome
+        run: npx @biomejs/biome ci .
