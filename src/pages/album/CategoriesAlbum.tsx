@@ -44,7 +44,7 @@ export default function CategoriesAlbum() {
   if (rightImgButton) {
     const idxPrev = Number(viewer?.getCurrentSelected());
     rightImgButton.onclick = () => {
-      if (idxPrev >= images!.length - 1) return;
+      if (idxPrev >= images.length - 1) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
     };
   }
@@ -85,8 +85,8 @@ export default function CategoriesAlbum() {
 
   // * open image viewer
   const viewImage = (idx: number) => {
-    if (!images) {
-      console.log("No images!");
+    if (images.length === 0) {
+      console.log("No images in the list");
       return;
     }
 
@@ -151,7 +151,7 @@ export default function CategoriesAlbum() {
   }, [currentCategory, searchParams.get("page")]);
 
   useEffect(() => {
-    if (currentImgId && images && viewerIsClosed()) {
+    if (currentImgId && images.length !== 0 && viewerIsClosed()) {
       console.log(`Currently selected img ID ${currentImgId}`);
       viewImage(images.findIndex((el) => el.id === currentImgId));
     }

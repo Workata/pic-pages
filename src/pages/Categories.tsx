@@ -57,8 +57,6 @@ export default function Categories() {
 
   const handleModifyContextMenu = (event: any) => {
     // TODO disable outer context menu (showing under innner)
-    // console.log(event.target.innerText);
-    // console.log(event.target.closest("div").innerText);
     // * select closest div to target innner category text - otherwise clicking folder icon would return 'undefined'
     setFocusedCategoryName(event.target.closest("div").innerText);
     event.preventDefault();

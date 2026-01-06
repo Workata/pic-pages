@@ -134,7 +134,6 @@ export default function ImgMap() {
     mainMap.getViewport().addEventListener("contextmenu", (event) => {
       event.preventDefault();
       const coords = transform(mainMap.getEventCoordinate(event), "EPSG:3857", "EPSG:4326");
-      console.log(coords);
       setNewMarkerCoords({
         longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)),
         latitude: Number(coords[1].toFixed(COORDS_DECIMAL_PRECISION)),

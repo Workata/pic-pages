@@ -3,7 +3,7 @@ import type { Image } from "models/Image";
 import { useState } from "react";
 
 export const useGetCategoryContent = () => {
-  const [images, setImages] = useState<undefined | Image[]>();
+  const [images, setImages] = useState<Image[]>([]);
   const [nextPage, setNextPage] = useState<null | string>(null);
   const [previousPage, setPreviousPage] = useState<null | string>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
