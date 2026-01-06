@@ -1,19 +1,19 @@
 import axios from "axios";
+import type { Category } from "models/Category";
 import { useState } from "react";
-import { Category } from "models/Category";
 
 export const useGetCategories = () => {
   const [categories, setCategories] = useState<undefined | Category[]>();
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getCategories = async () => {
-    let headers = {};
+    const headers = {};
 
     axios
       .get("/api/v1/categories", { headers: headers })
       .then((res) => {
-        let categories = res.data.map((obj: any) => new Category(obj));
+        const categories = res.data;
         setCategories(categories);
         setErrorMsg("");
       })

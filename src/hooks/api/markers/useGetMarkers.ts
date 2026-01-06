@@ -1,19 +1,19 @@
 import axios from "axios";
+import type { Marker } from "models/Marker";
 import { useState } from "react";
-import { Marker } from "models/Marker";
 
 export const useGetMarkers = () => {
   const [markers, setMarkers] = useState<undefined | Marker[]>();
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getMarkers = async () => {
-    let headers = {};
+    const headers = {};
 
     axios
       .get("/api/v1/map/marker", { headers: headers })
       .then((res) => {
-        setMarkers(res.data.map((o: any) => new Marker(o)));
+        setMarkers(res.data);
         setErrorMsg("");
       })
       .catch((err) => {

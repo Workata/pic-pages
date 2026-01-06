@@ -1,12 +1,12 @@
 import axios from "axios";
-import { Category } from "models/Category";
+import type { Category } from "models/Category";
+import type { ImageData } from "models/ImageData";
 import { useState } from "react";
-import { ImageData } from "models/ImageData";
 
 export const useGetOrCreateImageData = () => {
   const [imageData, setImageData] = useState<undefined | ImageData>(undefined);
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getOrCreateImageData = async (
     imgId: string,
@@ -15,20 +15,20 @@ export const useGetOrCreateImageData = () => {
     comment: string,
     token: string,
   ) => {
-    let data = {
+    const data = {
       id: imgId,
       name: name,
       categories: categories,
       comment: comment,
     };
-    let headers = {
+    const headers = {
       Authorization: `Bearer ${token}`,
     };
 
     axios
       .post("/api/v1/images", data, { headers: headers })
       .then((res) => {
-        setImageData(new ImageData(res.data));
+        setImageData(res.data);
         setErrorMsg("");
       })
       .catch((err) => {

@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { createContext, useState } from "react";
 
 export const AppContext = createContext({
   tokenValue: "",
@@ -28,7 +28,7 @@ export default function ContextProvider(props: any) {
 
   // https://www.w3schools.com/js/js_cookies.asp
   const getTokenCookie = (cookieName: string): string => {
-    let name = `${cookieName}=`;
+    const name = `${cookieName}=`;
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(";");
     for (let i = 0; i < ca.length; i++) {

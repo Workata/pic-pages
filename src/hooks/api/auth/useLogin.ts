@@ -5,11 +5,11 @@ export const useLogin = () => {
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const login = (username: string, password: string): any => {
-    let data = {
+    const data = {
       username: username,
       password: password,
     };
-    let headers = {
+    const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
 
@@ -22,7 +22,7 @@ export const useLogin = () => {
       })
       .catch((err) => {
         // 401
-        let res = err.response;
+        const res = err.response;
         setErrorMsg(res.data.detail);
         return res;
       });

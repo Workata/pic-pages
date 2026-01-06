@@ -4,15 +4,15 @@ import { useState } from "react";
 export const useCreateMarker = () => {
   const [response, setResponse] = useState<any>();
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const createMarker = async (lat: number, lon: number, url: string, token: string) => {
-    let data = {
+    const data = {
       latitude: lat,
       longitude: lon,
       url: url,
     };
-    let headers = {
+    const headers = {
       Authorization: `Bearer ${token}`,
     };
 

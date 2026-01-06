@@ -1,11 +1,6 @@
-import { Coords } from "models/Coords";
+import type { Coords } from "models/Coords";
 
-export class Marker {
+export interface Marker {
   coords: Coords;
   url: string;
-
-  constructor({ coords = new Coords({}), url = "" }) {
-    this.coords = coords;
-    this.url = url;
-  }
 }

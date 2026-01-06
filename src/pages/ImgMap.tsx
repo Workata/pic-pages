@@ -1,31 +1,19 @@
-/* eslint-disable */
-// * react
-import { useEffect, useState, useContext } from "react";
-import { Box } from "@mui/material";
-
-// * models
-import { Coords } from "models/Coords";
-
-// * components
-import AddMarkerModal from "components/modals/AddMarker";
-
-// * map related
-import Feature from "ol/Feature.js";
-import Map from "ol/Map";
-import XYZ from "ol/source/XYZ";
-import Point from "ol/geom/Point.js";
-import View from "ol/View.js";
-import { transform } from "ol/proj";
-import { Cluster, Vector as VectorSource } from "ol/source.js";
-import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer.js";
-import { fromLonLat } from "ol/proj";
-
-// * styles
-import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
-
-import { useGetMarkers } from "hooks/api/markers/useGetMarkers";
-
 import { AppContext } from "AppContext";
+import { Box } from "@mui/material";
+// import AddMarkerModal from "components/modals/AddMarker";
+import { useGetMarkers } from "hooks/api/markers/useGetMarkers";
+import type { Coords } from "models/Coords";
+import Feature from "ol/Feature.js";
+import Point from "ol/geom/Point.js";
+import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer.js";
+import Map from "ol/Map";
+import { fromLonLat, transform } from "ol/proj";
+import XYZ from "ol/source/XYZ";
+import { Cluster, Vector as VectorSource } from "ol/source.js";
+
+import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
+import View from "ol/View.js";
+import { useContext, useEffect, useState } from "react";
 
 export default function ImgMap() {
   const CLUSTER_DISTANCE = 50;
@@ -47,11 +35,11 @@ export default function ImgMap() {
 
   const prepMapData = () => {
     const createPoint = (latitude: number, longtitude: number) => {
-      let p = new Point(fromLonLat([longtitude, latitude]));
+      const p = new Point(fromLonLat([longtitude, latitude]));
       return p;
     };
 
-    let features: any = [];
+    const features: any = [];
     markers?.forEach((marker) => {
       features.push(
         new Feature({
@@ -76,7 +64,7 @@ export default function ImgMap() {
     const styleCache: any = {};
     const clusters = new VectorLayer({
       source: clusterSource,
-      style: function (feature) {
+      style: (feature) => {
         const size = feature.get("features").length;
         let style = styleCache[size];
         if (!style) {
@@ -122,8 +110,8 @@ export default function ImgMap() {
   };
 
   const setupMap = () => {
-    let layers = prepMapData();
-    let mainMap = new Map({
+    const layers = prepMapData();
+    const mainMap = new Map({
       target: "mapContent",
       layers: layers,
       view: new View({
@@ -133,26 +121,23 @@ export default function ImgMap() {
     });
     // https://stackoverflow.com/questions/17546953/cant-access-object-property-even-though-it-shows-up-in-a-console-log
     // https://stackoverflow.com/questions/26967638/convert-point-to-lat-lon
-    mainMap.on("click", function (event) {
-      mainMap.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
-        let loc = JSON.parse(JSON.stringify(feature.getGeometry())).flatCoordinates;
-        let loc_plus = transform(loc, "EPSG:3857", "EPSG:4326");
-        let url = getUrlFromMapping(loc_plus);
+    mainMap.on("click", (event) => {
+      mainMap.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+        const loc = JSON.parse(JSON.stringify(feature.getGeometry())).flatCoordinates;
+        const loc_plus = transform(loc, "EPSG:3857", "EPSG:4326");
+        const url = getUrlFromMapping(loc_plus);
         window.location.href = url; // navigate user to the specific page (full url)
       });
     });
 
     // * right click event
-    mainMap.getViewport().addEventListener("contextmenu", function (event) {
+    mainMap.getViewport().addEventListener("contextmenu", (event) => {
       event.preventDefault();
-      let coords = transform(mainMap.getEventCoordinate(event), "EPSG:3857", "EPSG:4326");
-      console.log(coords);
-      setNewMarkerCoords(
-        new Coords({
-          longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)),
-          latitude: Number(coords[1].toFixed(COORDS_DECIMAL_PRECISION)),
-        }),
-      );
+      const coords = transform(mainMap.getEventCoordinate(event), "EPSG:3857", "EPSG:4326");
+      setNewMarkerCoords({
+        longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)),
+        latitude: Number(coords[1].toFixed(COORDS_DECIMAL_PRECISION)),
+      });
       handleOpenDialogWindow();
     });
   };
@@ -163,12 +148,10 @@ export default function ImgMap() {
 
   useEffect(() => {
     getMarkers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (markers) setupMap();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers]);
 
   return (

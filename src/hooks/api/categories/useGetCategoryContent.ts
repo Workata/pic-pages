@@ -1,17 +1,17 @@
 import axios from "axios";
+import type { Image } from "models/Image";
 import { useState } from "react";
-import { Image } from "models/Image";
 
 export const useGetCategoryContent = () => {
-  const [images, setImages] = useState<undefined | Image[]>();
+  const [images, setImages] = useState<Image[]>([]);
   const [nextPage, setNextPage] = useState<null | string>(null);
   const [previousPage, setPreviousPage] = useState<null | string>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getCategoryContent = async (category: string, page: number = 0) => {
-    let headers = {};
-    let params = { page: page };
+    const headers = {};
+    const params = { page: page };
 
     axios
       .get(`/api/v1/categories/${category}`, {
@@ -19,7 +19,7 @@ export const useGetCategoryContent = () => {
         params: params,
       })
       .then((res) => {
-        setImages(res.data.images.map((o: any) => new Image(o)));
+        setImages(res.data.images);
         setPreviousPage(res.data.previous_page);
         setNextPage(res.data.next_page);
         setErrorMsg("");

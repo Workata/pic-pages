@@ -1,22 +1,17 @@
-import { useEffect, useContext } from "react";
-
+import { AppContext } from "AppContext";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
-
-import { Category } from "models/Category";
-
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+import FormGroup from "@mui/material/FormGroup";
+import { useGetCategories } from "hooks/api/categories/useGetCategories";
 
 import { useGetOrCreateImageData } from "hooks/api/images/useGetOrCreateImageData";
-import { useGetCategories } from "hooks/api/categories/useGetCategories";
 import { useUpdateImageCategories } from "hooks/api/images/useUpdateImageCategories";
-
-import { AppContext } from "AppContext";
+import { useContext, useEffect } from "react";
 
 export default function SelectCategoryModal(props: any) {
   const { getCategories, categories } = useGetCategories();
@@ -31,8 +26,8 @@ export default function SelectCategoryModal(props: any) {
   };
 
   const updateCategories = (categoryName: string) => {
-    let updatedImageData = imageData;
-    let updatedCategories: string[] = imageData!.categories.map((category) => category.name);
+    const updatedImageData = imageData;
+    const updatedCategories: string[] = imageData!.categories.map((category) => category.name);
     if (updatedCategories?.includes(categoryName)) {
       // * uncheck category
       const index = updatedCategories.indexOf(categoryName);
@@ -42,7 +37,7 @@ export default function SelectCategoryModal(props: any) {
     } else {
       // * check category
       updatedCategories.push(categoryName);
-      updatedImageData!.categories = imageData!.categories.concat([new Category({ name: categoryName })]);
+      updatedImageData!.categories = imageData!.categories;
       setImageData(updatedImageData);
     }
     updateImageCategories(props.imgId, updatedCategories, tokenValue);
@@ -53,14 +48,12 @@ export default function SelectCategoryModal(props: any) {
       getOrCreateImageData(props.imgId, props.imgName, [], "", tokenValue);
       getCategories();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.openDialogWindow, props.imgId]);
 
   useEffect(() => {
     if (modalIsClosed === true) {
       setImageData(undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalIsClosed]);
 
   return (

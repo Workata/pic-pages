@@ -4,18 +4,18 @@ export class ImageDownloader {
    */
 
   getImgIdDynmically(url: string): string {
-    let splittedUrl = url.split("/");
+    const splittedUrl = url.split("/");
     return splittedUrl[splittedUrl.length - 1];
   }
 
   stripImgIdFromToken(imgId: string): string {
-    let splittedImgId = imgId.split("?");
+    const splittedImgId = imgId.split("?");
     return splittedImgId[0];
   }
 
   downloadImage(): void {
-    let imgId = this.getImgIdDynmically(window.location.href);
-    let url = `https://drive.lienuc.com/uc?id=${imgId}`;
+    const imgId = this.getImgIdDynmically(window.location.href);
+    const url = `https://drive.lienuc.com/uc?id=${imgId}`;
     fetch(url)
       .then((resp) => resp.blob())
       .then((blob) => {

@@ -1,16 +1,16 @@
-import { useState, useEffect, useContext } from "react";
+import { AppContext } from "AppContext";
 import { Box, Menu, MenuItem } from "@mui/material";
 
 // * components
 import ClickableFolder from "components/ClickableFolder";
-import CategoryCreatedSnackbar from "components/snackbars/CategoryCreated";
 import AddCategoryModal from "components/modals/category/AddCategory";
 import DeleteCategoryModal from "components/modals/category/DeleteCategory";
 import RenameCategoryModal from "components/modals/category/RenameCategory";
+import CategoryCreatedSnackbar from "components/snackbars/CategoryCreated";
 
 // * hooks
 import { useGetCategories } from "hooks/api/categories/useGetCategories";
-import { AppContext } from "AppContext";
+import { useContext, useEffect, useState } from "react";
 
 export default function Categories() {
   const [creationContextMenu, setCreationContextMenu] = useState<{
@@ -57,8 +57,6 @@ export default function Categories() {
 
   const handleModifyContextMenu = (event: any) => {
     // TODO disable outer context menu (showing under innner)
-    // console.log(event.target.innerText);
-    // console.log(event.target.closest("div").innerText);
     // * select closest div to target innner category text - otherwise clicking folder icon would return 'undefined'
     setFocusedCategoryName(event.target.closest("div").innerText);
     event.preventDefault();
@@ -74,13 +72,11 @@ export default function Categories() {
 
   useEffect(() => {
     getCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     // * refetch categories if new one was created
     if (openCategoryCreatedSuccessMsg === true) getCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openCategoryCreatedSuccessMsg]);
 
   useEffect(() => {
@@ -89,7 +85,6 @@ export default function Categories() {
       getCategories();
       setOpenCategoryDeletedSuccessMsg(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openCategoryDeletedSuccessMsg]);
 
   useEffect(() => {
@@ -98,7 +93,6 @@ export default function Categories() {
       getCategories();
       setOpenCategoryRenamedSuccessMsg(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openCategoryRenamedSuccessMsg]);
 
   return (
