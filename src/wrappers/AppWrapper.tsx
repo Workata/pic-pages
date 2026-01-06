@@ -149,17 +149,17 @@ export default function AppWrapper(props: any) {
               </Typography>
             </Box>
             {chainedFolders?.map((folder: ChainedFolder) => (
-                <Box
-                  key={folder.id}
-                  component={Link}
-                  to={`/album/${folder.id}`}
-                  sx={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <Typography variant="h6" noWrap component="div">
-                    <ChevronRightIcon sx={{ verticalAlign: "-5px" }} /> {folder.name}
-                  </Typography>
-                </Box>
-              ))}
+              <Box
+                key={folder.id}
+                component={Link}
+                to={`/album/${folder.id}`}
+                sx={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography variant="h6" noWrap component="div">
+                  <ChevronRightIcon sx={{ verticalAlign: "-5px" }} /> {folder.name}
+                </Typography>
+              </Box>
+            ))}
           </Box>
 
           {tokenValue ? (
