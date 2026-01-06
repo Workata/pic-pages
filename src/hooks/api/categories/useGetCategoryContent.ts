@@ -20,8 +20,8 @@ export const useGetCategoryContent = () => {
       })
       .then((res) => {
         setImages(res.data.images);
-        setPreviousPage(res.data.previous_page);
-        setNextPage(res.data.next_page);
+        setPreviousPage(res.data.previousPage);
+        setNextPage(res.data.nextPage);
         setErrorMsg("");
       })
       .catch((err) => {

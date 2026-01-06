@@ -19,8 +19,8 @@ export default function Login() {
     if (username === "" || password === "") return;
     const res = await login(username, password);
     if (res.status === 200) {
-      setTokenValue(res.data.access_token);
-      setTokenCookie("token", res.data.access_token);
+      setTokenValue(res.data.accessToken);
+      setTokenCookie("token", res.data.accessToken);
       navigate("/"); // redirect to the homepage after successful login
     }
   };
