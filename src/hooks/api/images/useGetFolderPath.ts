@@ -1,9 +1,9 @@
 import axios from "axios";
-import type { ChainedGoogleDriveFolder } from "models/Folder";
+import type { ChainedFolder } from "models/Folder";
 import { useState } from "react";
 
 export const useGetFolderPath = () => {
-  const [chainedFolders, setChainedFolders] = useState<ChainedGoogleDriveFolder[]>([]);
+  const [chainedFolders, setChainedFolders] = useState<ChainedFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const getFolderPath = async (folderId: string) => {
@@ -14,9 +14,7 @@ export const useGetFolderPath = () => {
         headers: headers,
       })
       .then((res) => {
-        setChainedFolders(
-          res.data.sort((a: ChainedGoogleDriveFolder, b: ChainedGoogleDriveFolder) => (a.level < b.level ? 1 : -1)),
-        );
+        setChainedFolders(res.data.sort((a: ChainedFolder, b: ChainedFolder) => (a.level < b.level ? 1 : -1)));
         return res;
       })
       .catch((err) => {

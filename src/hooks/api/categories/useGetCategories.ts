@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Category } from "models/Category";
+import type { Category } from "models/Category";
 import { useState } from "react";
 
 export const useGetCategories = () => {
@@ -13,7 +13,7 @@ export const useGetCategories = () => {
     axios
       .get("/api/v1/categories", { headers: headers })
       .then((res) => {
-        const categories = res.data.map((obj: any) => new Category(obj));
+        const categories = res.data;
         setCategories(categories);
         setErrorMsg("");
       })

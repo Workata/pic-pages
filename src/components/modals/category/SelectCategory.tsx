@@ -11,7 +11,6 @@ import { useGetCategories } from "hooks/api/categories/useGetCategories";
 
 import { useGetOrCreateImageData } from "hooks/api/images/useGetOrCreateImageData";
 import { useUpdateImageCategories } from "hooks/api/images/useUpdateImageCategories";
-import { Category } from "models/Category";
 import { useContext, useEffect } from "react";
 
 export default function SelectCategoryModal(props: any) {
@@ -38,7 +37,7 @@ export default function SelectCategoryModal(props: any) {
     } else {
       // * check category
       updatedCategories.push(categoryName);
-      updatedImageData!.categories = imageData!.categories.concat([new Category({ name: categoryName })]);
+      updatedImageData!.categories = imageData!.categories;
       setImageData(updatedImageData);
     }
     updateImageCategories(props.imgId, updatedCategories, tokenValue);

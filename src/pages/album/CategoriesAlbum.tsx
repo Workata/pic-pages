@@ -32,8 +32,9 @@ export default function CategoriesAlbum() {
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
+  // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
   if (rightImgButton) {
-    const idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer?.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev >= images!.length - 1) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
@@ -41,7 +42,7 @@ export default function CategoriesAlbum() {
   }
 
   if (leftImgButton) {
-    const idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer?.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev <= 0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));

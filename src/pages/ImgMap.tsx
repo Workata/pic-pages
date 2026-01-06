@@ -2,7 +2,7 @@ import { AppContext } from "AppContext";
 import { Box } from "@mui/material";
 // import AddMarkerModal from "components/modals/AddMarker";
 import { useGetMarkers } from "hooks/api/markers/useGetMarkers";
-import { Coords } from "models/Coords";
+import type { Coords } from "models/Coords";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer.js";
@@ -135,12 +135,10 @@ export default function ImgMap() {
       event.preventDefault();
       const coords = transform(mainMap.getEventCoordinate(event), "EPSG:3857", "EPSG:4326");
       console.log(coords);
-      setNewMarkerCoords(
-        new Coords({
-          longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)),
-          latitude: Number(coords[1].toFixed(COORDS_DECIMAL_PRECISION)),
-        }),
-      );
+      setNewMarkerCoords({
+        longitude: Number(coords[0].toFixed(COORDS_DECIMAL_PRECISION)),
+        latitude: Number(coords[1].toFixed(COORDS_DECIMAL_PRECISION)),
+      });
       handleOpenDialogWindow();
     });
   };

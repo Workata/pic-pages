@@ -12,7 +12,7 @@ import { type CSSObject, styled, type Theme, useTheme } from "@mui/material/styl
 import SideBarMenu from "components/SideBarMenu";
 
 import { useGetFolderPath } from "hooks/api/images/useGetFolderPath";
-import type { ChainedGoogleDriveFolder } from "models/Folder";
+import type { ChainedFolder } from "models/Folder";
 import { useContext, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 
@@ -148,8 +148,7 @@ export default function AppWrapper(props: any) {
                 Home
               </Typography>
             </Box>
-            {chainedFolders &&
-              chainedFolders.map((folder: ChainedGoogleDriveFolder) => (
+            {chainedFolders?.map((folder: ChainedFolder) => (
                 <Box
                   key={folder.id}
                   component={Link}

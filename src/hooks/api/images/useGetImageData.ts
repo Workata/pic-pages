@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ImageData } from "models/ImageData";
+import type { ImageData } from "models/ImageData";
 import { useState } from "react";
 
 export const useGetImageData = () => {
@@ -13,7 +13,7 @@ export const useGetImageData = () => {
     axios
       .get(`/api/v1/images/${imgId}`, { headers: headers })
       .then((res) => {
-        setImageData(new ImageData(res.data));
+        setImageData(res.data);
         setErrorMsg("");
       })
       .catch((err) => {

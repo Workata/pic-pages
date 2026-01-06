@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Marker } from "models/Marker";
+import type { Marker } from "models/Marker";
 import { useState } from "react";
 
 export const useGetMarkers = () => {
@@ -13,7 +13,7 @@ export const useGetMarkers = () => {
     axios
       .get("/api/v1/map/marker", { headers: headers })
       .then((res) => {
-        setMarkers(res.data.map((o: any) => new Marker(o)));
+        setMarkers(res.data);
         setErrorMsg("");
       })
       .catch((err) => {

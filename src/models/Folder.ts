@@ -1,14 +1,10 @@
-export class Folder {
+export interface Folder {
   id: string;
   name: string;
-
-  constructor({ id = "", name = "" }) {
-    this.id = id;
-    this.name = name;
-  }
 }
 
-export interface ChainedGoogleDriveFolder {
+export interface ChainedFolder {
+  // folder for creating a path navigation
   id: string;
   name: string;
   level: number;

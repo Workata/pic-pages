@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Image } from "models/Image";
+import type { Image } from "models/Image";
 import { useState } from "react";
 
 export const useGetCategoryContent = () => {
@@ -19,7 +19,7 @@ export const useGetCategoryContent = () => {
         params: params,
       })
       .then((res) => {
-        setImages(res.data.images.map((o: any) => new Image(o)));
+        setImages(res.data.images);
         setPreviousPage(res.data.previous_page);
         setNextPage(res.data.next_page);
         setErrorMsg("");

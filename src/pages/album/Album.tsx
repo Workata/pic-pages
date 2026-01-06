@@ -40,8 +40,9 @@ export default function Album() {
     navigate(-1);
   };
 
+  // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
   if (rightImgButton) {
-    const idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer?.getCurrentSelected());
     rightImgButton.onclick = () => {
       if (idxPrev >= images!.length - 1) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
@@ -49,7 +50,7 @@ export default function Album() {
   }
 
   if (leftImgButton) {
-    const idxPrev = Number(viewer!.getCurrentSelected());
+    const idxPrev = Number(viewer?.getCurrentSelected());
     leftImgButton.onclick = () => {
       if (idxPrev <= 0) return;
       insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
