@@ -1,20 +1,28 @@
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AppContext } from "AppContext";
+
+// * icons
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import { Box, Button } from "@mui/material";
-import AddCommentModal from "components/modals/AddComment";
-import SelectCategoryModal from "components/modals/category/SelectCategory";
-import ThumbnailImageList from "components/ThumbnailImageList";
-import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 import commentIcon from "icons/comment.svg";
 import downloadIcon from "icons/file-download-svgrepo-com.svg";
 import categoryIcon from "icons/theatre-svgrepo-com.svg";
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+
+// * api
+import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
+
+// * utils
 import { ImageDownloader } from "utils/imageDownloader";
-// * components
 import { ExtendedImageViewer } from "utils/imageViewer";
+
+// * components
+import AddCommentModal from "components/modals/AddComment";
+import SelectCategoryModal from "components/modals/category/SelectCategory";
+import ThumbnailImageList from "components/ThumbnailImageList";
+import { Box, Button } from "@mui/material";
+
 // * models
 import type { ImageToView } from "./shared/imageToView.type";
 
