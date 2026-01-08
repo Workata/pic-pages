@@ -68,8 +68,18 @@ export default function CategoriesAlbum() {
   };
 
   const insertImgIdToUrl = (imgId: string) => {
+    const page = searchParams.get("page");
+
     if (!currentImgId || currentImgId !== imgId)
-      navigate(`../categories/${currentCategory}/${imgId}`, { replace: true });
+      if (page === null) navigate(`../categories/${currentCategory}/${imgId}`, { replace: true });
+      else navigate(`../categories/${currentCategory}/${imgId}?page=${page}`, { replace: true });
+  };
+
+  const clearUrlFromImg = () => {
+    const page = searchParams.get("page");
+
+    if (page === null) navigate(`../categories/${currentCategory}`, { replace: true });
+    else navigate(`../categories/${currentCategory}?page=${page}`, { replace: true });
   };
 
   const getImgIdFromIdx = (idx: number): string => {
@@ -77,10 +87,6 @@ export default function CategoriesAlbum() {
       return images[idx].id;
     }
     return "";
-  };
-
-  const clearUrlFromImg = () => {
-    navigate(`../categories/${currentCategory}`, { replace: true });
   };
 
   // * open image viewer

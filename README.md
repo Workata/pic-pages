@@ -20,8 +20,14 @@ Start development server
 make run
 ```
 
+### Deployment
 
-
+1. Check `.env` file (`prod` settings)
+2. Check branch (should be `main`)
+3. Run deploy (via `Makefile` - it will run `npm run deploy` command)
+```sh
+make deploy
+```
 
 ### Design assumptions
 TODO
