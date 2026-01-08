@@ -3,6 +3,11 @@ run:
 	@echo "Running react application..."
 	npm start
 
+.PHONY: deploy
+deploy:
+	@echo "Deploying..."
+	npm run deploy
+
 .PHONY: format
 format:
 	@echo "Formatting..."
