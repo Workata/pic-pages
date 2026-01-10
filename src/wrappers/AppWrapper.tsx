@@ -91,7 +91,7 @@ export default function AppWrapper(props: any) {
   // * aggregates App Bar and Side Menu (Drawer)
   const navigate = useNavigate();
   const theme = useTheme();
-  const { currentFolderId } = useParams();
+  const { currentFolderId, currentCategory } = useParams();
   const { tokenValue, setTokenValue, deleteTokenCookie } = useContext(AppContext);
   const { getFolderPath, chainedFolders } = useGetFolderPath();
   // * state of sidebar - opened/close (user requested opened by deault)
@@ -106,7 +106,7 @@ export default function AppWrapper(props: any) {
   };
 
   useEffect(() => {
-    if (currentFolderId) {
+    if (currentFolderId !== undefined) {
       getFolderPath(currentFolderId);
     }
   }, [currentFolderId]);
@@ -148,18 +148,31 @@ export default function AppWrapper(props: any) {
                 Home
               </Typography>
             </Box>
-            {chainedFolders?.map((folder: ChainedFolder) => (
+            {currentFolderId !== undefined &&
+              chainedFolders?.map((folder: ChainedFolder) => (
+                <Box
+                  key={folder.id}
+                  component={Link}
+                  to={`/album/${folder.id}`}
+                  sx={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <Typography variant="h6" noWrap component="div">
+                    <ChevronRightIcon sx={{ verticalAlign: "-5px" }} /> {folder.name}
+                  </Typography>
+                </Box>
+              ))}
+            {currentCategory !== undefined && (
               <Box
-                key={folder.id}
+                key={currentCategory}
                 component={Link}
-                to={`/album/${folder.id}`}
+                to={`/categories/${currentCategory}`}
                 sx={{ textDecoration: "none", color: "inherit" }}
               >
                 <Typography variant="h6" noWrap component="div">
-                  <ChevronRightIcon sx={{ verticalAlign: "-5px" }} /> {folder.name}
+                  <ChevronRightIcon sx={{ verticalAlign: "-5px" }} /> {currentCategory}
                 </Typography>
               </Box>
-            ))}
+            )}
           </Box>
 
           {tokenValue ? (
