@@ -172,19 +172,12 @@ export default function CategoriesAlbum() {
         }}
       >
         <Box
-          id="buttons-container"
+          id="paginations-buttons-container"
           sx={{
-            position: "fixed",
             display: "flex",
             columnGap: "20px",
-            marginBottom: "10px",
             width: "100%",
-            backgroundColor: "#202124",
-            paddingTop: "10px",
-            paddingBottom: "10px",
-            marginTop: "-37px",
-            // borderStyle: 'dotted',
-            // borderColor: 'red',
+            marginTop: "15px",
           }}
         >
           <Button

@@ -2,7 +2,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "./shared/alert";
 
 export default function CategoryCreatedSnackbar(props: any) {
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleCloseSnackbar = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
