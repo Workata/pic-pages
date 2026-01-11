@@ -225,7 +225,7 @@ class ImageViewer {
     if (index > this.images.length - 1) {
       // TODO add query param "showFirst=True" and handle it in Album
       if (this.nextPageUrl === null) return;
-      window.location.href = `${window.location.origin}/#${this.nextPageUrl}&showFirst=yes`;
+      window.location.href = `${window.location.origin}/#${this.nextPageUrl}`; //&showFirst=yes
       this.hide();
       return;
     }
