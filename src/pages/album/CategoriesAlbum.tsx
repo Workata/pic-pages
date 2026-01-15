@@ -137,18 +137,13 @@ export default function CategoriesAlbum() {
     }
 
     // TODO if needed add showFirstImage parameter in the url (in image viewer href)
-    // TODO add nextPageNumber parameter in API for categories - Optional[int]
-    const page = searchParams.get("page");
     setViewer(
       new ExtendedImageViewer({
         images: data,
         currentSelected: idx,
         showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
         buttons: buttons,
-        nextPageUrl:
-          page !== null
-            ? `/categories/${currentCategory}?page=${parseInt(page) + 1}`
-            : `/categories/${currentCategory}?page=1`,
+        nextPageUrl: nextPage !== null ? `/categories/${currentCategory}?page=${nextPage}` : null,
       }),
     );
   };
