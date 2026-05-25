@@ -1,0 +1,39 @@
+/* .light-gallery{
+    margin-top: 40px;
+    display: "flex";
+    column-gap: 2%;
+    row-gap: 5%;
+    background-color: black;
+    margin-top: "20px";
+    flex-direction: "row";
+    display: "flex";
+    flex-wrap: "wrap";
+    column-gap: "2%";
+    row-gap: "40px";
+    z-index: 100000;
+}
+
+.lg-backdrop {
+  z-index: 99999;
+}
+
+.lg-outer {
+  z-index: 100000;
+} */
+
+.lg-outer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+}
+
+.lg-backdrop {
+    z-index: 999998 !important;
+}
+
+body.lg-on {
+    overflow: hidden;
+}

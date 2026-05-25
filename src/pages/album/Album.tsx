@@ -22,10 +22,41 @@ import { ImageDownloader } from "utils/imageDownloader";
 import { ExtendedImageViewer } from "utils/imageViewer";
 import type { ImageToView } from "./shared/imageToView.type";
 
+import LightGallery from 'lightgallery/react';
+import "css/album.css";
+
+// import styles
+import 'lightgallery/css/lightgallery.css';
+import 'lightgallery/css/lg-zoom.css';
+import 'lightgallery/css/lg-thumbnail.css';
+import 'lightgallery/css/lg-fullscreen.css';
+
+
+// import plugins if you need
+import lgThumbnail from 'lightgallery/plugins/thumbnail';
+import lgZoom from 'lightgallery/plugins/zoom';
+import lgFullscreen from 'lightgallery/plugins/fullscreen';
+
+import type { Image } from "models/Image";
+
+
+const albumContainerStyle: React.CSSProperties = {
+    marginTop: "20px",
+    flexDirection: "row",
+    display: "flex",
+    flexWrap: "wrap",
+    // gap: "20px 20px" /* row-gap column gap */,
+    // gap: "2% 2%",
+    columnGap: "2%",
+    rowGap: "15px",
+    // alignItems: "center",
+    // justifyContent: "center",
+};
+
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
-  const [viewer, setViewer] = useState<ExtendedImageViewer>();
+  // const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const { getFolderContent, images, setImages, folders, nextPageToken } = useGetFolderContent();
@@ -41,21 +72,21 @@ export default function Album() {
   };
 
   // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
-  if (rightImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    rightImgButton.onclick = () => {
-      if (idxPrev >= images.length - 1) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
-    };
-  }
+  // if (rightImgButton) {
+  //   const idxPrev = Number(viewer?.getCurrentSelected());
+  //   rightImgButton.onclick = () => {
+  //     if (idxPrev >= images.length - 1) return;
+  //     insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
+  //   };
+  // }
 
-  if (leftImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    leftImgButton.onclick = () => {
-      if (idxPrev <= 0) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
-    };
-  }
+  // if (leftImgButton) {
+  //   const idxPrev = Number(viewer?.getCurrentSelected());
+  //   leftImgButton.onclick = () => {
+  //     if (idxPrev <= 0) return;
+  //     insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
+  //   };
+  // }
 
   if (closeImgButton) {
     closeImgButton.onclick = () => {
@@ -136,15 +167,15 @@ export default function Album() {
       ];
     }
 
-    setViewer(
-      new ExtendedImageViewer({
-        images: data,
-        currentSelected: idx,
-        showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-        buttons: buttons,
-        nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
-      }),
-    );
+    // setViewer(
+    //   new ExtendedImageViewer({
+    //     images: data,
+    //     currentSelected: idx,
+    //     showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
+    //     buttons: buttons,
+    //     nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
+    //   }),
+    // );
   };
 
   useEffect(() => {
@@ -153,13 +184,13 @@ export default function Album() {
     }
   }, [currentFolderId, searchParams.get("page")]);
 
-  useEffect(() => {
-    if (currentImgId && images.length !== 0 && viewerIsClosed()) {
-      console.log(`Currently selected img ID ${currentImgId}`);
-      viewImage(images.findIndex((el) => el.id === currentImgId));
-    }
-    // TODO double check deps list
-  }, [images, currentImgId, viewImage]);
+  // useEffect(() => {
+  //   if (currentImgId && images.length !== 0 && viewerIsClosed()) {
+  //     console.log(`Currently selected img ID ${currentImgId}`);
+  //     viewImage(images.findIndex((el) => el.id === currentImgId));
+  //   }
+  //   // TODO double check deps list
+  // }, [images, currentImgId, viewImage]);
 
   return (
     <>
@@ -229,7 +260,7 @@ export default function Album() {
           </Box>
         )}
 
-        {folders.length !== 0 && (
+        {folders.length > 0 && (
           <Box
             id="folders-container"
             sx={{
@@ -244,21 +275,37 @@ export default function Album() {
           </Box>
         )}
 
-        {images.length !== 0 && (
-          <Box
-            id="images-container"
-            sx={{
-              width: "100%",
-              marginTop: "30px",
-            }}
-          >
-            <ThumbnailImageList images={images} insertImgIdToUrl={insertImgIdToUrl} />
-          </Box>
+        {images.length > 0 && (
+            <LightGallery
+                // onInit={onInit}
+                speed={500}
+                plugins={[lgThumbnail, lgFullscreen]}
+                preload={1}
+                numberOfSlideItemsInDom={3}
+                // onAfterSlide={(event) => {
+                //   const index = event.index;
+                //   const image = images[index];
+                //   const page = searchParams.get("page");
+
+                //   if (!currentImgId || currentImgId !== image.id)
+                //     if (page === null) navigate(`../album/${currentFolderId}/${image.id}`, { replace: true });
+                //     else navigate(`../album/${currentFolderId}/${image.id}?page=${page}`, { replace: true });
+                //     // if (page === null) window.history.replaceState(null, '', `/album/${currentFolderId}/${image.id}`);
+                //     // else window.history.replaceState(null, '', `/album/${currentFolderId}/${image.id}?page=${page}`);
+                // }}
+                // addClass="light-gallery"
+            >
+              {images.map((image: Image) => (
+                <a key={image.id}  href={image.imageUrl} data-src={image.imageUrl} data-sub-html={image.name}>
+                    <img alt={image.name} src={image.thumbnailUrl} loading="lazy" />
+                </a>
+              ))}
+            </LightGallery>
         )}
       </Box>
 
       {/* MODALS */}
-      <SelectCategoryModal
+      {/* <SelectCategoryModal
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
@@ -274,7 +321,7 @@ export default function Album() {
           images={images}
           setImages={setImages}
         />
-      )}
+      )} */}
     </>
   );
 }
