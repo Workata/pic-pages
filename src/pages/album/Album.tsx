@@ -31,6 +31,7 @@ import 'lightgallery/css/lg-zoom.css';
 import 'lightgallery/css/lg-thumbnail.css';
 import 'lightgallery/css/lg-fullscreen.css';
 
+import { useRef } from 'react';
 
 // import plugins if you need
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
@@ -56,69 +57,19 @@ const albumContainerStyle: React.CSSProperties = {
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
-  // const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const { getFolderContent, images, setImages, folders, nextPageToken } = useGetFolderContent();
+  const galleryRef = useRef<any>(null);
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
+  const hasOpenedRef = useRef(false);
 
-  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
-  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
-  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   const goBack = () => {
     navigate(-1);
   };
 
-  // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
-  // if (rightImgButton) {
-  //   const idxPrev = Number(viewer?.getCurrentSelected());
-  //   rightImgButton.onclick = () => {
-  //     if (idxPrev >= images.length - 1) return;
-  //     insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
-  //   };
-  // }
-
-  // if (leftImgButton) {
-  //   const idxPrev = Number(viewer?.getCurrentSelected());
-  //   leftImgButton.onclick = () => {
-  //     if (idxPrev <= 0) return;
-  //     insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
-  //   };
-  // }
-
-  if (closeImgButton) {
-    closeImgButton.onclick = () => {
-      clearUrlFromImg();
-    };
-  }
-
-  const viewerIsClosed = () => {
-    return document.getElementsByClassName("imageViewer visible").length === 0;
-  };
-
-  const insertImgIdToUrl = (imgId: string) => {
-    const page = searchParams.get("page");
-
-    if (!currentImgId || currentImgId !== imgId)
-      if (page === null) navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
-      else navigate(`../album/${currentFolderId}/${imgId}?page=${page}`, { replace: true });
-  };
-
-  const clearUrlFromImg = () => {
-    const page = searchParams.get("page");
-
-    if (page === null) navigate(`../album/${currentFolderId}`, { replace: true });
-    else navigate(`../album/${currentFolderId}?page=${page}`, { replace: true });
-  };
-
-  const getImgIdFromIdx = (idx: number): string => {
-    if (images) {
-      return images[idx].id;
-    }
-    return "";
-  };
 
   // * open image viewer
   const viewImage = (idx: number) => {
@@ -172,10 +123,10 @@ export default function Album() {
     //     images: data,
     //     currentSelected: idx,
     //     showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-    //     buttons: buttons,
+    //     button
+    // );s: buttons,
     //     nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
     //   }),
-    // );
   };
 
   useEffect(() => {
@@ -184,13 +135,20 @@ export default function Album() {
     }
   }, [currentFolderId, searchParams.get("page")]);
 
-  // useEffect(() => {
-  //   if (currentImgId && images.length !== 0 && viewerIsClosed()) {
-  //     console.log(`Currently selected img ID ${currentImgId}`);
-  //     viewImage(images.findIndex((el) => el.id === currentImgId));
-  //   }
-  //   // TODO double check deps list
-  // }, [images, currentImgId, viewImage]);
+
+  useEffect(() => {
+      if (!galleryRef.current) return;
+      if (!currentImgId) return;
+      if (images.length === 0) return;
+
+      const index = images.findIndex(
+          (img) => img.id === currentImgId
+      );
+
+      if (index === -1) return;
+
+      galleryRef.current.openGallery(index);
+  }, [currentImgId, images]);
 
   return (
     <>
@@ -280,19 +238,37 @@ export default function Album() {
                 // onInit={onInit}
                 speed={500}
                 plugins={[lgThumbnail, lgFullscreen]}
-                preload={1}
+                preload={1} // change for 0 if there will be a problem with 'too many requests'
+                download={true}
                 numberOfSlideItemsInDom={3}
-                // onAfterSlide={(event) => {
-                //   const index = event.index;
-                //   const image = images[index];
-                //   const page = searchParams.get("page");
+                onInit={(detail) => {
+                    // setGalleryInstance(detail.instance);
+                    galleryRef.current = detail.instance;
+                }}
+                onAfterSlide={(event) => {
+                  const index = event.index;
+                  const image = images[index];
 
-                //   if (!currentImgId || currentImgId !== image.id)
-                //     if (page === null) navigate(`../album/${currentFolderId}/${image.id}`, { replace: true });
-                //     else navigate(`../album/${currentFolderId}/${image.id}?page=${page}`, { replace: true });
-                //     // if (page === null) window.history.replaceState(null, '', `/album/${currentFolderId}/${image.id}`);
-                //     // else window.history.replaceState(null, '', `/album/${currentFolderId}/${image.id}?page=${page}`);
-                // }}
+                  if (!image) return;
+
+                  const page = searchParams.get("page");
+                  const url =
+                      page === null
+                          ? `#/album/${currentFolderId}/${image.id}`
+                          : `#/album/${currentFolderId}/${image.id}?page=${page}`;
+
+                  window.history.replaceState(null, "", url);
+                }}
+                onAfterClose={() => {
+                    const page = searchParams.get("page");
+
+                    const url =
+                        page === null
+                            ? `#/album/${currentFolderId}`
+                            : `#/album/${currentFolderId}?page=${page}`;
+
+                    window.history.replaceState(null, "", url);
+                }}
                 // addClass="light-gallery"
             >
               {images.map((image: Image) => (
