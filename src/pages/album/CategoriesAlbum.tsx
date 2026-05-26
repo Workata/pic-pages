@@ -15,7 +15,6 @@ import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryConten
 
 // * utils
 import { ImageDownloader } from "utils/imageDownloader";
-import { ExtendedImageViewer } from "utils/imageViewer";
 
 // * components
 import AddCommentModal from "components/modals/AddComment";
@@ -29,7 +28,6 @@ import type { ImageToView } from "./shared/imageToView.type";
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
-  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const { getCategoryContent, images, setImages, previousPage, nextPage } = useGetCategoryContent();
@@ -40,32 +38,6 @@ export default function CategoriesAlbum() {
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
-  // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
-  if (rightImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    rightImgButton.onclick = () => {
-      if (idxPrev >= images.length - 1) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
-    };
-  }
-
-  if (leftImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    leftImgButton.onclick = () => {
-      if (idxPrev <= 0) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
-    };
-  }
-
-  if (closeImgButton) {
-    closeImgButton.onclick = () => {
-      clearUrlFromImg();
-    };
-  }
-
-  const viewerIsClosed = () => {
-    return document.getElementsByClassName("imageViewer visible").length === 0;
-  };
 
   const insertImgIdToUrl = (imgId: string) => {
     const page = searchParams.get("page");
@@ -136,16 +108,7 @@ export default function CategoriesAlbum() {
       ];
     }
 
-    // TODO if needed add showFirstImage parameter in the url (in image viewer href)
-    setViewer(
-      new ExtendedImageViewer({
-        images: data,
-        currentSelected: idx,
-        showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-        buttons: buttons,
-        nextPageUrl: nextPage !== null ? `/categories/${currentCategory}?page=${nextPage}` : null,
-      }),
-    );
+   
   };
 
   useEffect(() => {
@@ -158,12 +121,12 @@ export default function CategoriesAlbum() {
     }
   }, [currentCategory, searchParams.get("page")]);
 
-  useEffect(() => {
-    if (currentImgId && images.length !== 0 && viewerIsClosed()) {
-      console.log(`Currently selected img ID ${currentImgId}`);
-      viewImage(images.findIndex((el) => el.id === currentImgId));
-    }
-  }, [images, currentImgId]);
+  // useEffect(() => {
+  //   if (currentImgId && images.length !== 0 && viewerIsClosed()) {
+  //     console.log(`Currently selected img ID ${currentImgId}`);
+  //     viewImage(images.findIndex((el) => el.id === currentImgId));
+  //   }
+  // }, [images, currentImgId]);
 
   return (
     <>
@@ -244,7 +207,7 @@ export default function CategoriesAlbum() {
       </Box>
 
       {/* MODALS */}
-      <SelectCategoryModal
+      {/* <SelectCategoryModal
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
@@ -260,7 +223,7 @@ export default function CategoriesAlbum() {
           images={images}
           setImages={setImages}
         />
-      )}
+      )} */}
     </>
   );
 }

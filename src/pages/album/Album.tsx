@@ -18,8 +18,6 @@ import categoryIcon from "icons/theatre-svgrepo-com.svg";
 import type { Folder } from "models/Folder";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ImageDownloader } from "utils/imageDownloader";
-import { ExtendedImageViewer } from "utils/imageViewer";
 import type { ImageToView } from "./shared/imageToView.type";
 
 import LightGallery from 'lightgallery/react';
@@ -99,35 +97,35 @@ export default function Album() {
           iconSrc: commentIcon,
           iconSize: "18px",
           onSelect: () => setOpenCommentDialogWindow(true),
-        },
-        {
-          name: "Download",
-          iconSrc: downloadIcon,
-          iconSize: "18px",
-          onSelect: () => new ImageDownloader().downloadImage(),
-        },
+        }
       ];
-    } else {
-      buttons = [
-        {
-          name: "Download",
-          iconSrc: downloadIcon,
-          iconSize: "18px",
-          onSelect: () => new ImageDownloader().downloadImage(),
-        },
-      ];
-    }
-
-    // setViewer(
-    //   new ExtendedImageViewer({
-    //     images: data,
-    //     currentSelected: idx,
-    //     showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-    //     button
-    // );s: buttons,
-    //     nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
-    //   }),
+    } 
   };
+
+  const addDownloadButton = (lg: any) => {
+    const downloadButton = document.createElement("button");
+    downloadButton.className = "lg-custom-btn";
+    downloadButton.innerHTML = `
+      <img src="${downloadIcon}" alt="download" />
+    `;
+
+    downloadButton.onclick = () => {
+      const current = lg.galleryItems[lg.index];
+
+      window.open(current.src, "_blank");
+    };
+    lg.outer
+    .find(".lg-toolbar")
+    .get()
+    .appendChild(downloadButton);
+  }
+
+  const onGalleryInit = (detail: any) => {
+    const lg = detail.instance;
+    galleryRef.current = lg;
+
+    addDownloadButton(lg)
+  }
 
   useEffect(() => {
     if (currentFolderId) {
@@ -239,12 +237,9 @@ export default function Album() {
                 speed={500}
                 plugins={[lgThumbnail, lgFullscreen]}
                 preload={1} // change for 0 if there will be a problem with 'too many requests'
-                download={true}
+                download={false}
                 numberOfSlideItemsInDom={3}
-                onInit={(detail) => {
-                    // setGalleryInstance(detail.instance);
-                    galleryRef.current = detail.instance;
-                }}
+                onInit={onGalleryInit}
                 onAfterSlide={(event) => {
                   const index = event.index;
                   const image = images[index];
@@ -271,9 +266,10 @@ export default function Album() {
                 }}
                 // addClass="light-gallery"
             >
+              {/* data-sub-html={image.name} - image comment */}
               {images.map((image: Image) => (
-                <a key={image.id}  href={image.imageUrl} data-src={image.imageUrl} data-sub-html={image.name}>
-                    <img alt={image.name} src={image.thumbnailUrl} loading="lazy" />
+                <a key={image.id}  href={image.imageUrl} data-src={image.imageUrl} data-sub-html={image.comment} referrerPolicy="no-referrer">
+                    <img alt={image.name} src={image.thumbnailUrl} loading="lazy" referrerPolicy="no-referrer"/>
                 </a>
               ))}
             </LightGallery>

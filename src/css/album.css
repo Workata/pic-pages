@@ -30,3 +30,26 @@
 body.lg-on {
     overflow: hidden;
 }
+
+.lg-custom-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  width: 40px;
+  height: 40px;
+
+  float: right;
+  margin-top: 7px;
+
+  /* display: flex;
+  align-items: right;
+  justify-content: center; */
+}
+
+.lg-custom-btn img {
+  width: 20px;
+  height: 20px;
+
+  filter: brightness(0) invert(1);
+}
