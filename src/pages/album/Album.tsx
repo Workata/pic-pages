@@ -2,54 +2,56 @@ import { AppContext } from "AppContext";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+
 // * mui
 import { Box, Button } from "@mui/material";
+
 // * components
 import ClickableFolder from "components/ClickableFolder";
 import AddCommentModal from "components/modals/AddComment";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
-import ThumbnailImageList from "components/ThumbnailImageList";
+
 // * hooks
 import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
 import commentIcon from "icons/comment.svg";
 import downloadIcon from "icons/file-download-svgrepo-com.svg";
 import categoryIcon from "icons/theatre-svgrepo-com.svg";
+
 // * models
 import type { Folder } from "models/Folder";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import type { ImageToView } from "./shared/imageToView.type";
 
-import LightGallery from 'lightgallery/react';
+import LightGallery from "lightgallery/react";
 import "css/album.css";
 
-// import styles
-import 'lightgallery/css/lightgallery.css';
-import 'lightgallery/css/lg-zoom.css';
-import 'lightgallery/css/lg-thumbnail.css';
-import 'lightgallery/css/lg-fullscreen.css';
+import { ImageDownloader } from "utils/imageDownloader";
 
-import { useRef } from 'react';
+// import styles
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-zoom.css";
+import "lightgallery/css/lg-thumbnail.css";
+import "lightgallery/css/lg-fullscreen.css";
+
+import { useRef } from "react";
 
 // import plugins if you need
-import lgThumbnail from 'lightgallery/plugins/thumbnail';
-import lgZoom from 'lightgallery/plugins/zoom';
-import lgFullscreen from 'lightgallery/plugins/fullscreen';
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgFullscreen from "lightgallery/plugins/fullscreen";
 
 import type { Image } from "models/Image";
 
-
 const albumContainerStyle: React.CSSProperties = {
-    marginTop: "20px",
-    flexDirection: "row",
-    display: "flex",
-    flexWrap: "wrap",
-    // gap: "20px 20px" /* row-gap column gap */,
-    // gap: "2% 2%",
-    columnGap: "2%",
-    rowGap: "15px",
-    // alignItems: "center",
-    // justifyContent: "center",
+  marginTop: "20px",
+  flexDirection: "row",
+  display: "flex",
+  flexWrap: "wrap",
+  // gap: "20px 20px" /* row-gap column gap */,
+  // gap: "2% 2%",
+  columnGap: "2%",
+  rowGap: "15px",
+  // alignItems: "center",
+  // justifyContent: "center",
 };
 
 export default function Album() {
@@ -63,69 +65,79 @@ export default function Album() {
   const { tokenValue } = useContext(AppContext);
   const hasOpenedRef = useRef(false);
 
-
   const goBack = () => {
     navigate(-1);
   };
 
 
-  // * open image viewer
-  const viewImage = (idx: number) => {
-    if (images.length === 0) {
-      console.log("No images in the list");
-      return;
-    }
 
-    const data: ImageToView[] = images.map((img) => ({
-      id: img.id, // * additional (not enforced) data for image searching
-      mainUrl: img.imageUrl,
-      thumbnailUrl: img.thumbnailUrl,
-      description: img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
-    }));
-
-    let buttons: any;
-    if (tokenValue) {
-      buttons = [
-        {
-          name: "Categorize",
-          iconSrc: categoryIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCategoriesDialogWindow(true),
-        },
-        {
-          name: "Comment",
-          iconSrc: commentIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCommentDialogWindow(true),
-        }
-      ];
-    } 
-  };
+  const customButtonClsName: string = "lg-custom-btn"
 
   const addDownloadButton = (lg: any) => {
+    const toolbar = lg.outer.find(".lg-toolbar").get();
+    const downloadButtonId: string = "downloadButton"
+    if (toolbar.querySelector(`#${downloadButtonId}`)) return;
+
     const downloadButton = document.createElement("button");
-    downloadButton.className = "lg-custom-btn";
+    downloadButton.className = customButtonClsName;
     downloadButton.innerHTML = `
-      <img src="${downloadIcon}" alt="download" />
+      <img src="${downloadIcon}" alt="download" id="${downloadButtonId}"/>
     `;
 
-    downloadButton.onclick = () => {
-      const current = lg.galleryItems[lg.index];
+    downloadButton.onclick = () => new ImageDownloader().downloadImage();
+    toolbar.appendChild(downloadButton);
+  };
 
-      window.open(current.src, "_blank");
-    };
-    lg.outer
-    .find(".lg-toolbar")
-    .get()
-    .appendChild(downloadButton);
+  const addCommentButton = (lg: any) => {
+    const toolbar = lg.outer.find(".lg-toolbar").get();
+    const commentButtonId: string = "commentButton"
+    if (toolbar.querySelector(`#${commentButtonId}`)) return;
+
+    const commentButton = document.createElement("button");
+    commentButton.className = customButtonClsName;
+    commentButton.id = commentButtonId;
+    commentButton.innerHTML = `
+      <img src="${commentIcon}" alt="comment"/>
+    `;
+    
+    commentButton.onclick = () => setOpenCommentDialogWindow(true);
+    toolbar.appendChild(commentButton);
   }
+
+  const addCategoryButton = (lg: any) => {
+    const toolbar = lg.outer.find(".lg-toolbar").get();
+    const categoryButtonId: string = "categoryButton"
+    if (toolbar.querySelector(`#${categoryButtonId}`)) return;
+
+    const categoryButton = document.createElement("button");
+    categoryButton.className = customButtonClsName;
+    categoryButton.innerHTML = `
+      <img src="${categoryIcon}" alt="category" id="${categoryButtonId}"/>
+    `;
+
+    categoryButton.onclick = () => setOpenCategoriesDialogWindow(true);
+    toolbar.appendChild(categoryButton);
+  }
+
 
   const onGalleryInit = (detail: any) => {
     const lg = detail.instance;
     galleryRef.current = lg;
 
-    addDownloadButton(lg)
-  }
+    addDownloadButton(lg);
+    // comment token value if check for testing
+    if (!tokenValue){
+      addCommentButton(lg);
+      addCategoryButton(lg);
+    }
+  };
+
+  const onGalleryClose = (detail: any) => {
+    // clear url
+    const page = searchParams.get("page");
+    const url = page === null ? `#/album/${currentFolderId}` : `#/album/${currentFolderId}?page=${page}`;
+    window.history.replaceState(null, "", url);
+  };
 
   useEffect(() => {
     if (currentFolderId) {
@@ -133,20 +145,65 @@ export default function Album() {
     }
   }, [currentFolderId, searchParams.get("page")]);
 
-
   useEffect(() => {
-      if (!galleryRef.current) return;
-      if (!currentImgId) return;
-      if (images.length === 0) return;
+    if (!galleryRef.current) return;
+    if (!currentImgId) return;
+    if (images.length === 0) return;
 
-      const index = images.findIndex(
-          (img) => img.id === currentImgId
-      );
+    const index = images.findIndex((img) => img.id === currentImgId);
 
-      if (index === -1) return;
+    if (index === -1) return;
 
-      galleryRef.current.openGallery(index);
+    galleryRef.current.openGallery(index);
   }, [currentImgId, images]);
+
+
+    const memoizedGallery = useMemo(() => {
+    // This block will ONLY run once (or when the images array reference changes)
+    return (
+images.length > 0 && <LightGallery
+            licenseKey="LIG-34EA249B-F46A-4AD8-A666-D99AEB4C9865"
+            speed={500}
+            plugins={[lgThumbnail, lgFullscreen]}
+            preload={1} // change for 0 if there will be a problem with 'too many requests'
+            download={false}
+            closeOnTap={false}
+            swipeToClose={false}
+            // closable={false}
+            toggleThumb={true}
+            numberOfSlideItemsInDom={3}
+            onInit={onGalleryInit}
+            onAfterClose={onGalleryClose}
+            onAfterSlide={(event) => {
+              const index = event.index;
+              const image = images[index];
+
+              if (!image) return;
+
+              const page = searchParams.get("page");
+              const url =
+                page === null
+                  ? `#/album/${currentFolderId}/${image.id}`
+                  : `#/album/${currentFolderId}/${image.id}?page=${page}`;
+
+              window.history.replaceState(null, "", url);
+            }}
+          >
+            {/* data-sub-html={image.name} - image comment */}
+            {images.map((image: Image) => (
+              <a
+                key={image.id}
+                href={image.imageUrl}
+                data-src={image.imageUrl}
+                data-sub-html={image.comment}
+                referrerPolicy="no-referrer"
+              >
+                <img alt={image.name} src={image.thumbnailUrl} loading="lazy" referrerPolicy="no-referrer" />
+              </a>
+            ))}
+          </LightGallery>
+    );
+  }, [images]);
 
   return (
     <>
@@ -231,69 +288,25 @@ export default function Album() {
           </Box>
         )}
 
-        {images.length > 0 && (
-            <LightGallery
-                // onInit={onInit}
-                speed={500}
-                plugins={[lgThumbnail, lgFullscreen]}
-                preload={1} // change for 0 if there will be a problem with 'too many requests'
-                download={false}
-                numberOfSlideItemsInDom={3}
-                onInit={onGalleryInit}
-                onAfterSlide={(event) => {
-                  const index = event.index;
-                  const image = images[index];
-
-                  if (!image) return;
-
-                  const page = searchParams.get("page");
-                  const url =
-                      page === null
-                          ? `#/album/${currentFolderId}/${image.id}`
-                          : `#/album/${currentFolderId}/${image.id}?page=${page}`;
-
-                  window.history.replaceState(null, "", url);
-                }}
-                onAfterClose={() => {
-                    const page = searchParams.get("page");
-
-                    const url =
-                        page === null
-                            ? `#/album/${currentFolderId}`
-                            : `#/album/${currentFolderId}?page=${page}`;
-
-                    window.history.replaceState(null, "", url);
-                }}
-                // addClass="light-gallery"
-            >
-              {/* data-sub-html={image.name} - image comment */}
-              {images.map((image: Image) => (
-                <a key={image.id}  href={image.imageUrl} data-src={image.imageUrl} data-sub-html={image.comment} referrerPolicy="no-referrer">
-                    <img alt={image.name} src={image.thumbnailUrl} loading="lazy" referrerPolicy="no-referrer"/>
-                </a>
-              ))}
-            </LightGallery>
-        )}
+        {images.length > 0 && memoizedGallery}
       </Box>
 
       {/* MODALS */}
-      {/* <SelectCategoryModal
+      <AddCommentModal
+        openDialogWindow={openCommentDialogWindow}
+        // viewer={viewer}
+        setOpenDialogWindow={setOpenCommentDialogWindow}
+        imgId={currentImgId}
+        imgName={images?.find((e) => e.id === currentImgId)?.name}
+        images={images}
+        setImages={setImages}
+      />
+      <SelectCategoryModal
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
         imgName={images?.find((e) => e.id === currentImgId)?.name}
       />
-      {viewer && (
-        <AddCommentModal
-          openDialogWindow={openCommentDialogWindow}
-          viewer={viewer}
-          setOpenDialogWindow={setOpenCommentDialogWindow}
-          imgId={currentImgId}
-          imgName={images?.find((e) => e.id === currentImgId)?.name}
-          images={images}
-          setImages={setImages}
-        />
-      )} */}
     </>
   );
 }

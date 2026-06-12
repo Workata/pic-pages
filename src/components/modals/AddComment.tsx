@@ -28,10 +28,10 @@ export default function AddCommentModal(props: any) {
     updateImageComment(props.imgId, commentFormInput, tokenValue); // handle update on backend site
 
     // ! UPDATE IMAGE DESCRIPTION ON FRONTEND WITHOUT REFRESHING WHOLE PAGE
-    // * update comment inside viewer
-    props.viewer.updateComment(props.imgId, commentFormInput);
+    // // * update comment inside viewer
+    // props.viewer.updateComment(props.imgId, commentFormInput);
 
-    // * update images state - for re-rendering imageViewer
+    // // * update images state - for re-rendering imageViewer
     const imgIdx = props.images.findIndex((e: any) => e.id === props.imgId);
     props.images[imgIdx].comment = commentFormInput;
     props.setImages(props.images);
@@ -70,7 +70,7 @@ export default function AddCommentModal(props: any) {
         open={props.openDialogWindow}
         onClose={props.handleCloseDialogWindow}
         sx={{
-          zIndex: 999999994, // image viewer has 999999993
+          zIndex: 999999994,
         }}
       >
         <DialogTitle>Add comment</DialogTitle>

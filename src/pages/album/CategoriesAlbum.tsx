@@ -38,7 +38,6 @@ export default function CategoriesAlbum() {
   const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
   const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
-
   const insertImgIdToUrl = (imgId: string) => {
     const page = searchParams.get("page");
 
@@ -107,8 +106,6 @@ export default function CategoriesAlbum() {
         },
       ];
     }
-
-   
   };
 
   useEffect(() => {

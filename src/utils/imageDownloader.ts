@@ -15,7 +15,8 @@ export class ImageDownloader {
 
   downloadImage(): void {
     const imgId = this.getImgIdDynmically(window.location.href);
-    const url = `https://drive.lienuc.com/uc?id=${imgId}`;
+    // TODO improve quality of downloaded image
+    const url = `https://lh3.googleusercontent.com/d/${imgId}`;
     fetch(url)
       .then((resp) => resp.blob())
       .then((blob) => {
