@@ -126,7 +126,7 @@ export default function Album() {
 
     addDownloadButton(lg);
     // comment token value if check for testing
-    if (!tokenValue){
+    if (tokenValue){
       addCommentButton(lg);
       addCategoryButton(lg);
     }
