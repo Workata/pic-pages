@@ -1,3 +1,4 @@
+// TODO check if useRef is still needed - duplicated buttons issue; now useMemo is used
 import { AppContext } from "AppContext";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -10,6 +11,7 @@ import { Box, Button } from "@mui/material";
 import ClickableFolder from "components/ClickableFolder";
 import AddCommentModal from "components/modals/AddComment";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
+import ThumbnailImageList from "components/ThumbnailImageList";
 
 // * hooks
 import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
@@ -39,20 +41,6 @@ import { useRef } from "react";
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgFullscreen from "lightgallery/plugins/fullscreen";
 
-import type { Image } from "models/Image";
-
-const albumContainerStyle: React.CSSProperties = {
-  marginTop: "20px",
-  flexDirection: "row",
-  display: "flex",
-  flexWrap: "wrap",
-  // gap: "20px 20px" /* row-gap column gap */,
-  // gap: "2% 2%",
-  columnGap: "2%",
-  rowGap: "15px",
-  // alignItems: "center",
-  // justifyContent: "center",
-};
 
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
@@ -63,7 +51,6 @@ export default function Album() {
   const galleryRef = useRef<any>(null);
   const navigate = useNavigate();
   const { tokenValue } = useContext(AppContext);
-  const hasOpenedRef = useRef(false);
 
   const goBack = () => {
     navigate(-1);
@@ -161,7 +148,7 @@ export default function Album() {
     const memoizedGallery = useMemo(() => {
     // This block will ONLY run once (or when the images array reference changes)
     return (
-images.length > 0 && <LightGallery
+      images.length > 0 && <LightGallery
             licenseKey="LIG-34EA249B-F46A-4AD8-A666-D99AEB4C9865"
             speed={500}
             plugins={[lgThumbnail, lgFullscreen]}
@@ -169,7 +156,6 @@ images.length > 0 && <LightGallery
             download={false}
             closeOnTap={false}
             swipeToClose={false}
-            // closable={false}
             toggleThumb={true}
             numberOfSlideItemsInDom={3}
             onInit={onGalleryInit}
@@ -189,18 +175,7 @@ images.length > 0 && <LightGallery
               window.history.replaceState(null, "", url);
             }}
           >
-            {/* data-sub-html={image.name} - image comment */}
-            {images.map((image: Image) => (
-              <a
-                key={image.id}
-                href={image.imageUrl}
-                data-src={image.imageUrl}
-                data-sub-html={image.comment}
-                referrerPolicy="no-referrer"
-              >
-                <img alt={image.name} src={image.thumbnailUrl} loading="lazy" referrerPolicy="no-referrer" />
-              </a>
-            ))}
+            <ThumbnailImageList images={images}/>
           </LightGallery>
     );
   }, [images]);
@@ -212,7 +187,7 @@ images.length > 0 && <LightGallery
           width: "100%",
         }}
       >
-        {images.length !== 0 && (
+        {images.length > 0 && (
           <Box
             id="paginations-buttons-container"
             sx={{
