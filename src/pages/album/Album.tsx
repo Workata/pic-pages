@@ -1,5 +1,4 @@
 // TODO check if useRef is still needed - duplicated buttons issue; now useMemo is used
-import { AppContext } from "AppContext";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -11,35 +10,25 @@ import { Box, Button } from "@mui/material";
 import ClickableFolder from "components/ClickableFolder";
 import AddCommentModal from "components/modals/AddComment";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
-import ThumbnailImageList from "components/ThumbnailImageList";
+import ImageGallery from "components/ImageGallery";
 
 // * hooks
 import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
-import commentIcon from "icons/comment.svg";
-import downloadIcon from "icons/file-download-svgrepo-com.svg";
-import categoryIcon from "icons/theatre-svgrepo-com.svg";
 
 // * models
 import type { Folder } from "models/Folder";
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import LightGallery from "lightgallery/react";
+// * styles
 import "css/album.css";
-
-import { ImageDownloader } from "utils/imageDownloader";
-
-// import styles
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-thumbnail.css";
 import "lightgallery/css/lg-fullscreen.css";
 
-import { useRef } from "react";
-
-// import plugins if you need
-import lgThumbnail from "lightgallery/plugins/thumbnail";
-import lgFullscreen from "lightgallery/plugins/fullscreen";
+import { BeforeSlideDetail, InitDetail, BeforeCloseDetail} from "lightgallery/lg-events";
+import { LightGallery } from "lightgallery/lightgallery";
 
 
 export default function Album() {
@@ -50,79 +39,47 @@ export default function Album() {
   const { getFolderContent, images, setImages, folders, nextPageToken } = useGetFolderContent();
   const galleryRef = useRef<any>(null);
   const navigate = useNavigate();
-  const { tokenValue } = useContext(AppContext);
 
   const goBack = () => {
     navigate(-1);
   };
 
-
-
-  const customButtonClsName: string = "lg-custom-btn"
-
-  const addDownloadButton = (lg: any) => {
-    const toolbar = lg.outer.find(".lg-toolbar").get();
-    const downloadButtonId: string = "downloadButton"
-    if (toolbar.querySelector(`#${downloadButtonId}`)) return;
-
-    const downloadButton = document.createElement("button");
-    downloadButton.className = customButtonClsName;
-    downloadButton.innerHTML = `
-      <img src="${downloadIcon}" alt="download" id="${downloadButtonId}"/>
-    `;
-
-    downloadButton.onclick = () => new ImageDownloader().downloadImage();
-    toolbar.appendChild(downloadButton);
-  };
-
-  const addCommentButton = (lg: any) => {
-    const toolbar = lg.outer.find(".lg-toolbar").get();
-    const commentButtonId: string = "commentButton"
-    if (toolbar.querySelector(`#${commentButtonId}`)) return;
-
-    const commentButton = document.createElement("button");
-    commentButton.className = customButtonClsName;
-    commentButton.id = commentButtonId;
-    commentButton.innerHTML = `
-      <img src="${commentIcon}" alt="comment"/>
-    `;
-    
-    commentButton.onclick = () => setOpenCommentDialogWindow(true);
-    toolbar.appendChild(commentButton);
-  }
-
-  const addCategoryButton = (lg: any) => {
-    const toolbar = lg.outer.find(".lg-toolbar").get();
-    const categoryButtonId: string = "categoryButton"
-    if (toolbar.querySelector(`#${categoryButtonId}`)) return;
-
-    const categoryButton = document.createElement("button");
-    categoryButton.className = customButtonClsName;
-    categoryButton.innerHTML = `
-      <img src="${categoryIcon}" alt="category" id="${categoryButtonId}"/>
-    `;
-
-    categoryButton.onclick = () => setOpenCategoriesDialogWindow(true);
-    toolbar.appendChild(categoryButton);
-  }
-
-
-  const onGalleryInit = (detail: any) => {
+  const onGalleryInit = (detail: InitDetail) => {
     const lg = detail.instance;
     galleryRef.current = lg;
-
-    addDownloadButton(lg);
-    // comment token value if check for testing
-    if (tokenValue){
-      addCommentButton(lg);
-      addCategoryButton(lg);
-    }
   };
 
-  const onGalleryClose = (detail: any) => {
+  const onBeforeClose = (detail: BeforeCloseDetail) => {
     // clear url
     const page = searchParams.get("page");
-    const url = page === null ? `#/album/${currentFolderId}` : `#/album/${currentFolderId}?page=${page}`;
+    // const url = page === null ? `#/album/${currentFolderId}` : `#/album/${currentFolderId}?page=${page}`;
+    // window.history.replaceState(null, "", url);
+    const url = page === null ? `/album/${currentFolderId}` : `/album/${currentFolderId}?page=${page}`;
+    navigate(url);
+  };
+
+  const onBeforeSlide = (detail: BeforeSlideDetail) => {
+    // on slide: 
+    // 1) check if there is a need to switch to the next page (TODO possibly I can handle prev page as well)
+    // 2) set correct URL
+
+    const prevIndex = detail.prevIndex;
+    const index = detail.index;
+    const image = images[index];
+    if (!image) return;
+    const page = searchParams.get("page");
+
+    if (prevIndex + 1 === images.length && index === 0 && nextPageToken !== null) {
+      galleryRef.current.closeGallery(); ///manageCloseGallery();
+      navigate(`/album/${currentFolderId}?page=${nextPageToken}`);
+      return;
+    }
+
+    const url =
+        page === null
+          ? `#/album/${currentFolderId}/${image.id}`
+          : `#/album/${currentFolderId}/${image.id}?page=${page}`;
+
     window.history.replaceState(null, "", url);
   };
 
@@ -131,54 +88,6 @@ export default function Album() {
       getFolderContent(currentFolderId, searchParams.get("page"));
     }
   }, [currentFolderId, searchParams.get("page")]);
-
-  useEffect(() => {
-    if (!galleryRef.current) return;
-    if (!currentImgId) return;
-    if (images.length === 0) return;
-
-    const index = images.findIndex((img) => img.id === currentImgId);
-
-    if (index === -1) return;
-
-    galleryRef.current.openGallery(index);
-  }, [currentImgId, images]);
-
-
-    const memoizedGallery = useMemo(() => {
-    // This block will ONLY run once (or when the images array reference changes)
-    return (
-      images.length > 0 && <LightGallery
-            licenseKey="LIG-34EA249B-F46A-4AD8-A666-D99AEB4C9865"
-            speed={500}
-            plugins={[lgThumbnail, lgFullscreen]}
-            preload={1} // change for 0 if there will be a problem with 'too many requests'
-            download={false}
-            closeOnTap={false}
-            swipeToClose={false}
-            toggleThumb={true}
-            numberOfSlideItemsInDom={3}
-            onInit={onGalleryInit}
-            onAfterClose={onGalleryClose}
-            onAfterSlide={(event) => {
-              const index = event.index;
-              const image = images[index];
-
-              if (!image) return;
-
-              const page = searchParams.get("page");
-              const url =
-                page === null
-                  ? `#/album/${currentFolderId}/${image.id}`
-                  : `#/album/${currentFolderId}/${image.id}?page=${page}`;
-
-              window.history.replaceState(null, "", url);
-            }}
-          >
-            <ThumbnailImageList images={images}/>
-          </LightGallery>
-    );
-  }, [images]);
 
   return (
     <>
@@ -263,7 +172,14 @@ export default function Album() {
           </Box>
         )}
 
-        {images.length > 0 && memoizedGallery}
+        <ImageGallery
+          images={images}
+          onGalleryInit={onGalleryInit}
+          onBeforeClose={onBeforeClose}
+          onBeforeSlide={onBeforeSlide}
+          setOpenCategoriesDialogWindow={setOpenCategoriesDialogWindow}
+          setOpenCommentDialogWindow={setOpenCommentDialogWindow}
+        />
       </Box>
 
       {/* MODALS */}

@@ -1,4 +1,7 @@
 {
+  "files": {
+    "includes": ["**", "!!**/node_modules", "!!**/build", "!!**/private", "!!**/public"]
+  },
   "assist": {
     "actions": {
       "source": {
@@ -31,7 +34,8 @@
         "useValidTypeof": "info"
       },
       "complexity": {
-        "noUselessFragments": "info"
+        "noUselessFragments": "info",
+        "noImportantStyles": "off"
       }
     }
   },
