@@ -1,150 +1,86 @@
-import { AppContext } from "AppContext";
+// TODO check if useRef is still needed - duplicated buttons issue; now useMemo is used
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+
 // * mui
 import { Box, Button } from "@mui/material";
+
 // * components
 import ClickableFolder from "components/ClickableFolder";
 import AddCommentModal from "components/modals/AddComment";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
-import ThumbnailImageList from "components/ThumbnailImageList";
+import ImageGallery from "components/ImageGallery";
+
 // * hooks
 import { useGetFolderContent } from "hooks/api/images/useGetFolderContent";
-import commentIcon from "icons/comment.svg";
-import downloadIcon from "icons/file-download-svgrepo-com.svg";
-import categoryIcon from "icons/theatre-svgrepo-com.svg";
+
 // * models
 import type { Folder } from "models/Folder";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ImageDownloader } from "utils/imageDownloader";
-import { ExtendedImageViewer } from "utils/imageViewer";
-import type { ImageToView } from "./shared/imageToView.type";
+
+// * styles
+import "css/album.css";
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-zoom.css";
+import "lightgallery/css/lg-thumbnail.css";
+import "lightgallery/css/lg-fullscreen.css";
+
+import { BeforeSlideDetail, InitDetail, BeforeCloseDetail} from "lightgallery/lg-events";
+import { LightGallery } from "lightgallery/lightgallery";
+
 
 export default function Album() {
   const { currentFolderId, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
-  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const { getFolderContent, images, setImages, folders, nextPageToken } = useGetFolderContent();
+  const galleryRef = useRef<any>(null);
   const navigate = useNavigate();
-  const { tokenValue } = useContext(AppContext);
-
-  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
-  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
-  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
   const goBack = () => {
     navigate(-1);
   };
 
-  // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
-  if (rightImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    rightImgButton.onclick = () => {
-      if (idxPrev >= images.length - 1) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
-    };
-  }
-
-  if (leftImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    leftImgButton.onclick = () => {
-      if (idxPrev <= 0) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
-    };
-  }
-
-  if (closeImgButton) {
-    closeImgButton.onclick = () => {
-      clearUrlFromImg();
-    };
-  }
-
-  const viewerIsClosed = () => {
-    return document.getElementsByClassName("imageViewer visible").length === 0;
+  const onGalleryInit = (detail: InitDetail) => {
+    const lg = detail.instance;
+    galleryRef.current = lg;
   };
 
-  const insertImgIdToUrl = (imgId: string) => {
+  const onBeforeClose = (detail: BeforeCloseDetail) => {
+    // clear url
+    const page = searchParams.get("page");
+    // const url = page === null ? `#/album/${currentFolderId}` : `#/album/${currentFolderId}?page=${page}`;
+    // window.history.replaceState(null, "", url);
+    const url = page === null ? `/album/${currentFolderId}` : `/album/${currentFolderId}?page=${page}`;
+    navigate(url);
+  };
+
+  const onBeforeSlide = (detail: BeforeSlideDetail) => {
+    // on slide: 
+    // 1) check if there is a need to switch to the next page (TODO possibly I can handle prev page as well)
+    // 2) set correct URL
+
+    const prevIndex = detail.prevIndex;
+    const index = detail.index;
+    const image = images[index];
+    if (!image) return;
     const page = searchParams.get("page");
 
-    if (!currentImgId || currentImgId !== imgId)
-      if (page === null) navigate(`../album/${currentFolderId}/${imgId}`, { replace: true });
-      else navigate(`../album/${currentFolderId}/${imgId}?page=${page}`, { replace: true });
-  };
-
-  const clearUrlFromImg = () => {
-    const page = searchParams.get("page");
-
-    if (page === null) navigate(`../album/${currentFolderId}`, { replace: true });
-    else navigate(`../album/${currentFolderId}?page=${page}`, { replace: true });
-  };
-
-  const getImgIdFromIdx = (idx: number): string => {
-    if (images) {
-      return images[idx].id;
-    }
-    return "";
-  };
-
-  // * open image viewer
-  const viewImage = (idx: number) => {
-    if (images.length === 0) {
-      console.log("No images in the list");
+    if (prevIndex + 1 === images.length && index === 0 && nextPageToken !== null) {
+      galleryRef.current.closeGallery(); ///manageCloseGallery();
+      navigate(`/album/${currentFolderId}?page=${nextPageToken}`);
       return;
     }
 
-    const data: ImageToView[] = images.map((img) => ({
-      id: img.id, // * additional (not enforced) data for image searching
-      mainUrl: img.imageUrl,
-      thumbnailUrl: img.thumbnailUrl,
-      description: img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
-    }));
+    const url =
+        page === null
+          ? `#/album/${currentFolderId}/${image.id}`
+          : `#/album/${currentFolderId}/${image.id}?page=${page}`;
 
-    let buttons: any;
-    if (tokenValue) {
-      buttons = [
-        {
-          name: "Categorize",
-          iconSrc: categoryIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCategoriesDialogWindow(true),
-        },
-        {
-          name: "Comment",
-          iconSrc: commentIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCommentDialogWindow(true),
-        },
-        {
-          name: "Download",
-          iconSrc: downloadIcon,
-          iconSize: "18px",
-          onSelect: () => new ImageDownloader().downloadImage(),
-        },
-      ];
-    } else {
-      buttons = [
-        {
-          name: "Download",
-          iconSrc: downloadIcon,
-          iconSize: "18px",
-          onSelect: () => new ImageDownloader().downloadImage(),
-        },
-      ];
-    }
-
-    setViewer(
-      new ExtendedImageViewer({
-        images: data,
-        currentSelected: idx,
-        showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-        buttons: buttons,
-        nextPageUrl: nextPageToken ? `/album/${currentFolderId}?page=${nextPageToken}` : null,
-      }),
-    );
+    window.history.replaceState(null, "", url);
   };
 
   useEffect(() => {
@@ -153,14 +89,6 @@ export default function Album() {
     }
   }, [currentFolderId, searchParams.get("page")]);
 
-  useEffect(() => {
-    if (currentImgId && images.length !== 0 && viewerIsClosed()) {
-      console.log(`Currently selected img ID ${currentImgId}`);
-      viewImage(images.findIndex((el) => el.id === currentImgId));
-    }
-    // TODO double check deps list
-  }, [images, currentImgId, viewImage]);
-
   return (
     <>
       <Box
@@ -168,7 +96,7 @@ export default function Album() {
           width: "100%",
         }}
       >
-        {images.length !== 0 && (
+        {images.length > 0 && (
           <Box
             id="paginations-buttons-container"
             sx={{
@@ -229,7 +157,7 @@ export default function Album() {
           </Box>
         )}
 
-        {folders.length !== 0 && (
+        {folders.length > 0 && (
           <Box
             id="folders-container"
             sx={{
@@ -244,37 +172,32 @@ export default function Album() {
           </Box>
         )}
 
-        {images.length !== 0 && (
-          <Box
-            id="images-container"
-            sx={{
-              width: "100%",
-              marginTop: "30px",
-            }}
-          >
-            <ThumbnailImageList images={images} insertImgIdToUrl={insertImgIdToUrl} />
-          </Box>
-        )}
+        <ImageGallery
+          images={images}
+          onGalleryInit={onGalleryInit}
+          onBeforeClose={onBeforeClose}
+          onBeforeSlide={onBeforeSlide}
+          setOpenCategoriesDialogWindow={setOpenCategoriesDialogWindow}
+          setOpenCommentDialogWindow={setOpenCommentDialogWindow}
+        />
       </Box>
 
       {/* MODALS */}
+      <AddCommentModal
+        openDialogWindow={openCommentDialogWindow}
+        // viewer={viewer}
+        setOpenDialogWindow={setOpenCommentDialogWindow}
+        imgId={currentImgId}
+        imgName={images?.find((e) => e.id === currentImgId)?.name}
+        images={images}
+        setImages={setImages}
+      />
       <SelectCategoryModal
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
         imgName={images?.find((e) => e.id === currentImgId)?.name}
       />
-      {viewer && (
-        <AddCommentModal
-          openDialogWindow={openCommentDialogWindow}
-          viewer={viewer}
-          setOpenDialogWindow={setOpenCommentDialogWindow}
-          imgId={currentImgId}
-          imgName={images?.find((e) => e.id === currentImgId)?.name}
-          images={images}
-          setImages={setImages}
-        />
-      )}
     </>
   );
 }

@@ -1,152 +1,96 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { AppContext } from "AppContext";
 
 // * icons
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import commentIcon from "icons/comment.svg";
-import downloadIcon from "icons/file-download-svgrepo-com.svg";
-import categoryIcon from "icons/theatre-svgrepo-com.svg";
 
 // * api
 import { useGetCategoryContent } from "hooks/api/categories/useGetCategoryContent";
 
-// * utils
-import { ImageDownloader } from "utils/imageDownloader";
-import { ExtendedImageViewer } from "utils/imageViewer";
-
 // * components
 import AddCommentModal from "components/modals/AddComment";
 import SelectCategoryModal from "components/modals/category/SelectCategory";
-import ThumbnailImageList from "components/ThumbnailImageList";
+import ImageGallery from "components/ImageGallery";
 import { Box, Button } from "@mui/material";
 
-// * models
-import type { ImageToView } from "./shared/imageToView.type";
+import { BeforeSlideDetail, InitDetail, BeforeCloseDetail, AfterCloseDetail} from "lightgallery/lg-events";
+
+
 
 export default function CategoriesAlbum() {
   const { currentCategory, currentImgId } = useParams();
   const [searchParams] = useSearchParams();
-  const [viewer, setViewer] = useState<ExtendedImageViewer>();
   const [openCategoriesDialogWindow, setOpenCategoriesDialogWindow] = useState(false);
   const [openCommentDialogWindow, setOpenCommentDialogWindow] = useState(false);
   const { getCategoryContent, images, setImages, previousPage, nextPage } = useGetCategoryContent();
   const navigate = useNavigate();
-  const { tokenValue } = useContext(AppContext);
+  const galleryRef = useRef<any>(null);
 
-  const rightImgButton: HTMLElement = document.getElementsByClassName("arrowButton rightButton")[0] as HTMLElement;
-  const leftImgButton: HTMLElement = document.getElementsByClassName("arrowButton leftButton")[0] as HTMLElement;
-  const closeImgButton: HTMLElement = document.getElementsByClassName("defaultButton closeButton")[0] as HTMLElement;
 
-  // TODO arrows will not till image will be focused (clicked) - auto focus when image shows?
-  if (rightImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    rightImgButton.onclick = () => {
-      if (idxPrev >= images.length - 1) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev + 1));
-    };
-  }
-
-  if (leftImgButton) {
-    const idxPrev = Number(viewer?.getCurrentSelected());
-    leftImgButton.onclick = () => {
-      if (idxPrev <= 0) return;
-      insertImgIdToUrl(getImgIdFromIdx(idxPrev - 1));
-    };
-  }
-
-  if (closeImgButton) {
-    closeImgButton.onclick = () => {
-      clearUrlFromImg();
-    };
-  }
-
-  const viewerIsClosed = () => {
-    return document.getElementsByClassName("imageViewer visible").length === 0;
+  const onGalleryInit = (detail: InitDetail) => {
+    const lg = detail.instance;
+    galleryRef.current = lg;
   };
 
-  const insertImgIdToUrl = (imgId: string) => {
+
+  // TODO onBeforeClose doesnt work with next page
+  // const onBeforeClose = (detail: BeforeCloseDetail) => {
+  //   // clear url
+  //   // if(closeWithoutHook) return;
+  //   //  if (silentCloseRef.current) {
+  //   //   silentCloseRef.current = false; // reset
+  //   //   return;
+  //   // }
+
+  //   console.log("on before close")
+
+  //   const page = searchParams.get("page");
+  //   const url = page === null ? `#/categories/${currentCategory}` : `#/categories/${currentCategory}?page=${page}`;
+  //   window.history.replaceState(null, "", url);
+  //   // const url = page === null ? `/categories/${currentCategory}` : `/categories/${currentCategory}?page=${page}`;
+  //   // navigate(url);
+  // };
+
+    const onAfterClose = (detail: AfterCloseDetail) => {
+
+    console.log("on before close")
+
+    const page = searchParams.get("page");
+    const url = page === null ? `#/categories/${currentCategory}` : `#/categories/${currentCategory}?page=${page}`;
+    window.history.replaceState(null, "", url);
+    // const url = page === null ? `/categories/${currentCategory}` : `/categories/${currentCategory}?page=${page}`;
+    // navigate(url);
+  };
+
+
+  const onBeforeSlide = (detail: BeforeSlideDetail) => {
+    // on slide: 
+    // 1) check if there is a need to switch to the next page (TODO possibly I can handle prev page as well)
+    // 2) set correct URL
+
+    const prevIndex = detail.prevIndex;
+    const index = detail.index;
+    const image = images[index];
+    if (!image) return;
     const page = searchParams.get("page");
 
-    if (!currentImgId || currentImgId !== imgId)
-      if (page === null) navigate(`../categories/${currentCategory}/${imgId}`, { replace: true });
-      else navigate(`../categories/${currentCategory}/${imgId}?page=${page}`, { replace: true });
-  };
-
-  const clearUrlFromImg = () => {
-    const page = searchParams.get("page");
-
-    if (page === null) navigate(`../categories/${currentCategory}`, { replace: true });
-    else navigate(`../categories/${currentCategory}?page=${page}`, { replace: true });
-  };
-
-  const getImgIdFromIdx = (idx: number): string => {
-    if (images) {
-      return images[idx].id;
-    }
-    return "";
-  };
-
-  // * open image viewer
-  const viewImage = (idx: number) => {
-    if (images.length === 0) {
-      console.log("No images in the list");
+    if (prevIndex + 1 === images.length && index === 0 && nextPage !== null) {
+      galleryRef.current.closeGallery();
+      const url = `/categories/${currentCategory}?page=${nextPage}`;
+      navigate(url);
       return;
     }
 
-    const data: ImageToView[] = images.map((img) => ({
-      id: img.id, // * additional (not enforced) data for image searching
-      mainUrl: img.imageUrl,
-      thumbnailUrl: img.thumbnailUrl,
-      description: img.comment === "" ? img.name : `${img.name} - ${img.comment}`,
-    }));
+    const url =
+      page === null
+        ? `#/categories/${currentCategory}/${image.id}`
+        : `#/categories/${currentCategory}/${image.id}?page=${page}`;
 
-    let buttons: any;
-    if (tokenValue) {
-      buttons = [
-        {
-          name: "Categorize",
-          iconSrc: categoryIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCategoriesDialogWindow(true),
-        },
-        {
-          name: "Comment",
-          iconSrc: commentIcon,
-          iconSize: "18px",
-          onSelect: () => setOpenCommentDialogWindow(true),
-        },
-        {
-          name: "Download",
-          iconSrc: downloadIcon,
-          iconSize: "18px",
-          onSelect: () => new ImageDownloader().downloadImage(),
-        },
-      ];
-    } else {
-      buttons = [
-        {
-          name: "Download",
-          iconSrc: downloadIcon,
-          iconSize: "18px",
-          onSelect: () => new ImageDownloader().downloadImage(),
-        },
-      ];
-    }
-
-    // TODO if needed add showFirstImage parameter in the url (in image viewer href)
-    setViewer(
-      new ExtendedImageViewer({
-        images: data,
-        currentSelected: idx,
-        showThumbnails: false, // TODO thumnbanils and arrow links need to be fixed
-        buttons: buttons,
-        nextPageUrl: nextPage !== null ? `/categories/${currentCategory}?page=${nextPage}` : null,
-      }),
-    );
+    window.history.replaceState(null, "", url);
   };
+
 
   useEffect(() => {
     if (currentCategory) {
@@ -158,16 +102,10 @@ export default function CategoriesAlbum() {
     }
   }, [currentCategory, searchParams.get("page")]);
 
-  useEffect(() => {
-    if (currentImgId && images.length !== 0 && viewerIsClosed()) {
-      console.log(`Currently selected img ID ${currentImgId}`);
-      viewImage(images.findIndex((el) => el.id === currentImgId));
-    }
-  }, [images, currentImgId]);
 
+  {/* Assumption is that categories should contain only images (without folders) */}
   return (
     <>
-      {/* Assumption is that categories should contain only images (without folders) */}
       <Box
         sx={{
           width: "100%",
@@ -239,28 +177,35 @@ export default function CategoriesAlbum() {
             width: "100%",
           }}
         >
-          {images && <ThumbnailImageList images={images} insertImgIdToUrl={insertImgIdToUrl} />}
+
+          <ImageGallery
+            images={images}
+            onGalleryInit={onGalleryInit}
+            // onBeforeClose={onBeforeClose}
+            onAfterClose={onAfterClose}
+            onBeforeSlide={onBeforeSlide}
+            setOpenCategoriesDialogWindow={setOpenCategoriesDialogWindow}
+            setOpenCommentDialogWindow={setOpenCommentDialogWindow}
+          />
         </Box>
       </Box>
 
       {/* MODALS */}
+      <AddCommentModal
+        openDialogWindow={openCommentDialogWindow}
+        // viewer={viewer}
+        setOpenDialogWindow={setOpenCommentDialogWindow}
+        imgId={currentImgId}
+        imgName={images?.find((e) => e.id === currentImgId)?.name}
+        images={images}
+        setImages={setImages}
+      />
       <SelectCategoryModal
         openDialogWindow={openCategoriesDialogWindow}
         setOpenDialogWindow={setOpenCategoriesDialogWindow}
         imgId={currentImgId}
         imgName={images?.find((e) => e.id === currentImgId)?.name}
       />
-      {viewer && (
-        <AddCommentModal
-          openDialogWindow={openCommentDialogWindow}
-          viewer={viewer}
-          setOpenDialogWindow={setOpenCommentDialogWindow}
-          imgId={currentImgId}
-          imgName={images?.find((e) => e.id === currentImgId)?.name}
-          images={images}
-          setImages={setImages}
-        />
-      )}
     </>
   );
 }
