@@ -15,7 +15,7 @@ import SelectCategoryModal from "components/modals/category/SelectCategory";
 import ImageGallery from "components/ImageGallery";
 import { Box, Button } from "@mui/material";
 
-import { BeforeSlideDetail, InitDetail, BeforeCloseDetail} from "lightgallery/lg-events";
+import { BeforeSlideDetail, InitDetail, BeforeCloseDetail, AfterCloseDetail} from "lightgallery/lg-events";
 
 
 
@@ -29,40 +29,39 @@ export default function CategoriesAlbum() {
   const galleryRef = useRef<any>(null);
 
 
-  const insertImgIdToUrl = (imgId: string) => {
-    const page = searchParams.get("page");
-
-    if (!currentImgId || currentImgId !== imgId)
-      if (page === null) navigate(`../categories/${currentCategory}/${imgId}`, { replace: true });
-      else navigate(`../categories/${currentCategory}/${imgId}?page=${page}`, { replace: true });
-  };
-
-  const clearUrlFromImg = () => {
-    const page = searchParams.get("page");
-
-    if (page === null) navigate(`../categories/${currentCategory}`, { replace: true });
-    else navigate(`../categories/${currentCategory}?page=${page}`, { replace: true });
-  };
-
-  const getImgIdFromIdx = (idx: number): string => {
-    if (images) {
-      return images[idx].id;
-    }
-    return "";
-  };
-
   const onGalleryInit = (detail: InitDetail) => {
     const lg = detail.instance;
     galleryRef.current = lg;
   };
 
-  const onBeforeClose = (detail: BeforeCloseDetail) => {
-    // clear url
+
+  // TODO onBeforeClose doesnt work with next page
+  // const onBeforeClose = (detail: BeforeCloseDetail) => {
+  //   // clear url
+  //   // if(closeWithoutHook) return;
+  //   //  if (silentCloseRef.current) {
+  //   //   silentCloseRef.current = false; // reset
+  //   //   return;
+  //   // }
+
+  //   console.log("on before close")
+
+  //   const page = searchParams.get("page");
+  //   const url = page === null ? `#/categories/${currentCategory}` : `#/categories/${currentCategory}?page=${page}`;
+  //   window.history.replaceState(null, "", url);
+  //   // const url = page === null ? `/categories/${currentCategory}` : `/categories/${currentCategory}?page=${page}`;
+  //   // navigate(url);
+  // };
+
+    const onAfterClose = (detail: AfterCloseDetail) => {
+
+    console.log("on before close")
+
     const page = searchParams.get("page");
-    // const url = page === null ? `#/categories/${currentCategory}` : `#/categories/${currentCategory}?page=${page}`;
-    // window.history.replaceState(null, "", url);
-    const url = page === null ? `/categories/${currentCategory}` : `/categories/${currentCategory}?page=${page}`;
-    navigate(url);
+    const url = page === null ? `#/categories/${currentCategory}` : `#/categories/${currentCategory}?page=${page}`;
+    window.history.replaceState(null, "", url);
+    // const url = page === null ? `/categories/${currentCategory}` : `/categories/${currentCategory}?page=${page}`;
+    // navigate(url);
   };
 
 
@@ -78,9 +77,9 @@ export default function CategoriesAlbum() {
     const page = searchParams.get("page");
 
     if (prevIndex + 1 === images.length && index === 0 && nextPage !== null) {
-      galleryRef.current.manageCloseGallery(); //closeGallery(true);
-      console.log(`next page: ${nextPage}`)
-      navigate(`/categories/${currentCategory}?page=${nextPage}`);
+      galleryRef.current.closeGallery();
+      const url = `/categories/${currentCategory}?page=${nextPage}`;
+      navigate(url);
       return;
     }
 
@@ -182,7 +181,8 @@ export default function CategoriesAlbum() {
           <ImageGallery
             images={images}
             onGalleryInit={onGalleryInit}
-            onBeforeClose={onBeforeClose}
+            // onBeforeClose={onBeforeClose}
+            onAfterClose={onAfterClose}
             onBeforeSlide={onBeforeSlide}
             setOpenCategoriesDialogWindow={setOpenCategoriesDialogWindow}
             setOpenCommentDialogWindow={setOpenCommentDialogWindow}
